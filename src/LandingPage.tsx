@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 
 import Header from "./Header";
-import MuiDropzone from "./MuiDropzone";
+import MuiDropzone from "./UI/MuiDropzone";
 import VFEList from "./VFEList";
 
 interface LandingPageProps {
