@@ -35,7 +35,7 @@ import {
   Photosphere,
   VFE,
 } from "./DataStructures";
-import { useVisitedState } from "./HandleVisit";
+import { useVisitedState } from "./Hooks/HandleVisit";
 import { LinkArrowIconHTML } from "./LinkArrowIcon";
 import PhotosphereSelector from "./PhotosphereSelector";
 import PopOver from "./PopOver";
@@ -273,11 +273,11 @@ function PhotosphereViewer({
       MapPlugin,
       vfe.map
         ? convertMap(
-            vfe.map,
-            vfe.photospheres,
-            currentPhotosphere.center ?? vfe.map.defaultCenter,
-            mapStatic,
-          )
+          vfe.map,
+          vfe.photospheres,
+          currentPhotosphere.center ?? vfe.map.defaultCenter,
+          mapStatic,
+        )
         : {},
     ],
   ];

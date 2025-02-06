@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { Hotspot3D } from "./DataStructures";
+import { Hotspot3D } from "../DataStructures";
 
 //export type VisitedState = Record<string, Record<string, boolean>>;
 export type VisitedState = Partial<Record<string, Record<string, boolean>>>;
