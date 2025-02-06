@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 
 import { Photosphere } from "../DataStructures";
-import { alertMUI } from "../StyledDialogWrapper";
+import { alertMUI } from "../UI/StyledDialogWrapper";
 
 interface ChangePhotosphereProps {
   onChangePhotosphere: (name: string, background: string) => void;

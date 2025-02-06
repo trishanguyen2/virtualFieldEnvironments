@@ -1,3 +1,9 @@
+// StyledDialog.tsx
+// Functions used to style our confirmation pop ups using
+// the 'react-confirm' library. This file defines the 
+// layout of our generic pop ups in both an alert and
+// basic confirmation components.
+
 import { ThemeProvider } from "@emotion/react";
 import { ConfirmDialogProps, confirmable } from "react-confirm";
 
@@ -10,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { theme } from "./main";
+import { theme } from "../main";
 
 export interface StyledAcceptDialogProps {
   message: string;

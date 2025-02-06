@@ -12,7 +12,7 @@ import {
 } from "./DataStructures.ts";
 import Header, { HeaderProps } from "./Header.tsx";
 import PhotosphereLocationSelector from "./PhotosphereLocationSelector.tsx";
-import { alertMUI } from "./StyledDialogWrapper.tsx";
+import { alertMUI } from "./UI/StyledDialogWrapper.tsx";
 
 //import { PhotosphereCenterFieldset } from "./buttons/AddPhotosphere.tsx";
 

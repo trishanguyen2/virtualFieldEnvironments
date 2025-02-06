@@ -22,7 +22,7 @@ import {
   photosphereLinkTooltip,
 } from "../DataStructures.ts";
 import PhotosphereSelector from "../PhotosphereSelector";
-import { alertMUI } from "../StyledDialogWrapper.tsx";
+import { alertMUI } from "../UI/StyledDialogWrapper.tsx";
 
 // from https://github.com/Alcumus/react-doc-viewer?tab=readme-ov-file#current-renderable-file-types
 const documentAcceptTypes = [

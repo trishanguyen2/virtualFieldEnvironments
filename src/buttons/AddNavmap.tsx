@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 
 import { NavMap, calculateImageDimensions, newID } from "../DataStructures";
-import { alertMUI } from "../StyledDialogWrapper";
+import { alertMUI } from "../UI/StyledDialogWrapper";
 
 interface AddNavMapProps {
   onCreateNavMap: (navMap: NavMap) => void;
