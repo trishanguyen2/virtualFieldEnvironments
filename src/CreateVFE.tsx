@@ -10,7 +10,7 @@ import {
   calculateImageDimensions,
   newID,
 } from "./DataStructures.ts";
-import Header, { HeaderProps } from "./Header.tsx";
+import Header, { HeaderProps } from "./UI/Header.tsx";
 import PhotosphereLocationSelector from "./PhotosphereLocationSelector.tsx";
 import { alertMUI } from "./UI/StyledDialogWrapper.tsx";
 
