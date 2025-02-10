@@ -27,7 +27,7 @@ import {
 } from "@mui/material";
 import { common } from "@mui/material/colors";
 
-import AudioToggleButton from "./AudioToggleButton";
+import AudioToggleButton from "./buttons/AudioToggleButton";
 import {
   Hotspot2D,
   Hotspot3D,
