@@ -500,7 +500,7 @@ function AddHotspot({
       <Typography variant="h5" sx={{ textAlign: "center" }}>
         Add a Hotspot
       </Typography>
-      <Typography>Click on viewer for pitch and yaw</Typography>
+      <Typography>Double click spot for pitch and yaw</Typography>
       <Stack direction="row" gap={1}>
         <TextField
           label="Pitch"
