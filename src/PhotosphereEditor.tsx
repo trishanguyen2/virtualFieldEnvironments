@@ -15,9 +15,9 @@ import {
   photosphereLinkTooltip,
 } from "./DataStructures.ts";
 import { deleteStoredVFE, save } from "./FileOperations.ts";
-import { VisitedState } from "./HandleVisit.tsx";
+import { VisitedState } from "./Hooks/HandleVisit.tsx";
 import PhotosphereViewer from "./PhotosphereViewer.tsx";
-import { alertMUI, confirmMUI } from "./StyledDialogWrapper.tsx";
+import { alertMUI, confirmMUI } from "./UI/StyledDialogWrapper.tsx";
 import {
   HotspotUpdate,
   convertRuntimeToStored,

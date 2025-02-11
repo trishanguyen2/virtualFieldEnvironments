@@ -14,7 +14,7 @@ import {
 
 import { Photosphere, VFE, newID } from "../DataStructures";
 import PhotosphereLocationSelector from "../PhotosphereLocationSelector.tsx";
-import { alertMUI } from "../StyledDialogWrapper.tsx";
+import { alertMUI } from "../UI/StyledDialogWrapper.tsx";
 
 interface AddPhotosphereProps {
   onAddPhotosphere: (newPhotosphere: Photosphere) => void;

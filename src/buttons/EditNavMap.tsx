@@ -14,7 +14,7 @@ import { Photosphere, VFE } from "../DataStructures";
 import PhotosphereSelector, {
   PhotosphereSelectorProps,
 } from "../PhotosphereSelector";
-import { alertMUI } from "../StyledDialogWrapper";
+import { alertMUI } from "../UI/StyledDialogWrapper";
 
 interface EditNavMapProps {
   onClose: () => void;

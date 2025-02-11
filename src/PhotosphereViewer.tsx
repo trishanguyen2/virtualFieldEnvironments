@@ -27,7 +27,7 @@ import {
 } from "@mui/material";
 import { common } from "@mui/material/colors";
 
-import AudioToggleButton from "./AudioToggleButton";
+import AudioToggleButton from "./buttons/AudioToggleButton";
 import {
   Hotspot2D,
   Hotspot3D,
@@ -35,7 +35,7 @@ import {
   Photosphere,
   VFE,
 } from "./DataStructures";
-import { useVisitedState } from "./HandleVisit";
+import { useVisitedState } from "./Hooks/HandleVisit";
 import { LinkArrowIconHTML } from "./LinkArrowIcon";
 import PhotosphereSelector from "./PhotosphereSelector";
 import PopOver from "./PopOver";
@@ -273,11 +273,11 @@ function PhotosphereViewer({
       MapPlugin,
       vfe.map
         ? convertMap(
-            vfe.map,
-            vfe.photospheres,
-            currentPhotosphere.center ?? vfe.map.defaultCenter,
-            mapStatic,
-          )
+          vfe.map,
+          vfe.photospheres,
+          currentPhotosphere.center ?? vfe.map.defaultCenter,
+          mapStatic,
+        )
         : {},
     ],
   ];

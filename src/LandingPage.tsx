@@ -10,8 +10,8 @@ import {
   Stack,
 } from "@mui/material";
 
-import Header from "./Header";
-import MuiDropzone from "./MuiDropzone";
+import Header from "./UI/Header";
+import MuiDropzone from "./UI/MuiDropzone";
 import VFEList from "./VFEList";
 
 interface LandingPageProps {
