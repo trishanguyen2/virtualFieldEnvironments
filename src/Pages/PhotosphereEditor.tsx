@@ -13,24 +13,24 @@ import {
   VFE,
   newID,
   photosphereLinkTooltip,
-} from "./DataStructures.ts";
-import { deleteStoredVFE, save } from "./FileOperations.ts";
-import { VisitedState } from "./Hooks/HandleVisit.tsx";
-import PhotosphereViewer from "./PhotosphereViewer.tsx";
-import { alertMUI, confirmMUI } from "./UI/StyledDialogWrapper.tsx";
+} from "../DataStructures.ts";
+import { deleteStoredVFE, save } from "../FileOperations.ts";
+import { VisitedState } from "../Hooks/HandleVisit.tsx";
+import PhotosphereViewer from "../PhotosphereViewer.tsx";
+import { alertMUI, confirmMUI } from "../UI/StyledDialogWrapper.tsx";
 import {
   HotspotUpdate,
   convertRuntimeToStored,
   convertVFE,
   updatePhotosphereHotspot,
-} from "./VFEConversion.ts";
-import AddAudio from "./buttons/AddAudio.tsx";
-import AddHotspot from "./buttons/AddHotspot.tsx";
-import AddNavmap from "./buttons/AddNavmap";
-import AddPhotosphere from "./buttons/AddPhotosphere.tsx";
-import ChangePhotosphere from "./buttons/ChangePhotosphere.tsx";
-import EditNavMap from "./buttons/EditNavMap.tsx";
-import RemovePhotosphere from "./buttons/RemovePhotosphere.tsx";
+} from "../VFEConversion.ts";
+import AddAudio from "../buttons/AddAudio.tsx";
+import AddHotspot from "../buttons/AddHotspot.tsx";
+import AddNavmap from "../buttons/AddNavmap.tsx";
+import AddPhotosphere from "../buttons/AddPhotosphere.tsx";
+import ChangePhotosphere from "../buttons/ChangePhotosphere.tsx";
+import EditNavMap from "../buttons/EditNavMap.tsx";
+import RemovePhotosphere from "../buttons/RemovePhotosphere.tsx";
 
 /** Convert from radians to degrees */
 function radToDeg(num: number): number {
