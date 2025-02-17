@@ -10,7 +10,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
-import AppRoot from "./App.tsx";
+import AppRoot from "./Pages/App.tsx";
 import "./index.css";
 
 export const theme = createTheme({
