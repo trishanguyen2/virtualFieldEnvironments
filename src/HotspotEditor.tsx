@@ -42,7 +42,7 @@ import {
   newID,
   photosphereLinkTooltip,
 } from "./DataStructures";
-import { LinkArrowIcon } from "./LinkArrowIcon";
+import { LinkArrowIcon } from "./UI/LinkArrowIcon";
 import { HotspotDataEditor, HotspotIconEditor } from "./buttons/AddHotspot";
 
 export interface HotspotIconProps {
