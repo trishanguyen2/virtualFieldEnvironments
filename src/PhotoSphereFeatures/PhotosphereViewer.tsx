@@ -36,10 +36,10 @@ import {
   VFE,
 } from "../DataStructures";
 import { useVisitedState } from "../Hooks/HandleVisit";
-import { LinkArrowIconHTML } from "../LinkArrowIcon";
-import PhotosphereSelector from "./PhotosphereSelector";
 import PopOver from "../PopOver";
+import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
 import { HotspotUpdate } from "../VFEConversion";
+import PhotosphereSelector from "./PhotosphereSelector";
 
 // modified from https://mui.com/material-ui/react-switch/#customization 'iOS style'
 const StyledSwitch = styled((props: SwitchProps) => (

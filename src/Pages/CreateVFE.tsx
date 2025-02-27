@@ -10,8 +10,8 @@ import {
   calculateImageDimensions,
   newID,
 } from "../DataStructures.ts";
+import PhotosphereLocationSelector from "../PhotoSphereFeatures/PhotosphereLocationSelector.tsx";
 import Header, { HeaderProps } from "../UI/Header.tsx";
-import PhotosphereLocationSelector from "../PhotosphereLocationSelector.tsx";
 import { alertMUI } from "../UI/StyledDialogWrapper.tsx";
 
 //import { PhotosphereCenterFieldset } from "./buttons/AddPhotosphere.tsx";

@@ -21,7 +21,7 @@ import {
   newID,
   photosphereLinkTooltip,
 } from "../DataStructures.ts";
-import PhotosphereSelector from "../PhotosphereSelector";
+import PhotosphereSelector from "../PhotoSphereFeatures/PhotosphereSelector";
 import { alertMUI } from "../UI/StyledDialogWrapper.tsx";
 
 // from https://github.com/Alcumus/react-doc-viewer?tab=readme-ov-file#current-renderable-file-types
