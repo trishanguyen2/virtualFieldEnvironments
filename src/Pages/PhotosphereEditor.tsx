@@ -16,7 +16,7 @@ import {
 } from "../DataStructures.ts";
 import { deleteStoredVFE, save } from "../FileOperations.ts";
 import { VisitedState } from "../Hooks/HandleVisit.tsx";
-import PhotosphereViewer from "../PhotosphereViewer.tsx";
+import PhotosphereViewer from "../PhotoSphereFeatures/PhotosphereViewer.tsx";
 import { alertMUI, confirmMUI } from "../UI/StyledDialogWrapper.tsx";
 import {
   HotspotUpdate,

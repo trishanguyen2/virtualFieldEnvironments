@@ -9,8 +9,8 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-import { NavMap } from "./DataStructures.ts";
-import { alertMUI } from "./UI/StyledDialogWrapper.tsx";
+import { NavMap } from "../DataStructures.ts";
+import { alertMUI } from "../UI/StyledDialogWrapper.tsx";
 
 interface PhotosphereLocationSelectorProps {
   navMap: NavMap;

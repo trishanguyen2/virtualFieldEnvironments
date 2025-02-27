@@ -14,7 +14,7 @@ import {
 import { VFE } from "../DataStructures";
 import PhotosphereSelector, {
   PhotosphereSelectorProps,
-} from "../PhotosphereSelector";
+} from "../PhotoSphereFeatures/PhotosphereSelector";
 import { alertMUI } from "../UI/StyledDialogWrapper";
 
 interface RemovePhotosphereProps {
