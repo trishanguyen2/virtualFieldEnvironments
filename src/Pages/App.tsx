@@ -1,12 +1,12 @@
 import localforage from "localforage";
 import { Route, Routes, useNavigate } from "react-router-dom";
 
-import CreateVFEForm from "../Pages/CreateVFE.tsx";
 import { VFE } from "../DataStructures.ts";
 import { load } from "../FileOperations.ts";
+import CreateVFEForm from "../Pages/CreateVFE.tsx";
 import LandingPage from "../Pages/LandingPage.tsx";
 import PhotosphereEditor from "../Pages/PhotosphereEditor.tsx";
-import PhotosphereViewer from "../PhotosphereViewer.tsx";
+import PhotosphereViewer from "../PhotoSphereFeatures/PhotosphereViewer.tsx";
 import Prototype from "../Prototype/Prototype.tsx";
 import { convertRuntimeToStored, convertVFE } from "../VFEConversion.ts";
 import VFELoader from "../VFELoader.tsx";
