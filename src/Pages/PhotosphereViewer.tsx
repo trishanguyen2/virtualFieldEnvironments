@@ -36,7 +36,7 @@ import {
   VFE,
 } from "./PageUtility/DataStructures";
 import { useVisitedState } from "../Hooks/HandleVisit";
-import { LinkArrowIconHTML } from "../buttons/LinkArrowIcon";
+import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
 import PhotosphereSelector from "./PhotosphereSelector";
 import PopOver from "./PageUtility/PopOver";
 import { HotspotUpdate } from "./PageUtility/VFEConversion";
