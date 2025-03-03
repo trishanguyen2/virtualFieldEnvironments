@@ -27,19 +27,19 @@ import {
 } from "@mui/material";
 import { common } from "@mui/material/colors";
 
-import AudioToggleButton from "./buttons/AudioToggleButton";
+import AudioToggleButton from "../buttons/AudioToggleButton";
 import {
   Hotspot2D,
   Hotspot3D,
   NavMap,
   Photosphere,
   VFE,
-} from "./DataStructures";
-import { useVisitedState } from "./Hooks/HandleVisit";
-import { LinkArrowIconHTML } from "./LinkArrowIcon";
+} from "./PageUtility/DataStructures";
+import { useVisitedState } from "../Hooks/HandleVisit";
+import { LinkArrowIconHTML } from "../buttons/LinkArrowIcon";
 import PhotosphereSelector from "./PhotosphereSelector";
-import PopOver from "./PopOver";
-import { HotspotUpdate } from "./VFEConversion";
+import PopOver from "./PageUtility/PopOver";
+import { HotspotUpdate } from "./PageUtility/VFEConversion";
 
 // modified from https://mui.com/material-ui/react-switch/#customization 'iOS style'
 const StyledSwitch = styled((props: SwitchProps) => (

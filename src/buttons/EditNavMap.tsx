@@ -10,10 +10,10 @@ import {
   Typography,
 } from "@mui/material";
 
-import { Photosphere, VFE } from "../DataStructures";
+import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
 import PhotosphereSelector, {
   PhotosphereSelectorProps,
-} from "../PhotosphereSelector";
+} from "../Pages/PhotosphereSelector";
 import { alertMUI } from "../UI/StyledDialogWrapper";
 
 interface EditNavMapProps {

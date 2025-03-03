@@ -12,7 +12,7 @@ import {
   TextField,
 } from "@mui/material";
 
-import { NavMap, calculateImageDimensions, newID } from "../DataStructures";
+import { NavMap, calculateImageDimensions, newID } from "../Pages/PageUtility/DataStructures";
 import { alertMUI } from "../UI/StyledDialogWrapper";
 
 interface AddNavMapProps {
