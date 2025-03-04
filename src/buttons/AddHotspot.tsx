@@ -20,8 +20,8 @@ import {
   calculateImageDimensions,
   newID,
   photosphereLinkTooltip,
-} from "../DataStructures.ts";
-import PhotosphereSelector from "../PhotoSphereFeatures/PhotosphereSelector";
+} from "../Pages/PageUtility/DataStructures.ts";
+import PhotosphereSelector from "../Pages/PhotosphereSelector.tsx";
 import { alertMUI } from "../UI/StyledDialogWrapper.tsx";
 
 // from https://github.com/Alcumus/react-doc-viewer?tab=readme-ov-file#current-renderable-file-types

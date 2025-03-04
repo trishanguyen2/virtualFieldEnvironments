@@ -1,4 +1,4 @@
-import { VFE, newID } from "../DataStructures";
+import { VFE, newID } from "../Pages/PageUtility/DataStructures";
 
 function AddAudio(file: File | null, vfe: VFE, currPS: string) {
   if (file) {

@@ -41,9 +41,15 @@ import {
   HotspotData,
   newID,
   photosphereLinkTooltip,
+<<<<<<< HEAD:src/HotspotEditor.tsx
 } from "./DataStructures";
 import { LinkArrowIcon } from "./UI/LinkArrowIcon";
 import { HotspotDataEditor, HotspotIconEditor } from "./buttons/AddHotspot";
+=======
+} from "./PageUtility/DataStructures";
+import { LinkArrowIcon } from "../UI/LinkArrowIcon";
+import { HotspotDataEditor, HotspotIconEditor } from "../buttons/AddHotspot";
+>>>>>>> 3eef028afeaa1848f65eaef06e72a61da05ad709:src/Pages/HotspotEditor.tsx
 
 export interface HotspotIconProps {
   hotspotData: HotspotData;

@@ -12,7 +12,7 @@ import {
   TextField,
 } from "@mui/material";
 
-import { Photosphere } from "../DataStructures";
+import { Photosphere } from "../Pages/PageUtility/DataStructures";
 import { alertMUI } from "../UI/StyledDialogWrapper";
 
 interface ChangePhotosphereProps {
