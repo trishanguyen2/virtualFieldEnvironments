@@ -17,7 +17,7 @@ import CardMedia from "@mui/material/CardMedia";
 
 import { VFE } from "./DataStructures";
 import { deleteStoredVFE } from "./FileOperations";
-import { confirmMUI } from "./UI/StyledDialogWrapper";
+import { confirmMUI } from "../../UI/StyledDialogWrapper";
 import { convertStoredToRuntime } from "./VFEConversion";
 
 type NavMapRecord = Partial<Record<string, string>>;
