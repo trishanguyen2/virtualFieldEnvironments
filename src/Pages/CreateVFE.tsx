@@ -11,7 +11,7 @@ import {
   newID,
 } from "./PageUtility/DataStructures.ts";
 import Header, { HeaderProps } from "../UI/Header.tsx";
-import PhotosphereLocationSelector from "../PhotoSphereFeatures/PhotosphereLocationSelector.tsx";
+import PhotosphereLocationSelector from "../PhotosphereFeatures/PhotosphereLocationSelector.tsx";
 import { alertMUI } from "../UI/StyledDialogWrapper.tsx";
 
 //import { PhotosphereCenterFieldset } from "./buttons/AddPhotosphere.tsx";

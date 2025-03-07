@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 
 import { Photosphere, VFE, newID } from "../Pages/PageUtility/DataStructures.ts";
-import PhotosphereLocationSelector from "../PhotoSphereFeatures/PhotosphereLocationSelector.tsx";
+import PhotosphereLocationSelector from "../PhotosphereFeatures/PhotosphereLocationSelector.tsx";
 import { alertMUI } from "../UI/StyledDialogWrapper.tsx";
 
 interface AddPhotosphereProps {
