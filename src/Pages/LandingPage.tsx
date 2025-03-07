@@ -12,7 +12,7 @@ import {
 
 import Header from "../UI/Header";
 import MuiDropzone from "../UI/MuiDropzone";
-import VFEList from "../VFEList";
+import VFEList from "./PageUtility/VFEList";
 
 interface LandingPageProps {
   onLoadTestVFE: () => void;

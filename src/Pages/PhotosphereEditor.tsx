@@ -13,17 +13,17 @@ import {
   VFE,
   newID,
   photosphereLinkTooltip,
-} from "../DataStructures.ts";
-import { deleteStoredVFE, save } from "../FileOperations.ts";
+} from "./PageUtility/DataStructures.ts";
+import { deleteStoredVFE, save } from "./PageUtility/FileOperations.ts";
 import { VisitedState } from "../Hooks/HandleVisit.tsx";
-import PhotosphereViewer from "../PhotoSphereFeatures/PhotosphereViewer.tsx";
+import PhotosphereViewer from "../PhotosphereFeatures/PhotosphereViewer.tsx";
 import { alertMUI, confirmMUI } from "../UI/StyledDialogWrapper.tsx";
 import {
   HotspotUpdate,
   convertRuntimeToStored,
   convertVFE,
   updatePhotosphereHotspot,
-} from "../VFEConversion.ts";
+} from "./PageUtility/VFEConversion.ts";
 import AddAudio from "../buttons/AddAudio.tsx";
 import AddHotspot from "../buttons/AddHotspot.tsx";
 import AddNavmap from "../buttons/AddNavmap.tsx";
