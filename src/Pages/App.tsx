@@ -5,7 +5,7 @@ import CreateVFEForm from "../Pages/CreateVFE.tsx";
 import { VFE } from "./PageUtility/DataStructures.ts";
 import { load } from "./PageUtility/FileOperations.ts";
 import LandingPage from "../Pages/LandingPage.tsx";
-import PhotosphereEditor from "../PhotoSphereFeatures/PhotosphereEditor.tsx";
+import PhotosphereEditor from "./PhotosphereEditor.tsx";
 import PhotosphereViewer from "../PhotoSphereFeatures/PhotosphereViewer.tsx";
 import Prototype from "../Prototype/Prototype.tsx";
 import { convertRuntimeToStored, convertVFE } from "./PageUtility/VFEConversion.ts";
