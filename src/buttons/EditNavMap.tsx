@@ -13,7 +13,7 @@ import {
 import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
 import PhotosphereSelector, {
   PhotosphereSelectorProps,
-} from "../Pages/PhotosphereSelector";
+} from "../PhotoSphereFeatures/PhotosphereSelector";
 import { alertMUI } from "../UI/StyledDialogWrapper";
 
 interface EditNavMapProps {
