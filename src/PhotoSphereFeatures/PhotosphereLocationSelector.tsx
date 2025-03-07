@@ -9,11 +9,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-<<<<<<<< HEAD:src/PhotoSphereFeatures/PhotosphereLocationSelector.tsx
-import { NavMap } from "../DataStructures.ts";
-========
-import { NavMap } from "./PageUtility/DataStructures.ts";
->>>>>>>> 3eef028afeaa1848f65eaef06e72a61da05ad709:src/Pages/PhotosphereLocationSelector.tsx
+import { NavMap } from "../Pages/PageUtility/DataStructures.ts";
 import { alertMUI } from "../UI/StyledDialogWrapper.tsx";
 
 interface PhotosphereLocationSelectorProps {
