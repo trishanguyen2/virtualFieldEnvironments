@@ -2,7 +2,7 @@ import localforage from "localforage";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { VFE } from "../DataStructures";
+import { VFE } from "../Pages/PageUtility/DataStructures";
 import vfeData from "./data.json";
 
 function Prototype() {

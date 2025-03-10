@@ -21,8 +21,8 @@ import {
 import Box from "@mui/material/Box";
 
 import { Asset, Hotspot2D, Hotspot3D, HotspotData } from "./DataStructures";
-import HotspotEditor, { HotspotIcon, NestedHotspotBox } from "./HotspotEditor";
-import { confirmMUI } from "./UI/StyledDialogWrapper";
+import HotspotEditor, { HotspotIcon, NestedHotspotBox } from "../HotspotEditor";
+import { confirmMUI } from "../../UI/StyledDialogWrapper";
 import { HotspotUpdate } from "./VFEConversion";
 
 interface HotspotContentProps {
