@@ -27,8 +27,8 @@
       "hotspots": {
         "OutcropWideView": {
           "id": "OutcropWideView",
-          "pitch": 5,
-          "yaw": -5,
+          "elevation": 5,
+          "direction": -5,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -50,8 +50,8 @@
         },
         "Flowers": {
           "id": "Flowers",
-          "pitch": -3,
-          "yaw": 18,
+          "elevation": -3,
+          "direction": 18,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -73,8 +73,8 @@
         },
         "URLDemo": {
           "id": "URLDemo",
-          "pitch": -10,
-          "yaw": 0,
+          "elevation": -10,
+          "direction": 0,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -89,8 +89,8 @@
         },
         "AudioDemo": {
           "id": "AudioDemo",
-          "pitch": -10,
-          "yaw": 10,
+          "elevation": -10,
+          "direction": 10,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -109,8 +109,8 @@
         },
         "DocumentDemo": {
           "id": "DocumentDemo",
-          "pitch": -10,
-          "yaw": 20,
+          "elevation": -10,
+          "direction": 20,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -129,8 +129,8 @@
         },
         "ShorelineSOUTH": {
           "id": "ShorelineSOUTH",
-          "pitch": -32,
-          "yaw": 172,
+          "elevation": -32,
+          "direction": 172,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-red.png",
@@ -149,8 +149,8 @@
         },
         "Paddlers": {
           "id": "Paddlers",
-          "pitch": -10,
-          "yaw": -175,
+          "elevation": -10,
+          "direction": -175,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-red.png",
@@ -169,8 +169,8 @@
         },
         "SmallPool": {
           "id": "SmallPool",
-          "pitch": -13,
-          "yaw": 100,
+          "elevation": -13,
+          "direction": 100,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -192,8 +192,8 @@
         },
         "LogNearShoreline": {
           "id": "LogNearShoreline",
-          "pitch": -25,
-          "yaw": -40,
+          "elevation": -25,
+          "direction": -40,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -215,8 +215,8 @@
         },
         "CoolLog": {
           "id": "CoolLog",
-          "pitch": -17,
-          "yaw": -33,
+          "elevation": -17,
+          "direction": -33,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -238,8 +238,8 @@
         },
         "OutcropTextures": {
           "id": "OutcropTextures",
-          "pitch": 6,
-          "yaw": 5,
+          "elevation": 6,
+          "direction": 5,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-red.png",
@@ -258,8 +258,8 @@
         },
         "HugeLogs": {
           "id": "HugeLogs",
-          "pitch": -12,
-          "yaw": -37,
+          "elevation": -12,
+          "direction": -37,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -274,8 +274,8 @@
         },
         "Mushroom": {
           "id": "Mushroom",
-          "pitch": 2,
-          "yaw": -19,
+          "elevation": 2,
+          "direction": -19,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -297,8 +297,8 @@
         },
         "Contact": {
           "id": "Contact",
-          "pitch": 2,
-          "yaw": -46,
+          "elevation": 2,
+          "direction": -46,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -377,8 +377,8 @@
         },
         "SouthWaterfront": {
           "id": "SouthWaterfront",
-          "pitch": -1,
-          "yaw": -25,
+          "elevation": -1,
+          "direction": -25,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -400,8 +400,8 @@
         },
         "Go West": {
           "id": "Go West",
-          "pitch": 0,
-          "yaw": -35,
+          "elevation": 0,
+          "direction": -35,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -416,8 +416,8 @@
         },
         "Go to Entrance": {
           "id": "Go to Entrance",
-          "pitch": -7,
-          "yaw": 125,
+          "elevation": -7,
+          "direction": 125,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -448,8 +448,8 @@
       "hotspots": {
         "Go East": {
           "id": "Go East",
-          "pitch": -2,
-          "yaw": -4,
+          "elevation": -2,
+          "direction": -4,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -464,8 +464,8 @@
         },
         "Go South": {
           "id": "Go South",
-          "pitch": -4,
-          "yaw": -78,
+          "elevation": -4,
+          "direction": -78,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -491,8 +491,8 @@
       "hotspots": {
         "Go North": {
           "id": "Go North",
-          "pitch": 0,
-          "yaw": 10,
+          "elevation": 0,
+          "direction": 10,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -507,8 +507,8 @@
         },
         "Go South": {
           "id": "Go South",
-          "pitch": -3,
-          "yaw": 115,
+          "elevation": -3,
+          "direction": 115,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -534,8 +534,8 @@
       "hotspots": {
         "Go West": {
           "id": "Go West",
-          "pitch": 0,
-          "yaw": -130,
+          "elevation": 0,
+          "direction": -130,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -550,8 +550,8 @@
         },
         "Go East": {
           "id": "Go East",
-          "pitch": 0,
-          "yaw": 92,
+          "elevation": 0,
+          "direction": 92,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -577,8 +577,8 @@
       "hotspots": {
         "Go North": {
           "id": "Go North",
-          "pitch": 3,
-          "yaw": 2,
+          "elevation": 3,
+          "direction": 2,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",
@@ -593,8 +593,8 @@
         },
         "Go to Entrance": {
           "id": "Go to Entrance",
-          "pitch": -2,
-          "yaw": -167,
+          "elevation": -2,
+          "direction": -167,
           "icon": {
             "tag": "Runtime",
             "path": "/pin-blue.png",

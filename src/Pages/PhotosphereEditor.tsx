@@ -63,8 +63,8 @@ function PhotosphereEditor({
   const [showAddNavMap, setShowAddNavMap] = useState(false); // State to manage whether to show AddNavmap
 
   const [showAddHotspot, setShowAddHotspot] = useState(false);
-  const [pitch, setPitch] = useState(0);
-  const [yaw, setYaw] = useState(0);
+  const [elevation, setElevation] = useState(0);
+  const [direction, setDirection] = useState(0);
 
   const [showAddFeatures, setShowAddFeatures] = useState(false);
   const [showChangeFeatures, setShowChangeFeatures] = useState(false);
@@ -223,10 +223,10 @@ function PhotosphereEditor({
     setUpdateTrigger((prev) => prev + 1);
   }
 
-  /** Get and use pitch/yaw from viewer click */
-  function handleLocation(vpitch: number, vyaw: number) {
-    setPitch(radToDeg(vpitch));
-    setYaw(radToDeg(vyaw));
+  /** Get and use elevation/direction from viewer click */
+  function handleLocation(velevation: number, vdirection: number) {
+    setElevation(radToDeg(velevation));
+    setDirection(radToDeg(vdirection));
   }
 
   // Reset all states so we dont have issues with handling different components at the same time
@@ -237,8 +237,8 @@ function PhotosphereEditor({
     setShowChangePhotosphere(false);
     setShowRemovePhotosphere(false);
     setShowEditNavMap(false);
-    setPitch(0);
-    setYaw(0);
+    setElevation(0);
+    setDirection(0);
   }
 
   /** Render the actual component based on states */
@@ -268,8 +268,8 @@ function PhotosphereEditor({
         <AddHotspot
           onCancel={resetStates}
           onAddHotspot={handleAddHotspot}
-          pitch={pitch}
-          yaw={yaw}
+          elevation={elevation}
+          direction={direction}
           photosphereOptions={availablePhotosphereOptions}
         />
       );

@@ -82,12 +82,12 @@ export interface Hotspot2D {
   data: HotspotData;
 }
 
-// Hotspot3D: a clickable resource that is inside a 360 photosphere (pitch, yaw)
+// Hotspot3D: a clickable resource that is inside a 360 photosphere (elevation, direction)
 export interface Hotspot3D {
   id: string;
   tooltip: string;
-  pitch: number;
-  yaw: number;
+  elevation: number;
+  direction: number;
   level: number;
   icon: Asset;
   data: HotspotData;
