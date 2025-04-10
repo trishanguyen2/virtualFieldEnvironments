@@ -27,7 +27,7 @@ import {
 } from "@mui/material";
 import { common } from "@mui/material/colors";
 
-import AudioToggleButton from "../buttons/AudioToggleButton";
+import { useVisitedState } from "../Hooks/HandleVisit";
 import {
   Hotspot2D,
   Hotspot3D,
@@ -35,11 +35,12 @@ import {
   Photosphere,
   VFE,
 } from "../Pages/PageUtility/DataStructures";
-import { useVisitedState } from "../Hooks/HandleVisit";
-import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
-import PhotosphereSelector from "./PhotosphereSelector";
 import PopOver from "../Pages/PageUtility/PopOver";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
+import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
+import AudioToggleButton from "../buttons/AudioToggleButton";
+import PhotospherePlaceholder from "./PhotospherePlaceholder";
+import PhotosphereSelector from "./PhotosphereSelector";
 
 // modified from https://mui.com/material-ui/react-switch/#customization 'iOS style'
 const StyledSwitch = styled((props: SwitchProps) => (
@@ -273,11 +274,11 @@ function PhotosphereViewer({
       MapPlugin,
       vfe.map
         ? convertMap(
-          vfe.map,
-          vfe.photospheres,
-          currentPhotosphere.center ?? vfe.map.defaultCenter,
-          mapStatic,
-        )
+            vfe.map,
+            vfe.photospheres,
+            currentPhotosphere.center ?? vfe.map.defaultCenter,
+            mapStatic,
+          )
         : {},
     ],
   ];
@@ -415,17 +416,42 @@ function PhotosphereViewer({
           photosphereOptions={photosphereOptions}
         />
       )}
-
-      <ReactPhotoSphereViewer
-        key={mapStatic ? "static" : "dynamic"}
-        onReady={handleReady}
-        ref={photoSphereRef}
-        src={defaultPanorama.current}
-        plugins={plugins}
-        height={"100vh"}
-        width={"100%"}
-        navbar={["autorotate", "zoom", "caption", "download", "fullscreen"]}
-      />
+      <Stack
+        direction="row"
+        sx={{
+          top: "16px",
+          left: 0,
+          right: 0,
+          width: "100%",
+          minWidth: "150px",
+          height: "100%",
+          padding: "4px",
+          margin: "auto",
+          backgroundColor: "white",
+          borderRadius: "4px",
+          boxShadow: "0 0 4px grey",
+          zIndex: 100,
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <PhotospherePlaceholder
+          vfe={vfe}
+          currentPS={currentPS}
+          onChangePS={onChangePS}
+          onUpdateHotspot={onUpdateHotspot}
+          onViewerClick={onViewerClick}
+          isPrimary={true}
+        />
+        <PhotospherePlaceholder
+          vfe={vfe}
+          currentPS={currentPS}
+          onChangePS={onChangePS}
+          onUpdateHotspot={onUpdateHotspot}
+          onViewerClick={onViewerClick}
+          isPrimary={false}
+        />
+      </Stack>
     </>
   );
 }
