@@ -218,7 +218,6 @@ function PhotosphereViewer({
   onUpdateHotspot,
   photosphereOptions,
 }: PhotosphereViewerProps) {
-  const photoSphereRef = React.createRef<ViewerAPI>();
   const [currentPhotosphere, setCurrentPhotosphere] =
     React.useState<Photosphere>(vfe.photospheres[currentPS]);
   const [mapStatic, setMapStatic] = useState(false);
@@ -226,116 +225,6 @@ function PhotosphereViewer({
     [],
   );
   const hotspotPath = hotspotArray.map((h) => h.id);
-
-  // The variable is set to true after handleReady has finished
-  const ready = useRef(false);
-  const defaultPanorama = useRef(vfe.photospheres[currentPS].src.path);
-
-  const initialPhotosphereHotspots: Record<string, Hotspot3D[]> = Object.keys(
-    vfe.photospheres,
-  ).reduce<Record<string, Hotspot3D[]>>((acc, psId) => {
-    acc[psId] = Object.values(vfe.photospheres[psId].hotspots);
-    return acc;
-  }, {});
-
-  const [visited, handleVisit] = useVisitedState(initialPhotosphereHotspots);
-  console.log("in viewer", visited);
-
-  const isViewerMode = onUpdateHotspot === undefined;
-
-  useEffect(() => {
-    if (ready.current) {
-      const virtualTour =
-        photoSphereRef.current?.getPlugin<VirtualTourPlugin>(VirtualTourPlugin);
-      void virtualTour?.setCurrentNode(currentPhotosphere.id);
-
-      const map = photoSphereRef.current?.getPlugin<MapPlugin>(MapPlugin);
-      if (currentPhotosphere.center) {
-        map?.setCenter(currentPhotosphere.center);
-      }
-    }
-  }, [currentPhotosphere, photoSphereRef]);
-
-  const plugins: ViewerConfig["plugins"] = [
-    [MarkersPlugin, {}],
-
-    [
-      VirtualTourPlugin,
-      {
-        renderMode: "markers",
-        getLinkTooltip(_content: string, link: VirtualTourLink): string {
-          return (link.data as LinkData).tooltip;
-        },
-      } as VirtualTourPluginConfig,
-    ],
-
-    // Only fill map plugin config when VFE has a map
-    [
-      MapPlugin,
-      vfe.map
-        ? convertMap(
-            vfe.map,
-            vfe.photospheres,
-            currentPhotosphere.center ?? vfe.map.defaultCenter,
-            mapStatic,
-          )
-        : {},
-    ],
-  ];
-
-  function handleReady(instance: Viewer) {
-    const markerTestPlugin: MarkersPlugin = instance.getPlugin(MarkersPlugin);
-
-    markerTestPlugin.addEventListener("select-marker", ({ marker }) => {
-      if (marker.config.id.includes("__tour-link")) return;
-
-      // setCurrentPhotosphere has to be used to get the current state value because
-      // the value of currentPhotosphere does not get updated in an event listener
-      setCurrentPhotosphere((currentState) => {
-        const passMarker = currentState.hotspots[marker.config.id];
-        setHotspotArray([passMarker]);
-        handleVisit(currentState.id, marker.config.id);
-        return currentState;
-      });
-    });
-
-    instance.addEventListener("click", ({ data }) => {
-      if (!data.rightclick) {
-        onViewerClick?.(data.pitch, data.yaw);
-      }
-    });
-
-    const virtualTour =
-      instance.getPlugin<VirtualTourPlugin>(VirtualTourPlugin);
-
-    const nodes: VirtualTourNode[] = Object.values(vfe.photospheres).map(
-      (p) => {
-        return {
-          id: p.id,
-          panorama: p.src.path,
-          name: p.id,
-          markers: convertHotspots(p.hotspots, isViewerMode),
-          links: convertLinks(p.hotspots, isViewerMode),
-        };
-      },
-    );
-
-    virtualTour.setNodes(nodes, currentPS);
-    virtualTour.addEventListener("node-changed", ({ node }) => {
-      setCurrentPhotosphere(vfe.photospheres[node.id]);
-      onChangePS(node.id);
-      setHotspotArray([]); // clear popovers on scene change
-    });
-
-    const map = instance.getPlugin<MapPlugin>(MapPlugin);
-    map.addEventListener("select-hotspot", ({ hotspotId }) => {
-      const photosphere = vfe.photospheres[hotspotId];
-      setCurrentPhotosphere(photosphere);
-      onChangePS(photosphere.id);
-    });
-
-    ready.current = true;
-  }
 
   return (
     <>
@@ -442,6 +331,7 @@ function PhotosphereViewer({
           onUpdateHotspot={onUpdateHotspot}
           onViewerClick={onViewerClick}
           isPrimary={true}
+          setHotspotArray={setHotspotArray}
         />
         <PhotospherePlaceholder
           vfe={vfe}
@@ -450,6 +340,7 @@ function PhotosphereViewer({
           onUpdateHotspot={onUpdateHotspot}
           onViewerClick={onViewerClick}
           isPrimary={false}
+          setHotspotArray={setHotspotArray}
         />
       </Stack>
     </>

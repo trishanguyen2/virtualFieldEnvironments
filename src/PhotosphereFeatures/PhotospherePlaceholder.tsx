@@ -138,6 +138,7 @@ interface LinkData {
 
 interface PhotospherePlaceholderProps extends PhotosphereViewerProps {
   isPrimary: boolean;
+  setHotspotArray: (hotspotArray:(Hotspot2D | Hotspot3D)[])=> void;
 }
 
 function PhotospherePlaceholder({
@@ -147,17 +148,13 @@ function PhotospherePlaceholder({
   onChangePS,
   onUpdateHotspot,
   onViewerClick,
+  setHotspotArray
 }: PhotospherePlaceholderProps) {
   const photosphereRef = React.createRef<ViewerAPI>();
   const [currentPhotosphere, setCurrentPhotosphere] = useState<Photosphere>(
     vfe.photospheres[currentPS],
   );
   const [mapStatic, setMapStatic] = useState(false);
-  const [hotspotArray, setHotspotArray] = useState<(Hotspot3D | Hotspot2D)[]>(
-    [],
-  );
-
-  const hotspotPath = hotspotArray.map((h) => h.id);
 
   const ready = useRef(false);
   const defaultPan = useRef(vfe.photospheres[currentPS].src.path);
