@@ -432,16 +432,16 @@ export function HotspotIconEditor({
 interface AddHotspotProps {
   onAddHotspot: (newHotspot: Hotspot3D) => void;
   onCancel: () => void;
-  pitch: number;
-  yaw: number;
+  elevation: number;
+  direction: number;
   photosphereOptions: string[];
 }
 
 function AddHotspot({
   onAddHotspot,
   onCancel,
-  pitch,
-  yaw,
+  elevation,
+  direction,
   photosphereOptions,
 }: AddHotspotProps) {
   const [tooltip, setTooltip] = useState("");
@@ -469,8 +469,8 @@ function AddHotspot({
     const newHotspot: Hotspot3D = {
       id: newID(),
       tooltip: generatedTooltip,
-      pitch,
-      yaw,
+      elevation,
+      direction,
       level,
       icon: iconAsset ?? defaultIcon(), // store default icon for photosphere links
       data: hotspotData,
@@ -500,22 +500,22 @@ function AddHotspot({
       <Typography variant="h5" sx={{ textAlign: "center" }}>
         Add a Hotspot
       </Typography>
-      <Typography>Double click spot for pitch and yaw</Typography>
+      <Typography>Double click spot for elevation and direction</Typography>
       <Stack direction="row" gap={1}>
         <TextField
-          label="Pitch"
+          label="Elevation"
           InputProps={{
             readOnly: true,
           }}
-          defaultValue={String(pitch.toFixed(2))}
+          defaultValue={String(elevation.toFixed(2))}
           sx={{ flexGrow: 1 }}
         />
         <TextField
-          label="Yaw"
+          label="Direction"
           InputProps={{
             readOnly: true,
           }}
-          defaultValue={String(yaw.toFixed(2))}
+          defaultValue={String(direction.toFixed(2))}
           sx={{ flexGrow: 1 }}
         />
       </Stack>

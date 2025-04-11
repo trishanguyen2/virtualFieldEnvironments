@@ -34,7 +34,7 @@ function sizeToStr(val: number): string {
   return String(val) + "px";
 }
 
-/** Convert yaw/pitch degrees from numbers to strings ending in "deg" */
+/** Convert elevation/direction degrees from numbers to strings ending in "deg" */
 function degToStr(val: number): string {
   return String(val) + "deg";
 }
@@ -85,8 +85,8 @@ function convertHotspots(
       id: hotspot.id,
       size: { width: 64, height: 64 },
       position: {
-        yaw: degToStr(hotspot.yaw),
-        pitch: degToStr(hotspot.pitch),
+        yaw: degToStr(hotspot.direction),
+        pitch: degToStr(hotspot.elevation),
       },
       tooltip: hotspot.tooltip,
     };
@@ -122,8 +122,8 @@ function convertLinks(
     links.push({
       nodeId: hotspot.data.photosphereID,
       position: {
-        pitch: degToStr(hotspot.pitch),
-        yaw: degToStr(hotspot.yaw),
+        pitch: degToStr(hotspot.elevation),
+        yaw: degToStr(hotspot.direction),
       },
       data: { tooltip: hotspot.tooltip } as LinkData,
     });
