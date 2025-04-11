@@ -218,7 +218,9 @@ function PhotosphereViewer({
   onUpdateHotspot,
   photosphereOptions,
 }: PhotosphereViewerProps) {
-  const [currentPhotosphere, setCurrentPhotosphere] =
+  const [primaryPhotosphere, setPrimaryPhotosphere] =
+    React.useState<Photosphere>(vfe.photospheres[currentPS]);
+  const [splitPhotosphere, setSplitPhotosphere] =
     React.useState<Photosphere>(vfe.photospheres[currentPS]);
   const [mapStatic, setMapStatic] = useState(false);
   const [hotspotArray, setHotspotArray] = useState<(Hotspot3D | Hotspot2D)[]>(
@@ -254,15 +256,16 @@ function PhotosphereViewer({
           <PhotosphereSelector
             size="small"
             options={Object.keys(vfe.photospheres)}
-            value={currentPhotosphere.id}
+            value={primaryPhotosphere.id}
             setValue={(id) => {
-              setCurrentPhotosphere(vfe.photospheres[id]);
+              setPrimaryPhotosphere(vfe.photospheres[id]);
+              setSplitPhotosphere(vfe.photospheres[id]);
               onChangePS(id);
             }}
           />
         </Box>
-        {currentPhotosphere.backgroundAudio && (
-          <AudioToggleButton src={currentPhotosphere.backgroundAudio.path} />
+        {primaryPhotosphere.backgroundAudio && (
+          <AudioToggleButton src={primaryPhotosphere.backgroundAudio.path} />
         )}
         <FormControlLabel
           control={
@@ -299,7 +302,7 @@ function PhotosphereViewer({
           }}
           onUpdateHotspot={onUpdateHotspot}
           changeScene={(id) => {
-            setCurrentPhotosphere(vfe.photospheres[id]);
+            setPrimaryPhotosphere(vfe.photospheres[id]);
             onChangePS(id);
           }}
           photosphereOptions={photosphereOptions}
@@ -332,6 +335,8 @@ function PhotosphereViewer({
           onViewerClick={onViewerClick}
           isPrimary={true}
           setHotspotArray={setHotspotArray}
+          currentPhotosphere={primaryPhotosphere}
+          setCurrentPhotosphere={setPrimaryPhotosphere}
         />
         <PhotospherePlaceholder
           vfe={vfe}
@@ -341,6 +346,8 @@ function PhotosphereViewer({
           onViewerClick={onViewerClick}
           isPrimary={false}
           setHotspotArray={setHotspotArray}
+          currentPhotosphere={splitPhotosphere}
+          setCurrentPhotosphere={setSplitPhotosphere}
         />
       </Stack>
     </>

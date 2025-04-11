@@ -139,6 +139,8 @@ interface LinkData {
 interface PhotospherePlaceholderProps extends PhotosphereViewerProps {
   isPrimary: boolean;
   setHotspotArray: (hotspotArray:(Hotspot2D | Hotspot3D)[])=> void;
+  currentPhotosphere: Photosphere;
+  setCurrentPhotosphere: (ps: any) => void;
 }
 
 function PhotospherePlaceholder({
@@ -148,12 +150,11 @@ function PhotospherePlaceholder({
   onChangePS,
   onUpdateHotspot,
   onViewerClick,
-  setHotspotArray
+  setHotspotArray,
+  currentPhotosphere,
+  setCurrentPhotosphere
 }: PhotospherePlaceholderProps) {
   const photosphereRef = React.createRef<ViewerAPI>();
-  const [currentPhotosphere, setCurrentPhotosphere] = useState<Photosphere>(
-    vfe.photospheres[currentPS],
-  );
   const [mapStatic, setMapStatic] = useState(false);
 
   const ready = useRef(false);
@@ -223,7 +224,7 @@ function PhotospherePlaceholder({
 
       // setCurrentPhotosphere has to be used to get the current state value because
       // the value of currentPhotosphere does not get updated in an event listener
-      setCurrentPhotosphere((currentState) => {
+      setCurrentPhotosphere((currentState: any) => {
         const passMarker = currentState.hotspots[marker.config.id];
         setHotspotArray([passMarker]);
         handleVisit(currentState.id, marker.config.id);
