@@ -92,6 +92,11 @@ function PhotosphereViewer({
 
   const [isSplitView, setIsSplitView] = useState(false);
 
+  function SetAllPhotospheres(ps: Photosphere) {
+    setPrimaryPhotosphere(ps);
+    setSplitPhotosphere(ps);
+  }
+
   return (
     <>
       <Stack
@@ -191,6 +196,7 @@ function PhotosphereViewer({
           currentPhotosphere={primaryPhotosphere}
           setCurrentPhotosphere={setPrimaryPhotosphere}
           mapStatic={mapStatic}
+          setAllPhotospheres={SetAllPhotospheres}
         />
         {isSplitView && (
           <PhotospherePlaceholder

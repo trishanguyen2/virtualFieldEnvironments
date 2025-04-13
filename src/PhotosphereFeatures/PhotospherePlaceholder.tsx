@@ -142,6 +142,7 @@ interface PhotospherePlaceholderProps extends PhotosphereViewerProps {
   currentPhotosphere: Photosphere;
   setCurrentPhotosphere: (ps: any) => void;
   mapStatic: boolean;
+  setAllPhotospheres?: (ps: Photosphere) => void;
 }
 
 function PhotospherePlaceholder({
@@ -155,6 +156,7 @@ function PhotospherePlaceholder({
   currentPhotosphere,
   setCurrentPhotosphere,
   mapStatic,
+  setAllPhotospheres,
 }: PhotospherePlaceholderProps) {
   const photosphereRef = React.createRef<ViewerAPI>();
 
@@ -269,7 +271,7 @@ function PhotospherePlaceholder({
       const map = instance.getPlugin<MapPlugin>(MapPlugin);
       map.addEventListener("select-hotspot", ({ hotspotId }) => {
         const photosphere = vfe.photospheres[hotspotId];
-        setCurrentPhotosphere(photosphere);
+        setAllPhotospheres?.(photosphere);
         onChangePS(photosphere.id);
       });
     }
