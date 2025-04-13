@@ -96,6 +96,7 @@ function PhotosphereViewer({
   const [mapStatic, setMapStatic] = useState(false);
 
   const [isSplitView, setIsSplitView] = useState(false);
+  const [lockViews, setLockViews] = useState(false);
 
   const context: ViewerContextObj = {
     vfe,
@@ -104,6 +105,7 @@ function PhotosphereViewer({
     onViewerClick,
     onUpdateHotspot,
     photosphereOptions,
+    lockViews,
     states: {
       references: [primaryPsRef, splitRef],
       states: [primaryPhotosphere, splitPhotosphere],
@@ -147,6 +149,20 @@ function PhotosphereViewer({
             Split View
           </Button>
         </Box>
+        {isSplitView && (
+          <Box>
+            <Button
+              sx={{ padding: "0", width: "4px", height: "40px" }}
+              variant="contained"
+              color={lockViews ? "primary" : "secondary"}
+              onClick={() => {
+                setLockViews(!lockViews);
+              }}
+            >
+              Lock Views
+            </Button>
+          </Box>
+        )}
         <Box sx={{ padding: "0 5px" }}>
           <PhotosphereSelector
             size="small"
@@ -201,9 +217,17 @@ function PhotosphereViewer({
         }}
       >
         <ViewerContext.Provider value={context}>
-          <PhotospherePlaceholder isPrimary={true} mapStatic={mapStatic} />
+          <PhotospherePlaceholder
+            isPrimary={true}
+            mapStatic={mapStatic}
+            lockViews={lockViews}
+          />
           {isSplitView && (
-            <PhotospherePlaceholder isPrimary={false} mapStatic={mapStatic} />
+            <PhotospherePlaceholder
+              isPrimary={false}
+              mapStatic={mapStatic}
+              lockViews={lockViews}
+            />
           )}
         </ViewerContext.Provider>
       </Stack>

@@ -5,8 +5,7 @@ import {
   VirtualTourLink,
   VirtualTourNode,
 } from "@photo-sphere-viewer/virtual-tour-plugin";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { ViewerAPI } from "react-photo-sphere-viewer";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   MapPlugin,
   MapPluginConfig,
@@ -29,7 +28,6 @@ import {
 } from "../Pages/PageUtility/DataStructures";
 import PopOver from "../Pages/PageUtility/PopOver";
 import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
-import { PhotosphereViewerProps } from "./PhotosphereViewer";
 
 /** Convert sizes from numbers to strings ending in "px" */
 function sizeToStr(val: number): string {
@@ -141,11 +139,13 @@ interface LinkData {
 interface PhotospherePlaceholderProps {
   isPrimary: boolean;
   mapStatic: boolean;
+  lockViews: boolean;
 }
 
 function PhotospherePlaceholder({
   isPrimary,
   mapStatic,
+  lockViews,
 }: PhotospherePlaceholderProps) {
   const {
     vfe,
@@ -166,6 +166,12 @@ function PhotospherePlaceholder({
     [],
   );
   const hotspotPath = hotspotArray.map((h) => h.id);
+
+  const lockViewsRef = useRef(lockViews);
+
+  useEffect(() => {
+    lockViewsRef.current = lockViews;
+  }, [lockViews]);
 
   const ready = useRef(false);
   const defaultPan = useRef(vfe.photospheres[currentPS].src.path);
@@ -246,6 +252,18 @@ function PhotospherePlaceholder({
       if (!data.rightclick) {
         onViewerClick?.(data.pitch, data.yaw);
       }
+    });
+
+    instance.addEventListener("position-updated", ({ position }) => {
+      console.log(lockViewsRef.current);
+      if (!lockViewsRef.current) return;
+      const [otherRef] = states.references.filter((ref) => {
+        if (ref != photosphereRef) return ref;
+      });
+
+      if (!otherRef.current) return;
+
+      otherRef.current.rotate(position);
     });
 
     const virtualTour =
