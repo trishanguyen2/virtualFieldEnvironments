@@ -1,6 +1,8 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
+
 import {
   Box,
+  Button,
   FormControlLabel,
   Stack,
   Switch,
@@ -90,13 +92,16 @@ function PhotosphereViewer({
 }: PhotosphereViewerProps) {
   const [primaryPhotosphere, setPrimaryPhotosphere] =
     React.useState<Photosphere>(vfe.photospheres[currentPS]);
-  const [splitPhotosphere, setSplitPhotosphere] =
-    React.useState<Photosphere>(vfe.photospheres[currentPS]);
+  const [splitPhotosphere, setSplitPhotosphere] = React.useState<Photosphere>(
+    vfe.photospheres[currentPS],
+  );
   const [mapStatic, setMapStatic] = useState(false);
   const [hotspotArray, setHotspotArray] = useState<(Hotspot3D | Hotspot2D)[]>(
     [],
   );
   const hotspotPath = hotspotArray.map((h) => h.id);
+
+  const [isSplitView, setIsSplitView] = useState(false);
 
   return (
     <>
@@ -122,6 +127,18 @@ function PhotosphereViewer({
         }}
         gap={1}
       >
+        <Box sx={{ padding: "0 5px" }}>
+          <Button
+            sx={{ padding: "0", width: "4px", height: "40px" }}
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setIsSplitView(!isSplitView);
+            }}
+          >
+            Split View
+          </Button>
+        </Box>
         <Box sx={{ padding: "0 5px" }}>
           <PhotosphereSelector
             size="small"
@@ -208,17 +225,19 @@ function PhotosphereViewer({
           currentPhotosphere={primaryPhotosphere}
           setCurrentPhotosphere={setPrimaryPhotosphere}
         />
-        <PhotospherePlaceholder
-          vfe={vfe}
-          currentPS={currentPS}
-          onChangePS={onChangePS}
-          onUpdateHotspot={onUpdateHotspot}
-          onViewerClick={onViewerClick}
-          isPrimary={false}
-          setHotspotArray={setHotspotArray}
-          currentPhotosphere={splitPhotosphere}
-          setCurrentPhotosphere={setSplitPhotosphere}
-        />
+        {isSplitView && (
+          <PhotospherePlaceholder
+            vfe={vfe}
+            currentPS={currentPS}
+            onChangePS={onChangePS}
+            onUpdateHotspot={onUpdateHotspot}
+            onViewerClick={onViewerClick}
+            isPrimary={false}
+            setHotspotArray={setHotspotArray}
+            currentPhotosphere={splitPhotosphere}
+            setCurrentPhotosphere={setSplitPhotosphere}
+          />
+        )}
       </Stack>
     </>
   );
