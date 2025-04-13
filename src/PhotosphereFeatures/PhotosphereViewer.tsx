@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ViewerAPI } from "react-photo-sphere-viewer";
 
 import {
@@ -105,7 +105,6 @@ function PhotosphereViewer({
     onViewerClick,
     onUpdateHotspot,
     photosphereOptions,
-    lockViews,
     states: {
       references: [primaryPsRef, splitRef],
       states: [primaryPhotosphere, splitPhotosphere],
