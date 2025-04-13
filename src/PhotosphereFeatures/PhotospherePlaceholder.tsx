@@ -26,6 +26,7 @@ import {
   NavMap,
   Photosphere,
 } from "../Pages/PageUtility/DataStructures";
+import PopOver from "../Pages/PageUtility/PopOver";
 import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
 import { PhotosphereViewerProps } from "./PhotosphereViewer";
 
@@ -138,9 +139,9 @@ interface LinkData {
 
 interface PhotospherePlaceholderProps extends PhotosphereViewerProps {
   isPrimary: boolean;
-  setHotspotArray: (hotspotArray:(Hotspot2D | Hotspot3D)[])=> void;
   currentPhotosphere: Photosphere;
   setCurrentPhotosphere: (ps: any) => void;
+  mapStatic: boolean;
 }
 
 function PhotospherePlaceholder({
@@ -150,12 +151,17 @@ function PhotospherePlaceholder({
   onChangePS,
   onUpdateHotspot,
   onViewerClick,
-  setHotspotArray,
+  photosphereOptions,
   currentPhotosphere,
-  setCurrentPhotosphere
+  setCurrentPhotosphere,
+  mapStatic,
 }: PhotospherePlaceholderProps) {
   const photosphereRef = React.createRef<ViewerAPI>();
-  const [mapStatic, setMapStatic] = useState(false);
+
+  const [hotspotArray, setHotspotArray] = useState<(Hotspot3D | Hotspot2D)[]>(
+    [],
+  );
+  const hotspotPath = hotspotArray.map((h) => h.id);
 
   const ready = useRef(false);
   const defaultPan = useRef(vfe.photospheres[currentPS].src.path);
@@ -271,16 +277,41 @@ function PhotospherePlaceholder({
   }
 
   return (
-    <ReactPhotoSphereViewer
-      key={mapStatic ? "static" : "dynamic"}
-      onReady={handleReady}
-      ref={photosphereRef}
-      src={defaultPan.current}
-      plugins={plugins}
-      height={"100vh"}
-      width={"100%"}
-      navbar={["autorotate", "zoom", "caption", "download", "fullscreen"]}
-    />
+    <>
+      {hotspotArray.length > 0 && (
+        <PopOver
+          key={hotspotPath.join()}
+          hotspotPath={hotspotPath}
+          hotspot={hotspotArray[hotspotArray.length - 1]}
+          pushHotspot={(add: Hotspot2D) => {
+            setHotspotArray([...hotspotArray, add]);
+          }}
+          popHotspot={() => {
+            setHotspotArray(hotspotArray.slice(0, -1));
+          }}
+          closeAll={() => {
+            setHotspotArray([]);
+          }}
+          onUpdateHotspot={onUpdateHotspot}
+          changeScene={(id) => {
+            setCurrentPhotosphere(vfe.photospheres[id]);
+            onChangePS(id);
+          }}
+          photosphereOptions={photosphereOptions}
+        />
+      )}
+
+      <ReactPhotoSphereViewer
+        key={mapStatic ? "static" : "dynamic"}
+        onReady={handleReady}
+        ref={photosphereRef}
+        src={defaultPan.current}
+        plugins={plugins}
+        height={"100vh"}
+        width={"100%"}
+        navbar={["autorotate", "zoom", "caption", "download", "fullscreen"]}
+      />
+    </>
   );
 }
 

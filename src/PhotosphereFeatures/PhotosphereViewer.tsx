@@ -10,13 +10,7 @@ import {
   styled,
 } from "@mui/material";
 
-import {
-  Hotspot2D,
-  Hotspot3D,
-  Photosphere,
-  VFE,
-} from "../Pages/PageUtility/DataStructures";
-import PopOver from "../Pages/PageUtility/PopOver";
+import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import AudioToggleButton from "../buttons/AudioToggleButton";
 import PhotospherePlaceholder from "./PhotospherePlaceholder";
@@ -88,7 +82,6 @@ function PhotosphereViewer({
   onChangePS,
   onViewerClick,
   onUpdateHotspot,
-  photosphereOptions,
 }: PhotosphereViewerProps) {
   const [primaryPhotosphere, setPrimaryPhotosphere] =
     React.useState<Photosphere>(vfe.photospheres[currentPS]);
@@ -96,10 +89,6 @@ function PhotosphereViewer({
     vfe.photospheres[currentPS],
   );
   const [mapStatic, setMapStatic] = useState(false);
-  const [hotspotArray, setHotspotArray] = useState<(Hotspot3D | Hotspot2D)[]>(
-    [],
-  );
-  const hotspotPath = hotspotArray.map((h) => h.id);
 
   const [isSplitView, setIsSplitView] = useState(false);
 
@@ -173,28 +162,6 @@ function PhotosphereViewer({
         />
       </Stack>
 
-      {hotspotArray.length > 0 && (
-        <PopOver
-          key={hotspotPath.join()}
-          hotspotPath={hotspotPath}
-          hotspot={hotspotArray[hotspotArray.length - 1]}
-          pushHotspot={(add: Hotspot2D) => {
-            setHotspotArray([...hotspotArray, add]);
-          }}
-          popHotspot={() => {
-            setHotspotArray(hotspotArray.slice(0, -1));
-          }}
-          closeAll={() => {
-            setHotspotArray([]);
-          }}
-          onUpdateHotspot={onUpdateHotspot}
-          changeScene={(id) => {
-            setPrimaryPhotosphere(vfe.photospheres[id]);
-            onChangePS(id);
-          }}
-          photosphereOptions={photosphereOptions}
-        />
-      )}
       <Stack
         direction="row"
         sx={{
@@ -221,9 +188,9 @@ function PhotosphereViewer({
           onUpdateHotspot={onUpdateHotspot}
           onViewerClick={onViewerClick}
           isPrimary={true}
-          setHotspotArray={setHotspotArray}
           currentPhotosphere={primaryPhotosphere}
           setCurrentPhotosphere={setPrimaryPhotosphere}
+          mapStatic={mapStatic}
         />
         {isSplitView && (
           <PhotospherePlaceholder
@@ -233,9 +200,9 @@ function PhotosphereViewer({
             onUpdateHotspot={onUpdateHotspot}
             onViewerClick={onViewerClick}
             isPrimary={false}
-            setHotspotArray={setHotspotArray}
             currentPhotosphere={splitPhotosphere}
             setCurrentPhotosphere={setSplitPhotosphere}
+            mapStatic={mapStatic}
           />
         )}
       </Stack>
