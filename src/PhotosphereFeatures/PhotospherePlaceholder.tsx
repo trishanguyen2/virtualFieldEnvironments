@@ -5,7 +5,7 @@ import {
   VirtualTourLink,
   VirtualTourNode,
 } from "@photo-sphere-viewer/virtual-tour-plugin";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { ViewerAPI } from "react-photo-sphere-viewer";
 import {
   MapPlugin,
@@ -20,6 +20,7 @@ import { alpha } from "@mui/material";
 import { common } from "@mui/material/colors";
 
 import { useVisitedState } from "../Hooks/HandleVisit";
+import { ViewerContext, ViewerContextObj } from "../Hooks/ViewerContext";
 import {
   Hotspot2D,
   Hotspot3D,
@@ -137,28 +138,29 @@ interface LinkData {
   tooltip: string;
 }
 
-interface PhotospherePlaceholderProps extends PhotosphereViewerProps {
+interface PhotospherePlaceholderProps {
   isPrimary: boolean;
-  currentPhotosphere: Photosphere;
-  setCurrentPhotosphere: (ps: any) => void;
   mapStatic: boolean;
-  setAllPhotospheres?: (ps: Photosphere) => void;
 }
 
 function PhotospherePlaceholder({
-  vfe,
   isPrimary,
-  currentPS,
-  onChangePS,
-  onUpdateHotspot,
-  onViewerClick,
-  photosphereOptions,
-  currentPhotosphere,
-  setCurrentPhotosphere,
   mapStatic,
-  setAllPhotospheres,
 }: PhotospherePlaceholderProps) {
-  const photosphereRef = React.createRef<ViewerAPI>();
+  const {
+    vfe,
+    currentPS,
+    onChangePS,
+    onUpdateHotspot,
+    onViewerClick,
+    photosphereOptions,
+    states,
+  } = useContext(ViewerContext) as ViewerContextObj;
+  const statesIdx = isPrimary ? 0 : 1;
+  const photosphereRef = states.references[statesIdx];
+
+  const currentPhotosphere = states.states[statesIdx];
+  const setCurrentPhotosphere = states.setStates[statesIdx];
 
   const [hotspotArray, setHotspotArray] = useState<(Hotspot3D | Hotspot2D)[]>(
     [],
@@ -232,7 +234,7 @@ function PhotospherePlaceholder({
 
       // setCurrentPhotosphere has to be used to get the current state value because
       // the value of currentPhotosphere does not get updated in an event listener
-      setCurrentPhotosphere((currentState: any) => {
+      setCurrentPhotosphere((currentState) => {
         const passMarker = currentState.hotspots[marker.config.id];
         setHotspotArray([passMarker]);
         handleVisit(currentState.id, marker.config.id);
@@ -271,7 +273,9 @@ function PhotospherePlaceholder({
       const map = instance.getPlugin<MapPlugin>(MapPlugin);
       map.addEventListener("select-hotspot", ({ hotspotId }) => {
         const photosphere = vfe.photospheres[hotspotId];
-        setAllPhotospheres?.(photosphere);
+        states.setStates.forEach((setPS) => {
+          setPS(photosphere);
+        });
         onChangePS(photosphere.id);
       });
     }

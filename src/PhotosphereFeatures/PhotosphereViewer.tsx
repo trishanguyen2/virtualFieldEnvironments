@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { ViewerAPI } from "react-photo-sphere-viewer";
 
 import {
   Box,
@@ -10,6 +11,7 @@ import {
   styled,
 } from "@mui/material";
 
+import { ViewerContext, ViewerContextObj } from "../Hooks/ViewerContext";
 import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import AudioToggleButton from "../buttons/AudioToggleButton";
@@ -82,7 +84,10 @@ function PhotosphereViewer({
   onChangePS,
   onViewerClick,
   onUpdateHotspot,
+  photosphereOptions,
 }: PhotosphereViewerProps) {
+  const primaryPsRef = React.useRef<ViewerAPI | null>(null);
+  const splitRef = React.useRef<ViewerAPI | null>(null);
   const [primaryPhotosphere, setPrimaryPhotosphere] =
     React.useState<Photosphere>(vfe.photospheres[currentPS]);
   const [splitPhotosphere, setSplitPhotosphere] = React.useState<Photosphere>(
@@ -92,10 +97,19 @@ function PhotosphereViewer({
 
   const [isSplitView, setIsSplitView] = useState(false);
 
-  function SetAllPhotospheres(ps: Photosphere) {
-    setPrimaryPhotosphere(ps);
-    setSplitPhotosphere(ps);
-  }
+  const context: ViewerContextObj = {
+    vfe,
+    currentPS,
+    onChangePS,
+    onViewerClick,
+    onUpdateHotspot,
+    photosphereOptions,
+    states: {
+      references: [primaryPsRef, splitRef],
+      states: [primaryPhotosphere, splitPhotosphere],
+      setStates: [setPrimaryPhotosphere, setSplitPhotosphere],
+    },
+  };
 
   return (
     <>
@@ -186,31 +200,12 @@ function PhotosphereViewer({
           alignItems: "center",
         }}
       >
-        <PhotospherePlaceholder
-          vfe={vfe}
-          currentPS={currentPS}
-          onChangePS={onChangePS}
-          onUpdateHotspot={onUpdateHotspot}
-          onViewerClick={onViewerClick}
-          isPrimary={true}
-          currentPhotosphere={primaryPhotosphere}
-          setCurrentPhotosphere={setPrimaryPhotosphere}
-          mapStatic={mapStatic}
-          setAllPhotospheres={SetAllPhotospheres}
-        />
-        {isSplitView && (
-          <PhotospherePlaceholder
-            vfe={vfe}
-            currentPS={currentPS}
-            onChangePS={onChangePS}
-            onUpdateHotspot={onUpdateHotspot}
-            onViewerClick={onViewerClick}
-            isPrimary={false}
-            currentPhotosphere={splitPhotosphere}
-            setCurrentPhotosphere={setSplitPhotosphere}
-            mapStatic={mapStatic}
-          />
-        )}
+        <ViewerContext.Provider value={context}>
+          <PhotospherePlaceholder isPrimary={true} mapStatic={mapStatic} />
+          {isSplitView && (
+            <PhotospherePlaceholder isPrimary={false} mapStatic={mapStatic} />
+          )}
+        </ViewerContext.Provider>
       </Stack>
     </>
   );
