@@ -1,4 +1,7 @@
+import { DndContext } from "@dnd-kit/core";
 import { useDroppable } from "@dnd-kit/core";
+import { useDraggable } from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
 import { MuiFileInput } from "mui-file-input";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -230,6 +233,39 @@ function PhotosphereEditor({
     setYaw(radToDeg(vyaw));
   }
 
+  interface DraggablePinProps {
+    pitch: number;
+    yaw: number;
+  }
+
+  function DraggablePin({ pitch, yaw }: DraggablePinProps) {
+    const { attributes, listeners, setNodeRef, transform } = useDraggable({
+      id: "unique-id",
+    });
+    const style = transform
+      ? {
+          transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+          backgroundColor: "rgba(0, 0, 0, 0)",
+          border: "none",
+        }
+      : {
+          transform: `translate3d(-50%, -50%)`,
+          backgroundColor: "rgba(0, 0, 0, 0)",
+          border: "none",
+        };
+
+    return (
+      <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
+        <img src="/pin-blue.png" width={60} />
+      </button>
+    );
+  }
+
+  function handleDragEnd() {
+    console.log("Fired!");
+    handleLocation;
+  }
+
   // Reset all states so we dont have issues with handling different components at the same time
   function resetStates() {
     setShowAddPhotosphere(false);
@@ -243,6 +279,7 @@ function PhotosphereEditor({
   }
 
   /** Render the actual component based on states */
+  // Only one of these states can be active at a time.
   function ActiveComponent() {
     if (showAddPhotosphere)
       return (
@@ -621,18 +658,43 @@ function PhotosphereEditor({
         )}
       </Stack>
       <Box ref={setNodeRef} style={{ width: "100%", height: "100%" }}>
-        <PhotosphereViewer
-          currentPS={currentPS}
-          onChangePS={onChangePS}
-          onViewerClick={handleLocation}
-          key={updateTrigger}
-          vfe={vfe}
-          photosphereOptions={availablePhotosphereOptions}
-          onUpdateHotspot={(hotspotPath, update) => {
-            void handleUpdateHotspot(hotspotPath, update);
-          }}
-        />
-        <ActiveComponent />
+        <DndContext onDragEnd={handleDragEnd}>
+          <div
+            style={{
+              position: "fixed",
+              visibility: showAddHotspot ? "visible" : "hidden",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+              // pointerEvents: "none",
+              zIndex: 999, // Ensure overlay is on top
+              // pointerEvents: "none", // Allow clicks to pass through
+            }}
+            // onClick={onClick} // Optional: Add an onClick handler for the overlay itself
+          >
+            <DraggablePin pitch={pitch} yaw={yaw}></DraggablePin>
+            <div
+              style={{
+                pointerEvents: "auto", // Enable interaction within the overlay content
+                /* Add styles for your overlay content here */
+              }}
+            />
+          </div>
+          <PhotosphereViewer
+            currentPS={currentPS}
+            onChangePS={onChangePS}
+            onViewerClick={handleLocation}
+            key={updateTrigger}
+            vfe={vfe}
+            photosphereOptions={availablePhotosphereOptions}
+            onUpdateHotspot={(hotspotPath, update) => {
+              void handleUpdateHotspot(hotspotPath, update);
+            }}
+          ></PhotosphereViewer>
+          <ActiveComponent />
+        </DndContext>
       </Box>
     </Box>
   );
