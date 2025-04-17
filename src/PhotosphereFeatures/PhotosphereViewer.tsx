@@ -11,7 +11,6 @@ import {
   styled,
 } from "@mui/material";
 
-import { ViewerContext, ViewerContextObj } from "../Hooks/ViewerContext";
 import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import AudioToggleButton from "../buttons/AudioToggleButton";
@@ -78,6 +77,25 @@ export interface PhotosphereViewerProps {
   photosphereOptions?: string[];
 }
 
+export interface ViewerStates {
+  references: React.MutableRefObject<ViewerAPI | null>[];
+  states: Photosphere[];
+  setStates: React.Dispatch<React.SetStateAction<Photosphere>>[];
+}
+
+export interface ViewerProps {
+  vfe: VFE;
+  currentPS: string;
+  onChangePS: (id: string) => void;
+  onViewerClick?: (elevation: number, direction: number) => void;
+  onUpdateHotspot?: (
+    hotspotPath: string[],
+    update: HotspotUpdate | null,
+  ) => void;
+  photosphereOptions?: string[];
+  states: ViewerStates;
+}
+
 function PhotosphereViewer({
   vfe,
   currentPS,
@@ -98,7 +116,7 @@ function PhotosphereViewer({
   const [isSplitView, setIsSplitView] = useState(false);
   const [lockViews, setLockViews] = useState(false);
 
-  const context: ViewerContextObj = {
+  const viewerProps: ViewerProps = {
     vfe,
     currentPS,
     onChangePS,
@@ -215,20 +233,20 @@ function PhotosphereViewer({
           alignItems: "center",
         }}
       >
-        <ViewerContext.Provider value={context}>
+        <PhotospherePlaceholder
+          viewerProps={viewerProps}
+          isPrimary={true}
+          mapStatic={mapStatic}
+          lockViews={lockViews}
+        />
+        {isSplitView && (
           <PhotospherePlaceholder
-            isPrimary={true}
+            viewerProps={viewerProps}
+            isPrimary={false}
             mapStatic={mapStatic}
             lockViews={lockViews}
           />
-          {isSplitView && (
-            <PhotospherePlaceholder
-              isPrimary={false}
-              mapStatic={mapStatic}
-              lockViews={lockViews}
-            />
-          )}
-        </ViewerContext.Provider>
+        )}
       </Stack>
     </>
   );

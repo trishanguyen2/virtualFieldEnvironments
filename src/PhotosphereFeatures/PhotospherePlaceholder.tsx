@@ -5,7 +5,7 @@ import {
   VirtualTourLink,
   VirtualTourNode,
 } from "@photo-sphere-viewer/virtual-tour-plugin";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   MapPlugin,
   MapPluginConfig,
@@ -19,7 +19,6 @@ import { alpha } from "@mui/material";
 import { common } from "@mui/material/colors";
 
 import { useVisitedState } from "../Hooks/HandleVisit";
-import { ViewerContext, ViewerContextObj } from "../Hooks/ViewerContext";
 import {
   Hotspot2D,
   Hotspot3D,
@@ -28,6 +27,7 @@ import {
 } from "../Pages/PageUtility/DataStructures";
 import PopOver from "../Pages/PageUtility/PopOver";
 import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
+import { ViewerProps } from "./PhotosphereViewer";
 
 /** Convert sizes from numbers to strings ending in "px" */
 function sizeToStr(val: number): string {
@@ -137,12 +137,14 @@ interface LinkData {
 }
 
 interface PhotospherePlaceholderProps {
+  viewerProps: ViewerProps;
   isPrimary: boolean;
   mapStatic: boolean;
   lockViews: boolean;
 }
 
 function PhotospherePlaceholder({
+  viewerProps,
   isPrimary,
   mapStatic,
   lockViews,
@@ -155,7 +157,7 @@ function PhotospherePlaceholder({
     onViewerClick,
     photosphereOptions,
     states,
-  } = useContext(ViewerContext) as ViewerContextObj;
+  } = viewerProps;
   const statesIdx = isPrimary ? 0 : 1;
   const photosphereRef = states.references[statesIdx];
 
