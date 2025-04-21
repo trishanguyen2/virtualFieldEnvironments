@@ -27,7 +27,7 @@ import {
 } from "../Pages/PageUtility/DataStructures";
 import PopOver from "../Pages/PageUtility/PopOver";
 import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
-import { ViewerProps } from "./PhotosphereViewer";
+import { ViewerProps } from "../Pages/PhotosphereViewer";
 
 /** Convert sizes from numbers to strings ending in "px" */
 function sizeToStr(val: number): string {

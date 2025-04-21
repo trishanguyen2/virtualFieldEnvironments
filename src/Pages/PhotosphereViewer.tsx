@@ -14,8 +14,8 @@ import {
 import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import AudioToggleButton from "../buttons/AudioToggleButton";
-import PhotospherePlaceholder from "./PhotospherePlaceholder";
-import PhotosphereSelector from "./PhotosphereSelector";
+import PhotospherePlaceholder from "../PhotosphereFeatures/PhotospherePlaceholder";
+import PhotosphereSelector from "../PhotosphereFeatures/PhotosphereSelector";
 
 // modified from https://mui.com/material-ui/react-switch/#customization 'iOS style'
 const StyledSwitch = styled((props: SwitchProps) => (
