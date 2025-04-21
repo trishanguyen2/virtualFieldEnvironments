@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { DndContext } from "@dnd-kit/core";
 import { useDroppable } from "@dnd-kit/core";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { MuiFileInput } from "mui-file-input";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import AttachFileIcon from "@mui/icons-material/AttachFile";
@@ -233,6 +234,7 @@ function PhotosphereEditor({
     setYaw(radToDeg(vyaw));
   }
 
+  // Drag and drop interface
   interface DraggablePinProps {
     pitch: number;
     yaw: number;
@@ -240,18 +242,20 @@ function PhotosphereEditor({
 
   function DraggablePin({ pitch, yaw }: DraggablePinProps) {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
-      id: "unique-id",
+      id: "draggable-pin-id",
     });
     const style = transform
       ? {
           transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
           backgroundColor: "rgba(0, 0, 0, 0)",
           border: "none",
+          pointerEvents: "auto",
         }
       : {
           transform: `translate3d(-50%, -50%)`,
           backgroundColor: "rgba(0, 0, 0, 0)",
           border: "none",
+          pointerEvents: "auto",
         };
 
     return (
@@ -262,8 +266,26 @@ function PhotosphereEditor({
   }
 
   function handleDragEnd() {
+    const event = handleClickAt(200, 200);
+
+    console.log(event);
+    // overlay?.click();
     console.log("Fired!");
     handleLocation;
+  }
+
+  function handleClickAt(x, y) {
+    const element = document.getElementsByClassName("psv-canvas")[0];
+    if (element) {
+      const clickEvent = new MouseEvent("click", {
+        clientX: x,
+        clientY: y,
+        bubbles: true,
+        cancelable: true,
+      });
+      element.dispatchEvent(clickEvent);
+      return clickEvent;
+    }
   }
 
   // Reset all states so we dont have issues with handling different components at the same time
@@ -660,6 +682,7 @@ function PhotosphereEditor({
       <Box ref={setNodeRef} style={{ width: "100%", height: "100%" }}>
         <DndContext onDragEnd={handleDragEnd}>
           <div
+            id="overlay"
             style={{
               position: "fixed",
               visibility: showAddHotspot ? "visible" : "hidden",
@@ -668,19 +691,11 @@ function PhotosphereEditor({
               width: "100%",
               height: "100%",
               backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
-              // pointerEvents: "none",
+              pointerEvents: "none", // Allow clicks to pass through
               zIndex: 999, // Ensure overlay is on top
-              // pointerEvents: "none", // Allow clicks to pass through
             }}
-            // onClick={onClick} // Optional: Add an onClick handler for the overlay itself
           >
             <DraggablePin pitch={pitch} yaw={yaw}></DraggablePin>
-            <div
-              style={{
-                pointerEvents: "auto", // Enable interaction within the overlay content
-                /* Add styles for your overlay content here */
-              }}
-            />
           </div>
           <PhotosphereViewer
             currentPS={currentPS}
