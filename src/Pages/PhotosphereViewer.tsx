@@ -34,12 +34,12 @@ import {
   NavMap,
   Photosphere,
   VFE,
-} from "../Pages/PageUtility/DataStructures";
+} from "./PageUtility/DataStructures";
 import { useVisitedState } from "../Hooks/HandleVisit";
 import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
-import PhotosphereSelector from "./PhotosphereSelector";
-import PopOver from "../Pages/PageUtility/PopOver";
-import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
+import PhotosphereSelector from "../PhotosphereFeatures/PhotosphereSelector";
+import PopOver from "./PageUtility/PopOver";
+import { HotspotUpdate } from "./PageUtility/VFEConversion";
 
 // modified from https://mui.com/material-ui/react-switch/#customization 'iOS style'
 const StyledSwitch = styled((props: SwitchProps) => (

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import PhotosphereTutorial from "../PhotosphereFeatures/PhotosphereTutorialLandingPage";
+import { useNavigate } from "react-router-dom";
 
 import {
   Button,
@@ -25,6 +27,7 @@ function LandingPage({
   onCreateVFE,
   onLoadVFE,
 }: LandingPageProps) {
+  const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -45,22 +48,50 @@ function LandingPage({
     }
   }
 
+  // Joyride tutorial
+  const [runTutorial, setRunTutorial] = useState(false); 
+  const [stepIndex, setStepIndex] = useState(0);
+
   return (
     <>
       <Header onCreateVFE={onCreateVFE} onLoadTestVFE={onLoadTestVFE} />
-      <Stack sx={{ width: "80%", margin: "auto", padding: 2 }}>
+        <Stack sx={{ width: "50%", margin: "auto", padding: 2 }}>
+          <Button 
+            variant="outlined" 
+            onClick={() => {
+              setRunTutorial(true);
+              setStepIndex(0);
+            }}
+            sx={{ mb: 2 }}
+          >
+            Confused? Click here
+        </Button>
+
+        <PhotosphereTutorial
+          runTutorial={runTutorial}
+          stepIndex={stepIndex}
+          setRunTutorial={setRunTutorial}
+          setStepIndex={setStepIndex}
+          onNavigateToCreate={() => {
+            navigate("/create");
+          }}
+        />
+
         <MuiDropzone
           label="Drag and drop a VFE or click"
           onInput={(files) => {
             handleFileUpload(files[0]);
           }}
+          className="dropzone-area"
           sx={{
             height: "300px",
             width: "80%",
             margin: "auto",
           }}
         />
-        <VFEList />
+        <VFEList 
+          className="vfe-list-area"
+        />
       </Stack>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>

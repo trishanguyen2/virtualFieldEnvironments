@@ -35,6 +35,7 @@ function Header({ onCreateVFE, onLoadTestVFE }: HeaderProps) {
         <Stack direction="row" gap={1}>
           <Stack sx={{ justifyContent: "space-around" }}>
             <Button
+              className="create-vfe-button"
               onClick={onCreateVFE}
               endIcon={
                 <LibraryAddSharp sx={{ color: "primary.contrastText" }} />
