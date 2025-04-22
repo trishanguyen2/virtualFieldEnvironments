@@ -41,11 +41,6 @@ export default function PhotosphereTutorial({
       placement: "bottom",
       disableBeacon: true,
     },
-    {
-      target: "fake-step",
-      content: "This should not appear and should be skipped.",
-      disableBeacon: true,
-    },
   ];
 
   function isFinishedOrSkipped(status: Status): status is "finished" | "skipped" {

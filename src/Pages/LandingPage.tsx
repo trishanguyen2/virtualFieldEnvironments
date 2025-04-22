@@ -55,7 +55,7 @@ function LandingPage({
   return (
     <>
       <Header onCreateVFE={onCreateVFE} onLoadTestVFE={onLoadTestVFE} />
-        <Stack sx={{ width: "50%", margin: "auto", padding: 2 }}>
+        <Stack sx={{ width: "75%", margin: "auto", padding: 2 }}>
           <Button 
             variant="outlined" 
             onClick={() => {
