@@ -48,7 +48,25 @@ function LandingPage({
   return (
     <>
       <Header onCreateVFE={onCreateVFE} onLoadTestVFE={onLoadTestVFE} />
-      <Stack sx={{ width: "80%", margin: "auto", padding: 2 }}>
+      <Stack sx={{ width: "75%", margin: "auto", padding: 2 }}>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            setRunTutorial(true);
+            setStepIndex(0);
+          }}
+          sx={{ mb: 2 }}
+        >
+          Confused? Click here
+        </Button>
+
+        <PhotosphereTutorial
+          runTutorial={runTutorial}
+          stepIndex={stepIndex}
+          setRunTutorial={setRunTutorial}
+          setStepIndex={setStepIndex}
+        />
+
         <MuiDropzone
           label="Drag and drop a VFE or click"
           onInput={(files) => {
