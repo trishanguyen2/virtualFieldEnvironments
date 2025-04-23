@@ -1,45 +1,21 @@
-import { Point, Viewer, ViewerConfig } from "@photo-sphere-viewer/core";
-import { MapHotspot } from "@photo-sphere-viewer/map-plugin";
-import { MarkerConfig } from "@photo-sphere-viewer/markers-plugin";
-import {
-  VirtualTourLink,
-  VirtualTourNode,
-} from "@photo-sphere-viewer/virtual-tour-plugin";
-import React, { useEffect, useRef, useState } from "react";
-import {
-  MapPlugin,
-  MapPluginConfig,
-  MarkersPlugin,
-  ReactPhotoSphereViewer,
-  ViewerAPI,
-  VirtualTourPlugin,
-  VirtualTourPluginConfig,
-} from "react-photo-sphere-viewer";
+import React, { useState } from "react";
+import { ViewerAPI } from "react-photo-sphere-viewer";
 
 import {
   Box,
+  Button,
   FormControlLabel,
   Stack,
   Switch,
   SwitchProps,
-  alpha,
   styled,
 } from "@mui/material";
-import { common } from "@mui/material/colors";
 
-import AudioToggleButton from "../buttons/AudioToggleButton";
-import {
-  Hotspot2D,
-  Hotspot3D,
-  NavMap,
-  Photosphere,
-  VFE,
-} from "../Pages/PageUtility/DataStructures";
-import { useVisitedState } from "../Hooks/HandleVisit";
-import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
-import PhotosphereSelector from "./PhotosphereSelector";
-import PopOver from "../Pages/PageUtility/PopOver";
+import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
+import AudioToggleButton from "../buttons/AudioToggleButton";
+import PhotospherePlaceholder from "./PhotospherePlaceholder";
+import PhotosphereSelector from "./PhotosphereSelector";
 
 // modified from https://mui.com/material-ui/react-switch/#customization 'iOS style'
 const StyledSwitch = styled((props: SwitchProps) => (
@@ -89,114 +65,6 @@ const StyledSwitch = styled((props: SwitchProps) => (
   },
 }));
 
-/** Convert direction/elevation degrees from numbers to strings ending in "deg" */
-function degToStr(val: number): string {
-  return String(val) + "deg";
-}
-
-/** Convert sizes from numbers to strings ending in "px" */
-function sizeToStr(val: number): string {
-  return String(val) + "px";
-}
-
-/** Convert non-link hotspots to markers with type-based content/icons */
-function convertHotspots(
-  hotspots: Record<string, Hotspot3D>,
-  isViewerMode: boolean,
-): MarkerConfig[] {
-  const markers: MarkerConfig[] = [];
-
-  for (const hotspot of Object.values(hotspots)) {
-    if (isViewerMode && hotspot.data.tag === "PhotosphereLink") continue;
-
-    const marker: MarkerConfig = {
-      id: hotspot.id,
-      size: { width: 64, height: 64 },
-      position: {
-        yaw: degToStr(hotspot.direction),
-        pitch: degToStr(hotspot.elevation),
-      },
-      tooltip: hotspot.tooltip,
-    };
-    if (hotspot.data.tag === "PhotosphereLink") {
-      marker.html = LinkArrowIconHTML({
-        color: alpha(common.white, 0.8),
-        size: 80,
-      });
-    } else {
-      marker.image = hotspot.icon.path;
-    }
-
-    markers.push(marker);
-  }
-
-  return markers;
-}
-
-interface LinkData {
-  tooltip: string;
-}
-
-/** Convert photosphere-link hotspots to virtual tour links  */
-function convertLinks(
-  hotspots: Record<string, Hotspot3D>,
-  isViewerMode: boolean,
-): VirtualTourLink[] {
-  if (!isViewerMode) {
-    return [];
-  }
-
-  const links: VirtualTourLink[] = [];
-
-  for (const hotspot of Object.values(hotspots)) {
-    if (hotspot.data.tag !== "PhotosphereLink") continue;
-
-    links.push({
-      nodeId: hotspot.data.photosphereID,
-      position: {
-        pitch: degToStr(hotspot.elevation),
-        yaw: degToStr(hotspot.direction),
-      },
-      data: { tooltip: hotspot.tooltip } as LinkData,
-    });
-  }
-
-  return links;
-}
-
-function convertMap(
-  map: NavMap,
-  photospheres: Record<string, Photosphere>,
-  currentCenter?: Point,
-  staticEnabled = false,
-): MapPluginConfig {
-  const hotspots: MapHotspot[] = [];
-
-  for (const [id, photosphere] of Object.entries(photospheres)) {
-    if (photosphere.center === undefined) continue;
-
-    hotspots.push({
-      id: id,
-      tooltip: id,
-      x: photosphere.center.x,
-      y: photosphere.center.y,
-      color: "yellow",
-    });
-  }
-
-  return {
-    imageUrl: map.src.path,
-    center: currentCenter ?? map.defaultCenter,
-    rotation: map.rotation,
-    defaultZoom: map.defaultZoom,
-    minZoom: 1,
-    maxZoom: 100,
-    size: sizeToStr(map.size),
-    hotspots,
-    static: staticEnabled,
-  };
-}
-
 export interface PhotosphereViewerProps {
   vfe: VFE;
   currentPS: string;
@@ -209,6 +77,25 @@ export interface PhotosphereViewerProps {
   photosphereOptions?: string[];
 }
 
+export interface ViewerStates {
+  references: React.MutableRefObject<ViewerAPI | null>[];
+  states: Photosphere[];
+  setStates: React.Dispatch<React.SetStateAction<Photosphere>>[];
+}
+
+export interface ViewerProps {
+  vfe: VFE;
+  currentPS: string;
+  onChangePS: (id: string) => void;
+  onViewerClick?: (elevation: number, direction: number) => void;
+  onUpdateHotspot?: (
+    hotspotPath: string[],
+    update: HotspotUpdate | null,
+  ) => void;
+  photosphereOptions?: string[];
+  states: ViewerStates;
+}
+
 function PhotosphereViewer({
   vfe,
   currentPS,
@@ -217,124 +104,31 @@ function PhotosphereViewer({
   onUpdateHotspot,
   photosphereOptions,
 }: PhotosphereViewerProps) {
-  const photoSphereRef = React.createRef<ViewerAPI>();
-  const [currentPhotosphere, setCurrentPhotosphere] =
+  const primaryPsRef = React.useRef<ViewerAPI | null>(null);
+  const splitRef = React.useRef<ViewerAPI | null>(null);
+  const [primaryPhotosphere, setPrimaryPhotosphere] =
     React.useState<Photosphere>(vfe.photospheres[currentPS]);
-  const [mapStatic, setMapStatic] = useState(false);
-  const [hotspotArray, setHotspotArray] = useState<(Hotspot3D | Hotspot2D)[]>(
-    [],
+  const [splitPhotosphere, setSplitPhotosphere] = React.useState<Photosphere>(
+    vfe.photospheres[currentPS],
   );
-  const hotspotPath = hotspotArray.map((h) => h.id);
+  const [mapStatic, setMapStatic] = useState(false);
 
-  // The variable is set to true after handleReady has finished
-  const ready = useRef(false);
-  const defaultPanorama = useRef(vfe.photospheres[currentPS].src.path);
+  const [isSplitView, setIsSplitView] = useState(false);
+  const [lockViews, setLockViews] = useState(false);
 
-  const initialPhotosphereHotspots: Record<string, Hotspot3D[]> = Object.keys(
-    vfe.photospheres,
-  ).reduce<Record<string, Hotspot3D[]>>((acc, psId) => {
-    acc[psId] = Object.values(vfe.photospheres[psId].hotspots);
-    return acc;
-  }, {});
-
-  const [visited, handleVisit] = useVisitedState(initialPhotosphereHotspots);
-  console.log("in viewer", visited);
-
-  const isViewerMode = onUpdateHotspot === undefined;
-
-  useEffect(() => {
-    if (ready.current) {
-      const virtualTour =
-        photoSphereRef.current?.getPlugin<VirtualTourPlugin>(VirtualTourPlugin);
-      void virtualTour?.setCurrentNode(currentPhotosphere.id);
-
-      const map = photoSphereRef.current?.getPlugin<MapPlugin>(MapPlugin);
-      if (currentPhotosphere.center) {
-        map?.setCenter(currentPhotosphere.center);
-      }
-    }
-  }, [currentPhotosphere, photoSphereRef]);
-
-  const plugins: ViewerConfig["plugins"] = [
-    [MarkersPlugin, {}],
-
-    [
-      VirtualTourPlugin,
-      {
-        renderMode: "markers",
-        getLinkTooltip(_content: string, link: VirtualTourLink): string {
-          return (link.data as LinkData).tooltip;
-        },
-      } as VirtualTourPluginConfig,
-    ],
-
-    // Only fill map plugin config when VFE has a map
-    [
-      MapPlugin,
-      vfe.map
-        ? convertMap(
-          vfe.map,
-          vfe.photospheres,
-          currentPhotosphere.center ?? vfe.map.defaultCenter,
-          mapStatic,
-        )
-        : {},
-    ],
-  ];
-
-  function handleReady(instance: Viewer) {
-    const markerTestPlugin: MarkersPlugin = instance.getPlugin(MarkersPlugin);
-
-    markerTestPlugin.addEventListener("select-marker", ({ marker }) => {
-      if (marker.config.id.includes("__tour-link")) return;
-
-      // setCurrentPhotosphere has to be used to get the current state value because
-      // the value of currentPhotosphere does not get updated in an event listener
-      setCurrentPhotosphere((currentState) => {
-        const passMarker = currentState.hotspots[marker.config.id];
-        setHotspotArray([passMarker]);
-        handleVisit(currentState.id, marker.config.id);
-        return currentState;
-      });
-    });
-
-    instance.addEventListener("click", ({ data }) => {
-      if (!data.rightclick) {
-        onViewerClick?.(data.pitch, data.yaw);
-      }
-    });
-
-    const virtualTour =
-      instance.getPlugin<VirtualTourPlugin>(VirtualTourPlugin);
-
-    const nodes: VirtualTourNode[] = Object.values(vfe.photospheres).map(
-      (p) => {
-        return {
-          id: p.id,
-          panorama: p.src.path,
-          name: p.id,
-          markers: convertHotspots(p.hotspots, isViewerMode),
-          links: convertLinks(p.hotspots, isViewerMode),
-        };
-      },
-    );
-
-    virtualTour.setNodes(nodes, currentPS);
-    virtualTour.addEventListener("node-changed", ({ node }) => {
-      setCurrentPhotosphere(vfe.photospheres[node.id]);
-      onChangePS(node.id);
-      setHotspotArray([]); // clear popovers on scene change
-    });
-
-    const map = instance.getPlugin<MapPlugin>(MapPlugin);
-    map.addEventListener("select-hotspot", ({ hotspotId }) => {
-      const photosphere = vfe.photospheres[hotspotId];
-      setCurrentPhotosphere(photosphere);
-      onChangePS(photosphere.id);
-    });
-
-    ready.current = true;
-  }
+  const viewerProps: ViewerProps = {
+    vfe,
+    currentPS,
+    onChangePS,
+    onViewerClick,
+    onUpdateHotspot,
+    photosphereOptions,
+    states: {
+      references: [primaryPsRef, splitRef],
+      states: [primaryPhotosphere, splitPhotosphere],
+      setStates: [setPrimaryPhotosphere, setSplitPhotosphere],
+    },
+  };
 
   return (
     <>
@@ -345,7 +139,7 @@ function PhotosphereViewer({
           top: "16px",
           left: 0,
           right: 0,
-          maxWidth: "420px",
+          maxWidth: "100%",
           width: "fit-content",
           minWidth: "150px",
           height: "45px",
@@ -361,18 +155,45 @@ function PhotosphereViewer({
         gap={1}
       >
         <Box sx={{ padding: "0 5px" }}>
+          <Button
+            sx={{ padding: "0", width: "4px", height: "40px" }}
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setIsSplitView(!isSplitView);
+            }}
+          >
+            Split View
+          </Button>
+        </Box>
+        {isSplitView && (
+          <Box>
+            <Button
+              sx={{ padding: "0", width: "4px", height: "40px" }}
+              variant="contained"
+              color={lockViews ? "primary" : "secondary"}
+              onClick={() => {
+                setLockViews(!lockViews);
+              }}
+            >
+              Lock Views
+            </Button>
+          </Box>
+        )}
+        <Box sx={{ padding: "0 5px" }}>
           <PhotosphereSelector
             size="small"
             options={Object.keys(vfe.photospheres)}
-            value={currentPhotosphere.id}
+            value={primaryPhotosphere.id}
             setValue={(id) => {
-              setCurrentPhotosphere(vfe.photospheres[id]);
+              setPrimaryPhotosphere(vfe.photospheres[id]);
+              setSplitPhotosphere(vfe.photospheres[id]);
               onChangePS(id);
             }}
           />
         </Box>
-        {currentPhotosphere.backgroundAudio && (
-          <AudioToggleButton src={currentPhotosphere.backgroundAudio.path} />
+        {primaryPhotosphere.backgroundAudio && (
+          <AudioToggleButton src={primaryPhotosphere.backgroundAudio.path} />
         )}
         <FormControlLabel
           control={
@@ -393,39 +214,40 @@ function PhotosphereViewer({
         />
       </Stack>
 
-      {hotspotArray.length > 0 && (
-        <PopOver
-          key={hotspotPath.join()}
-          hotspotPath={hotspotPath}
-          hotspot={hotspotArray[hotspotArray.length - 1]}
-          pushHotspot={(add: Hotspot2D) => {
-            setHotspotArray([...hotspotArray, add]);
-          }}
-          popHotspot={() => {
-            setHotspotArray(hotspotArray.slice(0, -1));
-          }}
-          closeAll={() => {
-            setHotspotArray([]);
-          }}
-          onUpdateHotspot={onUpdateHotspot}
-          changeScene={(id) => {
-            setCurrentPhotosphere(vfe.photospheres[id]);
-            onChangePS(id);
-          }}
-          photosphereOptions={photosphereOptions}
+      <Stack
+        direction="row"
+        sx={{
+          top: "16px",
+          left: 0,
+          right: 0,
+          width: "100%",
+          minWidth: "150px",
+          height: "100%",
+          padding: "4px",
+          margin: "auto",
+          backgroundColor: "white",
+          borderRadius: "4px",
+          boxShadow: "0 0 4px grey",
+          zIndex: 100,
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <PhotospherePlaceholder
+          viewerProps={viewerProps}
+          isPrimary={true}
+          mapStatic={mapStatic}
+          lockViews={lockViews}
         />
-      )}
-
-      <ReactPhotoSphereViewer
-        key={mapStatic ? "static" : "dynamic"}
-        onReady={handleReady}
-        ref={photoSphereRef}
-        src={defaultPanorama.current}
-        plugins={plugins}
-        height={"100vh"}
-        width={"100%"}
-        navbar={["autorotate", "zoom", "caption", "download", "fullscreen"]}
-      />
+        {isSplitView && (
+          <PhotospherePlaceholder
+            viewerProps={viewerProps}
+            isPrimary={false}
+            mapStatic={mapStatic}
+            lockViews={lockViews}
+          />
+        )}
+      </Stack>
     </>
   );
 }
