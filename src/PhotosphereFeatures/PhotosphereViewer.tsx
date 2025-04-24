@@ -140,7 +140,6 @@ function PhotosphereViewer({
           top: "16px",
           left: 0,
           right: 0,
-          maxWidth: "420px",
           width: "fit-content",
           minWidth: "150px",
           height: "45px",
