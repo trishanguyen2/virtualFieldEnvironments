@@ -157,14 +157,13 @@ function PhotosphereViewer({
       >
         <Box sx={{ padding: "0 5px" }}>
           <Button
-            sx={{ padding: "0", width: "4px", height: "40px" }}
-            variant="contained"
-            color="primary"
+            sx={{ height: "35px" }}
+            variant="outlined"
             onClick={() => {
               setIsSplitView(!isSplitView);
             }}
           >
-            Split View
+            <Typography sx={{ fontSize: "14px" }}>Split View</Typography>
           </Button>
         </Box>
         {isSplitView && (
