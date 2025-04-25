@@ -12,6 +12,11 @@ import {
 } from "@mui/material";
 
 import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
+import {
+  AddPoints,
+  InitializePoints,
+  PointsDisplay,
+} from "../Pages/PageUtility/PointsInterface";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import AudioToggleButton from "../buttons/AudioToggleButton";
 import PhotospherePlaceholder from "./PhotospherePlaceholder";
@@ -212,6 +217,18 @@ function PhotosphereViewer({
           }}
           sx={{ margin: 0 }}
         />
+        <Box sx={{ padding: "0 5px" }}>
+          <Button
+            sx={{ padding: "0", width: "4px", height: "40px" }}
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              void AddPoints(10);
+            }}
+          >
+            Add Points!
+          </Button>
+        </Box>
       </Stack>
 
       <Stack
