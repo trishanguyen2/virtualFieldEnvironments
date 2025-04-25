@@ -5,6 +5,16 @@ import { useNavigate } from "react-router-dom";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { Box, Button, Stack } from "@mui/material";
 
+import { VisitedState } from "../Hooks/HandleVisit.tsx";
+import PhotosphereViewer from "../PhotosphereFeatures/PhotosphereViewer.tsx";
+import { alertMUI, confirmMUI } from "../UI/StyledDialogWrapper.tsx";
+import AddAudio from "../buttons/AddAudio.tsx";
+import AddHotspot from "../buttons/AddHotspot.tsx";
+import AddNavmap from "../buttons/AddNavmap.tsx";
+import AddPhotosphere from "../buttons/AddPhotosphere.tsx";
+import ChangePhotosphere from "../buttons/ChangePhotosphere.tsx";
+import EditNavMap from "../buttons/EditNavMap.tsx";
+import RemovePhotosphere from "../buttons/RemovePhotosphere.tsx";
 import {
   Hotspot3D,
   NavMap,
@@ -15,22 +25,17 @@ import {
   photosphereLinkTooltip,
 } from "./PageUtility/DataStructures.ts";
 import { deleteStoredVFE, save } from "./PageUtility/FileOperations.ts";
-import { VisitedState } from "../Hooks/HandleVisit.tsx";
-import PhotosphereViewer from "../PhotosphereFeatures/PhotosphereViewer.tsx";
-import { alertMUI, confirmMUI } from "../UI/StyledDialogWrapper.tsx";
+import {
+  AddPoints,
+  InitializePoints,
+  PointsDisplay,
+} from "./PageUtility/PointsInterface.tsx";
 import {
   HotspotUpdate,
   convertRuntimeToStored,
   convertVFE,
   updatePhotosphereHotspot,
 } from "./PageUtility/VFEConversion.ts";
-import AddAudio from "../buttons/AddAudio.tsx";
-import AddHotspot from "../buttons/AddHotspot.tsx";
-import AddNavmap from "../buttons/AddNavmap.tsx";
-import AddPhotosphere from "../buttons/AddPhotosphere.tsx";
-import ChangePhotosphere from "../buttons/ChangePhotosphere.tsx";
-import EditNavMap from "../buttons/EditNavMap.tsx";
-import RemovePhotosphere from "../buttons/RemovePhotosphere.tsx";
 
 /** Convert from radians to degrees */
 function radToDeg(num: number): number {
@@ -487,6 +492,24 @@ function PhotosphereEditor({
               variant="contained"
             >
               Export
+            </Button>
+            <Button
+              sx={{ margin: "10px 0" }}
+              onClick={() => {
+                InitializePoints();
+              }}
+              variant="contained"
+            >
+              Gamify!
+            </Button>
+            <Button
+              sx={{ margin: "10px 0" }}
+              onClick={() => {
+                void AddPoints(10);
+              }}
+              variant="contained"
+            >
+              Add Points!
             </Button>
           </>
         )}

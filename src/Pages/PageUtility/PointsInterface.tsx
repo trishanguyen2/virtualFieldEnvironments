@@ -1,6 +1,6 @@
 import localforage from "localforage";
 
-//Initialize Points
+//Initialize or Reset Points
 export function InitializePoints() {
   localforage
     .setItem("Points", 0)
