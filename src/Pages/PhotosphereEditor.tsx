@@ -502,15 +502,6 @@ function PhotosphereEditor({
             >
               Gamify!
             </Button>
-            <Button
-              sx={{ margin: "10px 0" }}
-              onClick={() => {
-                void AddPoints(10);
-              }}
-              variant="contained"
-            >
-              Add Points!
-            </Button>
           </>
         )}
         {showAddFeatures && (

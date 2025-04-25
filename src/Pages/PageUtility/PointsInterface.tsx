@@ -1,8 +1,13 @@
 import localforage from "localforage";
 
-//Initialize or Reset Points
+// Using a separite instance of localforage so we dont interfere with loading of VFEs
+const pointsStore = localforage.createInstance({
+  name: "pointsStore",
+});
+
+//Can also be used to reset points
 export function InitializePoints() {
-  localforage
+  pointsStore
     .setItem("Points", 0)
     .then(() => {
       console.log("Points initialized successfully!");
@@ -12,15 +17,15 @@ export function InitializePoints() {
     });
 }
 
-//Increment Points by Amount
+//Increment Points by Amount, must be whole number
 export async function AddPoints(amount: number) {
-  let points = await localforage.getItem<number>("Points");
+  let points = await pointsStore.getItem<number>("Points");
 
   if (points != null) {
     points = points + amount;
   } else return;
 
-  localforage
+  pointsStore
     .setItem("Points", points)
     .then(() => {
       console.log("Points updated successfully! New points are: " + points);
@@ -35,7 +40,7 @@ export async function AddPoints(amount: number) {
 export function PointsDisplay() {
   //use effect for constant updates?
 
-  localforage
+  pointsStore
     .getItem("Points")
     .then((data) => {
       console.log("Retrieved points:", data);
