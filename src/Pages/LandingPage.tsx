@@ -1,6 +1,5 @@
 import { useState } from "react";
 import PhotosphereTutorial from "../PhotosphereFeatures/PhotosphereTutorialLandingPage";
-import { useNavigate } from "react-router-dom";
 
 import {
   Button,
@@ -27,7 +26,6 @@ function LandingPage({
   onCreateVFE,
   onLoadVFE,
 }: LandingPageProps) {
-  const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -72,9 +70,6 @@ function LandingPage({
           stepIndex={stepIndex}
           setRunTutorial={setRunTutorial}
           setStepIndex={setStepIndex}
-          onNavigateToCreate={() => {
-            navigate("/create");
-          }}
         />
 
         <MuiDropzone
