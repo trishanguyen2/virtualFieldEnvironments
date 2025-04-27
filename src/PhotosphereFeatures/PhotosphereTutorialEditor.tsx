@@ -52,6 +52,12 @@ export default function PhotosphereTutorialEditor({
       placement: "bottom",
       disableBeacon: true,
     },
+    {
+      target: ".split-view-button",
+      content: "click here to view a second scene along with the current one",
+      placement: "bottom",
+      disableBeacon: true,
+    },
   ];
 
   function isFinishedOrSkipped(status: Status): status is "finished" | "skipped" {
