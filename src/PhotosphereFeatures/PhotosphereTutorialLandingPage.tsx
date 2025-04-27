@@ -12,7 +12,6 @@ interface Props {
   stepIndex: number;
   setRunTutorial: React.Dispatch<React.SetStateAction<boolean>>;
   setStepIndex: React.Dispatch<React.SetStateAction<number>>;
-  onNavigateToCreate: () => void;
 }
 
 export default function PhotosphereTutorial({
@@ -20,7 +19,6 @@ export default function PhotosphereTutorial({
   stepIndex,
   setRunTutorial,
   setStepIndex,
-  onNavigateToCreate,
 }: Props) {
   const tutorialSteps: Step[] = [
     {
@@ -83,7 +81,6 @@ export default function PhotosphereTutorial({
             if (isLastLandingStep) {
               setStepIndex(index + 1);
               localStorage.setItem("resumeTutorial", "true");
-              onNavigateToCreate();
             }
           } 
           else if (action === ACTIONS.PREV) 
