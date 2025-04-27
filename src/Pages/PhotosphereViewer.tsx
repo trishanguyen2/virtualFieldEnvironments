@@ -16,7 +16,7 @@ import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import AudioToggleButton from "../buttons/AudioToggleButton";
 import PhotospherePlaceholder from "../PhotosphereFeatures/PhotospherePlaceholder";
 import PhotosphereSelector from "../PhotosphereFeatures/PhotosphereSelector";
-import PhotosphereTutorialCreate from "../PhotosphereFeatures/PhotosphereTutorialCreate.tsx";
+import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialCreate.tsx";
 
 
 // modified from https://mui.com/material-ui/react-switch/#customization 'iOS style'
@@ -134,7 +134,7 @@ function PhotosphereViewer({
 
   return (
     <>
-      <PhotosphereTutorialCreate /> {}
+      <PhotosphereTutorialEditor /> {}
       <Stack
         direction="row"
         sx={{
