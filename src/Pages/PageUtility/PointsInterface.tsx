@@ -5,6 +5,19 @@ const pointsStore = localforage.createInstance({
   name: "pointsStore",
 });
 
+let maxPoints = 100;
+const points = await pointsStore.getItem<number>("Points");
+
+export function getPointTotal() {
+  console.log("Points total:" + points);
+  return points ?? 0;
+}
+
+export function getMaxPoints() {
+  //use effect for constant updates?
+  return maxPoints;
+}
+
 //Can also be used to reset points
 export function InitializePoints() {
   pointsStore
@@ -15,7 +28,13 @@ export function InitializePoints() {
     .catch((error) => {
       console.error("Error storing data:", error);
     });
+
+  //initialize this if component does not exist, load from VFE save data otherwise
+  maxPoints = 100;
 }
+
+// will need a set maxPoints function eventually that saves the max points to VFE
+// save data when changed in the editor
 
 //Increment Points by Amount, must be whole number
 export async function AddPoints(amount: number) {
@@ -36,16 +55,14 @@ export async function AddPoints(amount: number) {
     });
 }
 
-// Show current points
-export function PointsDisplay() {
-  //use effect for constant updates?
+// export async function GetProgressBarData() {
+//   const [points, setPoints] = useState(0);
+//   const maxPoints = getMaxPoints();
+//   const pointsFromMemory = await getPointTotal();
 
-  pointsStore
-    .getItem("Points")
-    .then((data) => {
-      console.log("Retrieved points:", data);
-    })
-    .catch((error) => {
-      console.error("Error retrieving data:", error);
-    });
-}
+//   useEffect(() => {
+//     setPoints(pointsFromMemory ? pointsFromMemory : 0);
+//   }, [pointsFromMemory]);
+
+//   return [points, maxPoints];
+// }

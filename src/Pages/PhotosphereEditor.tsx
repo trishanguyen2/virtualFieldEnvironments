@@ -25,11 +25,7 @@ import {
   photosphereLinkTooltip,
 } from "./PageUtility/DataStructures.ts";
 import { deleteStoredVFE, save } from "./PageUtility/FileOperations.ts";
-import {
-  AddPoints,
-  InitializePoints,
-  PointsDisplay,
-} from "./PageUtility/PointsInterface.tsx";
+import { InitializePoints } from "./PageUtility/PointsInterface.tsx";
 import {
   HotspotUpdate,
   convertRuntimeToStored,
