@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { ViewerAPI } from "react-photo-sphere-viewer";
 
+import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import {
   Box,
   Button,
+  Drawer,
   FormControlLabel,
+  IconButton,
   Stack,
   Switch,
   SwitchProps,
@@ -14,6 +17,7 @@ import {
 import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import AudioToggleButton from "../buttons/AudioToggleButton";
+import PhotosphereHotspotSideBar from "./PhotosphereHotspotSidebar";
 import PhotospherePlaceholder from "./PhotospherePlaceholder";
 import PhotosphereSelector from "./PhotosphereSelector";
 
@@ -248,6 +252,19 @@ function PhotosphereViewer({
           />
         )}
       </Stack>
+      <Box
+        sx={{
+          position: "fixed",
+          top: "16px",
+          right: "16px",
+          backgroundColor: "white",
+          borderRadius: "50%",
+          boxShadow: "0 0 4px grey",
+          zIndex: 110, // Ensure it appears above other elements
+        }}
+      >
+        <PhotosphereHotspotSideBar {...viewerProps} />
+      </Box>
     </>
   );
 }
