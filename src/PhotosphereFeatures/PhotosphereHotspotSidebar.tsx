@@ -1,9 +1,9 @@
 import * as React from "react";
-import { key } from "localforage";
 
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import {
   Box,
@@ -180,7 +180,7 @@ function PhotosphereHotspotSideBar({
         }}
         onClick={toggleDrawer(true)}
       >
-        <LocationSearchingIcon id="sidebar-toggle-button-icon" />
+        <LocationOnIcon id="sidebar-toggle-button-icon" sx={{ fontSize: 35 }} />
       </IconButton>
       <Drawer anchor="right" open={expandDrawer} onClose={toggleDrawer(false)}>
         {drawer(vfe)}
