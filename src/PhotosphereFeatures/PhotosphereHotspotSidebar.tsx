@@ -65,7 +65,7 @@ function PhotosphereHotspotSideBar({
     hotspot.data.tag === "Image" ? (
       <>
         <ListItemButton key={hotspot.id} onClick={() => toggleList(hotspot.id)}>
-          <ListItemText primary={hotspot.id} />
+          <ListItemText primary={hotspot.tooltip} />
           {Object.keys(hotspot.data.hotspots).length > 0 ? (
             <>{expandList[hotspot.id] ? <ExpandLess /> : <ExpandMore />}</>
           ) : null}
@@ -87,7 +87,7 @@ function PhotosphereHotspotSideBar({
     ) : (
       <>
         <ListItemButton key={hotspot.id}>
-          <ListItemText primary={hotspot.id} />
+          <ListItemText primary={hotspot.tooltip} />
         </ListItemButton>
       </>
     );
@@ -97,7 +97,7 @@ function PhotosphereHotspotSideBar({
       "Image" ? (
       <>
         <ListItemButton key={hotspot.id} onClick={() => toggleList(hotspot.id)}>
-          <ListItemText primary={hotspot.id} />
+          <ListItemText primary={hotspot.tooltip} />
           {Object.keys(hotspot.data.hotspots).length > 0 ? (
             <>{expandList[hotspot.id] ? <ExpandLess /> : <ExpandMore />}</>
           ) : null}
@@ -119,7 +119,7 @@ function PhotosphereHotspotSideBar({
     ) : (
       <>
         <ListItemButton key={hotspot.id}>
-          <ListItemText primary={hotspot.id} />
+          <ListItemText primary={hotspot.tooltip} />
         </ListItemButton>
       </>
     );
