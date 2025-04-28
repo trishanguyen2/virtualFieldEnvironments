@@ -14,8 +14,10 @@ import {
 import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import AudioToggleButton from "../buttons/AudioToggleButton";
-import PhotospherePlaceholder from "./PhotospherePlaceholder";
-import PhotosphereSelector from "./PhotosphereSelector";
+import PhotospherePlaceholder from "../PhotosphereFeatures/PhotospherePlaceholder";
+import PhotosphereSelector from "../PhotosphereFeatures/PhotosphereSelector";
+import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialCreate.tsx";
+
 
 // modified from https://mui.com/material-ui/react-switch/#customization 'iOS style'
 const StyledSwitch = styled((props: SwitchProps) => (
@@ -132,6 +134,7 @@ function PhotosphereViewer({
 
   return (
     <>
+      <PhotosphereTutorialEditor /> {}
       <Stack
         direction="row"
         sx={{
@@ -157,6 +160,7 @@ function PhotosphereViewer({
         <Box sx={{ padding: "0 5px" }}>
           <Button
             sx={{ padding: "0", width: "4px", height: "40px" }}
+            className="split-view-button"
             variant="contained"
             color="primary"
             onClick={() => {

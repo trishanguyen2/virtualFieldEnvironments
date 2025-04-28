@@ -6,7 +6,7 @@ import { VFE } from "./PageUtility/DataStructures.ts";
 import { load } from "./PageUtility/FileOperations.ts";
 import LandingPage from "../Pages/LandingPage.tsx";
 import PhotosphereEditor from "./PhotosphereEditor.tsx";
-import PhotosphereViewer from "../PhotosphereFeatures/PhotosphereViewer.tsx";
+import PhotosphereViewer from "./PhotosphereViewer.tsx";
 import Prototype from "../Prototype/Prototype.tsx";
 import { convertRuntimeToStored, convertVFE } from "./PageUtility/VFEConversion.ts";
 import VFELoader from "./PageUtility/VFELoader.tsx";
