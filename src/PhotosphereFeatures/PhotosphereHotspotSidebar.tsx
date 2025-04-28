@@ -1,4 +1,5 @@
 import * as React from "react";
+import { key } from "localforage";
 
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -16,7 +17,7 @@ import {
   ListItemText,
 } from "@mui/material";
 
-import { HotspotData, VFE } from "../Pages/PageUtility/DataStructures";
+import { Hotspot2D, Hotspot3D, VFE } from "../Pages/PageUtility/DataStructures";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 
 export interface PhotosphereHotspotSideBarProps {
@@ -35,16 +36,19 @@ function PhotosphereHotspotSideBar({
   onChangePS,
   onUpdateHotspot,
 }: PhotosphereHotspotSideBarProps) {
-  const [state, setState] = React.useState({
-    top: false,
-    left: false,
-    bottom: false,
-    right: false,
-  });
+  const [expandDrawer, setExpandDrawer] = React.useState(false);
+  const [expandList, setExpandList] = React.useState<{
+    [key: string]: boolean;
+  }>({});
+  const toggleList = (listId: string) => {
+    setExpandList((prev) => ({
+      ...prev,
+      [listId]: !prev[listId],
+    }));
+  };
 
-  const toggleDrawer =
-    (anchor: Anchor, open: boolean) =>
-    (event: React.KeyboardEvent | React.MouseEvent) => {
+  function toggleDrawer(open: boolean) {
+    return (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
         event.type === "keydown" &&
         ((event as React.KeyboardEvent).key === "Tab" ||
@@ -53,99 +57,135 @@ function PhotosphereHotspotSideBar({
         return;
       }
 
-      setState({ ...state, [anchor]: open });
+      setExpandDrawer(open);
     };
+  }
 
-  const list = (anchor: Anchor) => (
-    <Box
-      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
-      role="presentation"
-    >
+  const nestedHotspotList = (hotspot: Hotspot2D) =>
+    hotspot.data.tag === "Image" ? (
+      <>
+        <ListItemButton key={hotspot.id} onClick={() => toggleList(hotspot.id)}>
+          <ListItemText primary={hotspot.id} />
+          {Object.keys(hotspot.data.hotspots).length > 0 ? (
+            <>{expandList[hotspot.id] ? <ExpandLess /> : <ExpandMore />}</>
+          ) : null}
+        </ListItemButton>
+        <>
+          {Object.keys(hotspot.data.hotspots).length > 0 ? (
+            <Collapse in={expandList[hotspot.id]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {Array.from(Object.values(hotspot.data.hotspots)).map(
+                  (nestedHotspot) => (
+                    <>{nestedHotspotList(nestedHotspot)}</>
+                  ),
+                )}
+              </List>
+            </Collapse>
+          ) : null}
+        </>
+      </>
+    ) : (
+      <>
+        <ListItemButton key={hotspot.id}>
+          <ListItemText primary={hotspot.id} />
+        </ListItemButton>
+      </>
+    );
+
+  const hotspotList = (hotspot: Hotspot3D) =>
+    hotspot.data.tag === "PhotosphereLink" ? null : hotspot.data.tag ===
+      "Image" ? (
+      <>
+        <ListItemButton key={hotspot.id} onClick={() => toggleList(hotspot.id)}>
+          <ListItemText primary={hotspot.id} />
+          {Object.keys(hotspot.data.hotspots).length > 0 ? (
+            <>{expandList[hotspot.id] ? <ExpandLess /> : <ExpandMore />}</>
+          ) : null}
+        </ListItemButton>
+        <>
+          {Object.keys(hotspot.data.hotspots).length > 0 ? (
+            <Collapse in={expandList[hotspot.id]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {Array.from(Object.values(hotspot.data.hotspots)).map(
+                  (nestedHotspot) => (
+                    <>{nestedHotspotList(nestedHotspot)}</>
+                  ),
+                )}
+              </List>
+            </Collapse>
+          ) : null}
+        </>
+      </>
+    ) : (
+      <>
+        <ListItemButton key={hotspot.id}>
+          <ListItemText primary={hotspot.id} />
+        </ListItemButton>
+      </>
+    );
+
+  const drawer = (vfe: VFE) => (
+    <Box sx={{ width: 250 }} role="presentation">
       <List>
         <ListItem component="div" disablePadding>
-          <ListItem>
-            <IconButton
-              id="sidebar-closer-button"
-              onClick={toggleDrawer(anchor, true)}
-            >
-              <CloseRoundedIcon id="sidebar-close-button-icon" />
-            </IconButton>
-            <ListItemText>Hotspot Sidebar</ListItemText>
-          </ListItem>
+          <IconButton id="sidebar-closer-button" onClick={toggleDrawer(false)}>
+            <CloseRoundedIcon color="primary" id="sidebar-close-button-icon" />
+          </IconButton>
+          <Divider orientation="vertical" variant="middle" flexItem />
+          <ListItemText
+            sx={{
+              alignContent: "center",
+            }}
+          >
+            Hotspot Sidebar
+          </ListItemText>
         </ListItem>
       </List>
       <Divider />
       <List>
         {Array.from(Object.values(vfe.photospheres)).map((photosphere) => (
-          <ListItem key={photosphere.id} disablePadding>
-            <ListItemButton onClick={openList}>
+          <React.Fragment key={photosphere.id}>
+            <ListItemButton onClick={() => toggleList(photosphere.id)}>
               <ListItemText primary={photosphere.id} />
-              {open ? <ExpandLess /> : <ExpandMore />}
+              {expandList[photosphere.id] ? (
+                <ExpandLess color="primary" />
+              ) : (
+                <ExpandMore color="primary" />
+              )}
             </ListItemButton>
-            <Collapse in={open} timeout="auto" unmountOnExit>
+            <Collapse
+              in={expandList[photosphere.id]}
+              timeout="auto"
+              unmountOnExit
+            >
               <List component="div" disablePadding>
                 {Array.from(Object.values(photosphere.hotspots))?.map(
-                  (hotspot) => (
-                    <ListItem key={hotspot.id} component="div" disablePadding>
-                      <ListItemButton onClick={openList}>
-                        <ListItemText primary={hotspot.id} />
-                      </ListItemButton>
-                      {"hotspots" in hotspot && hotspot?.hotspots ? (
-                        <ListItemButton onClick={openList}>
-                          {open ? <ExpandLess /> : <ExpandMore />}
-                        </ListItemButton>
-                      ) : null}
-                      {"hotspots" in hotspot && hotspot?.hotspots ? (
-                        <Collapse in={open} timeout="auto" unmountOnExit>
-                          <List>
-                            {Array.from(Object.values(hotspot.hotspots))?.map(
-                              (nestedHotspot) => (
-                                <ListItemButton onClick={openList}>
-                                  <ListItemText primary={nestedHotspot.id} />
-                                </ListItemButton>
-                              ),
-                            )}
-                          </List>
-                        </Collapse>
-                      ) : null}
-                    </ListItem>
-                  ),
+                  (hotspot) => hotspotList(hotspot),
                 )}
               </List>
             </Collapse>
-          </ListItem>
+          </React.Fragment>
         ))}
       </List>
     </Box>
   );
 
   return (
-    <div>
-      {([anchorOptions] as const).map((anchor) => (
-        <React.Fragment key={anchor}>
-          <IconButton
-            id="sidebar-toggle-button"
-            color="primary"
-            onClick={toggleDrawer(anchor, true)}
-            sx={{
-              position: "fixed",
-              top: "16px",
-              right: "16px",
-              zIndex: 1000,
-            }}
-          >
-            <LocationSearchingIcon id="sidebar-toggle-button-icon" />
-          </IconButton>
-          <Drawer
-            anchor={anchor}
-            open={state[anchor]}
-            onClose={toggleDrawer(anchor, false)}
-          >
-            {list(anchor)}
-          </Drawer>
-        </React.Fragment>
-      ))}
-    </div>
+    <>
+      <IconButton
+        id="sidebar-toggle-button"
+        color="primary"
+        sx={{
+          alignContent: "center",
+        }}
+        onClick={toggleDrawer(true)}
+      >
+        <LocationSearchingIcon id="sidebar-toggle-button-icon" />
+      </IconButton>
+      <Drawer anchor="right" open={expandDrawer} onClose={toggleDrawer(false)}>
+        {drawer(vfe)}
+      </Drawer>
+    </>
   );
 }
 
