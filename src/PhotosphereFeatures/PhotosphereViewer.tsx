@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { ViewerAPI } from "react-photo-sphere-viewer";
 
-import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import {
   Box,
   Button,
-  Drawer,
   FormControlLabel,
-  IconButton,
   Stack,
   Switch,
   SwitchProps,
