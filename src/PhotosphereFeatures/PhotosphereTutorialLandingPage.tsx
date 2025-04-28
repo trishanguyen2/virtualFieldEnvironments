@@ -67,6 +67,9 @@ export default function PhotosphereTutorial({
           display: "none",
         }
        }}
+       locale={{
+        last: "Done",
+       }}
       callback={(data: CallBackProps) => {
         const { status, action, index, type } = data;
 

@@ -82,6 +82,9 @@ export default function PhotosphereTutorialCreate() {
           display: "none",
         }
       }}
+      locale={{
+        last: "Done",
+      }}
       callback={(data: CallBackProps) => {
         const { status, action, index, type } = data;
         if (isFinishedOrSkipped(status)) {

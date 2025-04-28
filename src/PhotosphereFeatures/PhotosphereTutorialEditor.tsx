@@ -96,7 +96,10 @@ export default function PhotosphereTutorialEditor({
         buttonClose: {
           display: "none",
         }
-     }}
+      }}
+      locale={{
+        last: "Done",
+      }}
       callback={(data: CallBackProps) => {
         const { status, action, index, type } = data;
 
