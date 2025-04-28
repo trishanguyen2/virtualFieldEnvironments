@@ -1,4 +1,6 @@
+/* eslint-disable func-style */
 import localforage from "localforage";
+import { useSyncExternalStore } from "react";
 
 // Using a separite instance of localforage so we dont interfere with loading of VFEs
 const pointsStore = localforage.createInstance({
@@ -8,10 +10,21 @@ const pointsStore = localforage.createInstance({
 let maxPoints = 100;
 const points = await pointsStore.getItem<number>("Points");
 
-export function getPointTotal() {
-  console.log("Points total:" + points);
-  return points ?? 0;
-}
+export const getPoints = () => {
+  return points;
+};
+
+export const subscribe = (callback: () => void): (() => void) => {
+  window.addEventListener("storage", callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+  };
+};
+
+// export function getPointTotal() {
+//   console.log("Points total:" + points);
+//   return points ?? 0;
+// }
 
 export function getMaxPoints() {
   //use effect for constant updates?
@@ -23,6 +36,7 @@ export function InitializePoints() {
   pointsStore
     .setItem("Points", 0)
     .then(() => {
+      window.dispatchEvent(new Event("storage"));
       console.log("Points initialized successfully!");
     })
     .catch((error) => {
@@ -42,12 +56,16 @@ export async function AddPoints(amount: number) {
 
   if (points != null) {
     points = points + amount;
-  } else return;
+  } else {
+    console.log("No Points!");
+    return;
+  }
 
   pointsStore
     .setItem("Points", points)
     .then(() => {
       console.log("Points updated successfully! New points are: " + points);
+      window.dispatchEvent(new Event("storage"));
       return;
     })
     .catch((error) => {

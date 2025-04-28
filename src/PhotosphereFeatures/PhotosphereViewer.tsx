@@ -1,5 +1,5 @@
 import localforage from "localforage";
-import React, { useState } from "react";
+import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { ViewerAPI } from "react-photo-sphere-viewer";
 
 import {
@@ -16,7 +16,8 @@ import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
 import {
   AddPoints,
   getMaxPoints,
-  getPointTotal,
+  getPoints,
+  subscribe,
 } from "../Pages/PageUtility/PointsInterface";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import AudioToggleButton from "../buttons/AudioToggleButton";
@@ -122,7 +123,7 @@ function PhotosphereViewer({
   const [isSplitView, setIsSplitView] = useState(false);
   const [lockViews, setLockViews] = useState(false);
 
-  const points = getPointTotal();
+  const points = useSyncExternalStore(subscribe, getPoints);
   const maxPoints = getMaxPoints();
 
   const viewerProps: ViewerProps = {
@@ -290,7 +291,7 @@ function PhotosphereViewer({
         }}
         gap={1}
       >
-        <progress value={points} max={maxPoints} />{" "}
+        <progress value={points ?? 0} max={maxPoints} />{" "}
       </Stack>
     </>
   );
