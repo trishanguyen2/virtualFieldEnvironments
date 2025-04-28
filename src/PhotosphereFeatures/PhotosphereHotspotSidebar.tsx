@@ -19,8 +19,6 @@ import {
 import { HotspotData, VFE } from "../Pages/PageUtility/DataStructures";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 
-type Anchor = "top" | "left" | "bottom" | "right";
-
 export interface PhotosphereHotspotSideBarProps {
   vfe: VFE;
   currentPS: string;
@@ -30,12 +28,6 @@ export interface PhotosphereHotspotSideBarProps {
     update: HotspotUpdate | null,
   ) => void;
 }
-
-let anchorOptions: Anchor = "right";
-const [open, setOpen] = React.useState(true);
-const openList = () => {
-  setOpen(!open);
-};
 
 function PhotosphereHotspotSideBar({
   vfe,
@@ -49,8 +41,6 @@ function PhotosphereHotspotSideBar({
     bottom: false,
     right: false,
   });
-
-  const photospheres = new Map(Object.entries(vfe.photospheres));
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
