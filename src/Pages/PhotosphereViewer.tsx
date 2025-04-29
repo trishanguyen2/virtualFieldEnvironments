@@ -8,6 +8,7 @@ import {
   Stack,
   Switch,
   SwitchProps,
+  Typography,
   styled,
 } from "@mui/material";
 
@@ -159,28 +160,29 @@ function PhotosphereViewer({
       >
         <Box sx={{ padding: "0 5px" }}>
           <Button
-            sx={{ padding: "0", width: "4px", height: "40px" }}
-            className="split-view-button"
-            variant="contained"
-            color="primary"
+            sx={{ height: "35px" }}
+            variant="outlined"
             onClick={() => {
               setIsSplitView(!isSplitView);
             }}
           >
-            Split View
+            <Typography sx={{ fontSize: "14px" }}>Split View</Typography>
           </Button>
         </Box>
         {isSplitView && (
           <Box>
             <Button
-              sx={{ padding: "0", width: "4px", height: "40px" }}
-              variant="contained"
-              color={lockViews ? "primary" : "secondary"}
+              variant={lockViews ? "contained" : "outlined"}
+              sx={{
+                height: "35px",
+              }}
               onClick={() => {
                 setLockViews(!lockViews);
               }}
             >
-              Lock Views
+              <Typography sx={{ fontSize: "14px" }}>
+                {lockViews ? "Unl" : "L"}ock Views
+              </Typography>
             </Button>
           </Box>
         )}
