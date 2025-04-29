@@ -13,6 +13,7 @@ import {
 
 import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
+import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspotSidebar.tsx";
 import PhotospherePlaceholder from "../PhotosphereFeatures/PhotospherePlaceholder";
 import PhotosphereSelector from "../PhotosphereFeatures/PhotosphereSelector";
 import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialCreate.tsx";
@@ -261,7 +262,15 @@ function PhotosphereViewer({
           zIndex: 110, // Ensure it appears above other elements
         }}
       >
-        <PhotosphereHotspotSideBar {...viewerProps} />
+        <PhotosphereHotspotSideBar
+          vfe={vfe}
+          currentPS={primaryPhotosphere.id}
+          setValue={(id) => {
+            setPrimaryPhotosphere(vfe.photospheres[id]);
+            setSplitPhotosphere(vfe.photospheres[id]);
+            onChangePS(id);
+          }}
+        />
       </Box>
     </>
   );
