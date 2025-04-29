@@ -1,4 +1,3 @@
-/* eslint-disable func-style */
 import localforage from "localforage";
 import { useState } from "react";
 
@@ -15,7 +14,6 @@ export const getPoints = () => {
 };
 
 export function getMaxPoints() {
-  //use effect for constant updates?
   return maxPoints;
 }
 
@@ -34,9 +32,6 @@ export function InitializePoints() {
   //initialize this if component does not exist, load from VFE save data otherwise
   maxPoints = 100;
 }
-
-// will need a set maxPoints function eventually that saves the max points to VFE
-// save data when changed in the editor
 
 export function usePoints() {
   const [points, setPoints] = useState(getPoints());
