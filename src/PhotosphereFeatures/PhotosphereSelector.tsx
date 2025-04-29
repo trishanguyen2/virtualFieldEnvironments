@@ -1,4 +1,6 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { useState } from "react";
+import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialEditor";
 
 export interface PhotosphereSelectorProps {
   options: string[];
@@ -18,12 +20,22 @@ function PhotosphereSelector({
     return size === "small" ? value : defaultValue;
   }
 
+const [runTutorial, setRunTutorial] = useState(false);
+const [stepIndex, setStepIndex] = useState(0);
+
   return (
     <FormControl size={size}>
+      <PhotosphereTutorialEditor
+        runTutorial={runTutorial}
+        stepIndex={stepIndex}
+        setRunTutorial={setRunTutorial}
+        setStepIndex={setStepIndex}
+      />
       <InputLabel id="scene-select" sx={ifSmall({ fontSize: "14px" })}>
         Scene
       </InputLabel>
       <Select
+        className="scene-header"
         labelId="scene-select"
         label="Scene"
         value={value}
