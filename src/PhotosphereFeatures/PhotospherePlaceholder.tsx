@@ -27,7 +27,7 @@ import {
 } from "../Pages/PageUtility/DataStructures";
 import PopOver from "../Pages/PageUtility/PopOver";
 import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
-import { ViewerProps } from "./PhotosphereViewer";
+import { ViewerProps } from "../Pages/PhotosphereViewer";
 
 /** Convert sizes from numbers to strings ending in "px" */
 function sizeToStr(val: number): string {
@@ -215,7 +215,7 @@ function PhotospherePlaceholder({
         getLinkTooltip(_content: string, link: VirtualTourLink): string {
           return (link.data as LinkData).tooltip;
         },
-      } as VirtualTourPluginConfig,
+      } as unknown as VirtualTourPluginConfig, // needed to make build happy
     ],
   ];
   isPrimary &&
@@ -243,8 +243,23 @@ function PhotospherePlaceholder({
       // setCurrentPhotosphere has to be used to get the current state value because
       // the value of currentPhotosphere does not get updated in an event listener
       setCurrentPhotosphere((currentState) => {
-        const passMarker = currentState.hotspots[marker.config.id];
-        setHotspotArray([passMarker]);
+        let passMarker: Hotspot2D | Hotspot3D = currentState.hotspots[marker.config.id];
+        let passMarkerList: (Hotspot2D | Hotspot3D)[] = [passMarker];
+
+        const lastEditedHotspotFlag = Number(sessionStorage.getItem('lastEditedHotspotFlag'));
+        const lastEditedHotspot = JSON.parse(sessionStorage.getItem('lastEditedHotspot') || "{}");
+
+        if (lastEditedHotspotFlag == 1 && lastEditedHotspot != null && lastEditedHotspot.length > 1 && lastEditedHotspot[0] == marker.config.id) {
+          for (let i = 1; i < lastEditedHotspot.length; ++i) {
+            if (passMarker.data.tag == "Image") {
+              passMarkerList.push( passMarker.data.hotspots[lastEditedHotspot[i]] );
+              passMarker = passMarker.data.hotspots[lastEditedHotspot[i]];
+            }
+          }
+          sessionStorage.setItem('lastEditedHotspotFlag', "0");
+        }
+        
+        setHotspotArray(passMarkerList);
         handleVisit(currentState.id, marker.config.id);
         return currentState;
       });
@@ -285,7 +300,8 @@ function PhotospherePlaceholder({
 
     virtualTour.setNodes(nodes, currentPS);
     virtualTour.addEventListener("node-changed", ({ node }) => {
-      setCurrentPhotosphere(vfe.photospheres[node.id]);
+      // want to travel both viewers
+      states.setStates.forEach((func) => func(vfe.photospheres[node.id]));
       onChangePS(node.id);
       setHotspotArray([]); // clear popovers on scene change
     });
