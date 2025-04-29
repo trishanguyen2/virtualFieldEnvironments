@@ -132,6 +132,9 @@ function PhotosphereEditor({
       },
     };
 
+    sessionStorage.setItem('lastEditedHotspot', JSON.stringify(hotspotPath))
+    sessionStorage.setItem('lastEditedHotspotFlag', "1")
+
     onUpdateVFE(updatedVFE);
     setUpdateTrigger((prev) => prev + 1);
   }
