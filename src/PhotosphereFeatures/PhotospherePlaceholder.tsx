@@ -244,19 +244,20 @@ function PhotospherePlaceholder({
       // the value of currentPhotosphere does not get updated in an event listener
       setCurrentPhotosphere((currentState) => {
         let passMarker = currentState.hotspots[marker.config.id];
+        let passMarkerList = [passMarker];
 
         const lastEditedHotspotFlag = Number(sessionStorage.getItem('lastEditedHotspotFlag'));
         const lastEditedHotspot = JSON.parse(sessionStorage.getItem('lastEditedHotspot'));
 
-        console.log("lastEditedHotspotFlag", lastEditedHotspotFlag)
-
         if (lastEditedHotspotFlag == 1 && lastEditedHotspot != null && lastEditedHotspot.length > 1 && lastEditedHotspot[0] == marker.config.id) {
           for (let i = 1; i < lastEditedHotspot.length; ++i) {
+            passMarkerList.push( passMarker.data.hotspots[lastEditedHotspot[i]] );
             passMarker = passMarker.data.hotspots[lastEditedHotspot[i]];
           }
           sessionStorage.setItem('lastEditedHotspotFlag', "0")
         }
-        setHotspotArray([passMarker]);
+
+        setHotspotArray(passMarkerList);
         handleVisit(currentState.id, marker.config.id);
         return currentState;
       });
