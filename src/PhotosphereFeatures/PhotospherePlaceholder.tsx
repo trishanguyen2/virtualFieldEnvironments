@@ -215,7 +215,7 @@ function PhotospherePlaceholder({
         getLinkTooltip(_content: string, link: VirtualTourLink): string {
           return (link.data as LinkData).tooltip;
         },
-      } as VirtualTourPluginConfig,
+      } as unknown as VirtualTourPluginConfig, // needed to make build happy
     ],
   ];
   isPrimary &&
@@ -285,7 +285,8 @@ function PhotospherePlaceholder({
 
     virtualTour.setNodes(nodes, currentPS);
     virtualTour.addEventListener("node-changed", ({ node }) => {
-      setCurrentPhotosphere(vfe.photospheres[node.id]);
+      // want to travel both viewers
+      states.setStates.forEach((func) => func(vfe.photospheres[node.id]));
       onChangePS(node.id);
       setHotspotArray([]); // clear popovers on scene change
     });
