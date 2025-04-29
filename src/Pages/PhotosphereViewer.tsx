@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 
 import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
+import { usePoints } from "../Pages/PageUtility/PointsInterface.tsx";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspotSidebar.tsx";
 import PhotospherePlaceholder from "../PhotosphereFeatures/PhotospherePlaceholder";
@@ -119,6 +120,9 @@ function PhotosphereViewer({
   const [isSplitView, setIsSplitView] = useState(false);
   const [lockViews, setLockViews] = useState(false);
 
+  const [points, AddPoints] = usePoints();
+  const maxPoints = 100;
+
   const viewerProps: ViewerProps = {
     vfe,
     currentPS,
@@ -218,6 +222,18 @@ function PhotosphereViewer({
           }}
           sx={{ margin: 0 }}
         />
+        <Box sx={{ padding: "0 5px" }}>
+          <Button
+            sx={{ padding: "0", width: "4px", height: "40px" }}
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              void AddPoints(10);
+            }}
+          >
+            Add Points!
+          </Button>
+        </Box>
       </Stack>
       <Stack
         direction="row"
@@ -274,6 +290,30 @@ function PhotosphereViewer({
           }}
         />
       </Box>
+      <Stack
+        direction="row"
+        sx={{
+          position: "absolute",
+          bottom: "44px",
+          left: 0,
+          right: 0,
+          maxWidth: "100%",
+          width: "fit-content",
+          minWidth: "150px",
+          height: "25px",
+          padding: "4px",
+          margin: "auto",
+          backgroundColor: "white",
+          borderRadius: "4px",
+          boxShadow: "0 0 4px grey",
+          zIndex: 100,
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+        gap={1}
+      >
+        <progress value={points ?? 0} max={maxPoints} />{" "}
+      </Stack>
     </>
   );
 }
