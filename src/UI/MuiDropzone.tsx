@@ -22,6 +22,7 @@ interface MuiDropzoneProps {
   label: string;
   sx?: SxProps;
   onInput: (files: File[]) => void;
+  className?: string;
 }
 
 // default styling --> overridden by sx prop
@@ -47,7 +48,7 @@ const DropzoneInput = styled("input", {
 }));
 
 export const MuiDropzone = forwardRef<HTMLDivElement, MuiDropzoneProps>(
-  function MuiDropzone({ label, sx, onInput }: MuiDropzoneProps, ref) {
+  function MuiDropzone({ label, sx, onInput, className}: MuiDropzoneProps, ref) {
     const onDrop = useCallback(
       (acceptedFiles: File[]) => {
         onInput(acceptedFiles);
@@ -61,7 +62,11 @@ export const MuiDropzone = forwardRef<HTMLDivElement, MuiDropzoneProps>(
     });
 
     return (
-      <DropzoneRoot sx={sx} ref={ref} {...getRootProps()}>
+      <DropzoneRoot 
+        sx={sx} 
+        ref={ref} 
+        className={className}
+        {...getRootProps()}>
         <DropzoneInput {...getInputProps()} />
         <Typography sx={{ margin: "0 auto" }}>{label}</Typography>
       </DropzoneRoot>

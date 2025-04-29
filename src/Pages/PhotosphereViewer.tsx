@@ -8,15 +8,18 @@ import {
   Stack,
   Switch,
   SwitchProps,
+  Typography,
   styled,
 } from "@mui/material";
 
 import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
 import { usePoints } from "../Pages/PageUtility/PointsInterface";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
+import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspotSidebar.tsx";
+import PhotospherePlaceholder from "../PhotosphereFeatures/PhotospherePlaceholder";
+import PhotosphereSelector from "../PhotosphereFeatures/PhotosphereSelector";
+import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialCreate.tsx";
 import AudioToggleButton from "../buttons/AudioToggleButton";
-import PhotospherePlaceholder from "./PhotospherePlaceholder";
-import PhotosphereSelector from "./PhotosphereSelector";
 
 // modified from https://mui.com/material-ui/react-switch/#customization 'iOS style'
 const StyledSwitch = styled((props: SwitchProps) => (
@@ -136,6 +139,7 @@ function PhotosphereViewer({
 
   return (
     <>
+      <PhotosphereTutorialEditor /> {}
       <Stack
         direction="row"
         sx={{
@@ -160,27 +164,29 @@ function PhotosphereViewer({
       >
         <Box sx={{ padding: "0 5px" }}>
           <Button
-            sx={{ padding: "0", width: "4px", height: "40px" }}
-            variant="contained"
-            color="primary"
+            sx={{ height: "35px" }}
+            variant="outlined"
             onClick={() => {
               setIsSplitView(!isSplitView);
             }}
           >
-            Split View
+            <Typography sx={{ fontSize: "14px" }}>Split View</Typography>
           </Button>
         </Box>
         {isSplitView && (
           <Box>
             <Button
-              sx={{ padding: "0", width: "4px", height: "40px" }}
-              variant="contained"
-              color={lockViews ? "primary" : "secondary"}
+              variant={lockViews ? "contained" : "outlined"}
+              sx={{
+                height: "35px",
+              }}
               onClick={() => {
                 setLockViews(!lockViews);
               }}
             >
-              Lock Views
+              <Typography sx={{ fontSize: "14px" }}>
+                {lockViews ? "Unl" : "L"}ock Views
+              </Typography>
             </Button>
           </Box>
         )}
@@ -287,6 +293,27 @@ function PhotosphereViewer({
       >
         <progress value={points ?? 0} max={maxPoints} />{" "}
       </Stack>
+      <Box
+        sx={{
+          position: "fixed",
+          top: "16px",
+          right: "16px",
+          backgroundColor: "white",
+          borderRadius: "50%",
+          boxShadow: "0 0 4px grey",
+          zIndex: 110, // Ensure it appears above other elements
+        }}
+      >
+        <PhotosphereHotspotSideBar
+          vfe={vfe}
+          currentPS={primaryPhotosphere.id}
+          setValue={(id) => {
+            setPrimaryPhotosphere(vfe.photospheres[id]);
+            setSplitPhotosphere(vfe.photospheres[id]);
+            onChangePS(id);
+          }}
+        />
+      </Box>
     </>
   );
 }
