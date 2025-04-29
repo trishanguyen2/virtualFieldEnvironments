@@ -324,7 +324,15 @@ function PhotosphereViewer({
           zIndex: 110, // Ensure it appears above other elements
         }}
       >
-        <PhotosphereHotspotSideBar {...viewerProps} />
+        <PhotosphereHotspotSideBar
+          vfe={vfe}
+          currentPS={primaryPhotosphere.id}
+          setValue={(id) => {
+            setPrimaryPhotosphere(vfe.photospheres[id]);
+            setSplitPhotosphere(vfe.photospheres[id]);
+            onChangePS(id);
+          }}
+        />{" "}
       </Box>
     </>
   );
