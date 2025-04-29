@@ -15,10 +15,11 @@ import {
 import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
 import { usePoints } from "../Pages/PageUtility/PointsInterface";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
+import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspotSidebar.tsx";
+import PhotospherePlaceholder from "../PhotosphereFeatures/PhotospherePlaceholder";
+import PhotosphereSelector from "../PhotosphereFeatures/PhotosphereSelector";
+import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialCreate.tsx";
 import AudioToggleButton from "../buttons/AudioToggleButton";
-import PhotosphereHotspotSideBar from "./PhotosphereHotspotSidebar";
-import PhotospherePlaceholder from "./PhotospherePlaceholder";
-import PhotosphereSelector from "./PhotosphereSelector";
 
 // modified from https://mui.com/material-ui/react-switch/#customization 'iOS style'
 const StyledSwitch = styled((props: SwitchProps) => (
@@ -138,6 +139,7 @@ function PhotosphereViewer({
 
   return (
     <>
+      <PhotosphereTutorialEditor /> {}
       <Stack
         direction="row"
         sx={{
@@ -161,10 +163,8 @@ function PhotosphereViewer({
       >
         <Box sx={{ padding: "0 5px" }}>
           <Button
-            sx={{ padding: "0", width: "4px", height: "40px" }}
-            className="split-view-button"
-            variant="contained"
-            color="primary"
+            sx={{ height: "35px" }}
+            variant="outlined"
             onClick={() => {
               setIsSplitView(!isSplitView);
             }}
@@ -268,6 +268,27 @@ function PhotosphereViewer({
           />
         )}
       </Stack>
+      <Box
+        sx={{
+          position: "fixed",
+          top: "16px",
+          right: "16px",
+          backgroundColor: "white",
+          borderRadius: "50%",
+          boxShadow: "0 0 4px grey",
+          zIndex: 110, // Ensure it appears above other elements
+        }}
+      >
+        <PhotosphereHotspotSideBar
+          vfe={vfe}
+          currentPS={primaryPhotosphere.id}
+          setValue={(id) => {
+            setPrimaryPhotosphere(vfe.photospheres[id]);
+            setSplitPhotosphere(vfe.photospheres[id]);
+            onChangePS(id);
+          }}
+        />
+      </Box>
       <Stack
         direction="row"
         sx={{

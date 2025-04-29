@@ -12,6 +12,7 @@ import {
 } from "./PageUtility/DataStructures.ts";
 import Header, { HeaderProps } from "../UI/Header.tsx";
 import PhotosphereLocationSelector from "../PhotosphereFeatures/PhotosphereLocationSelector.tsx";
+import PhotosphereTutorialCreate from "../PhotosphereFeatures/PhotosphereTutorialCreate.tsx";
 import { alertMUI } from "../UI/StyledDialogWrapper.tsx";
 
 //import { PhotosphereCenterFieldset } from "./buttons/AddPhotosphere.tsx";
@@ -119,20 +120,23 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
   return (
     <>
       <Header {...header} />
+      <PhotosphereTutorialCreate /> {}
       <Stack sx={{ width: 450, margin: "auto", paddingTop: 10 }} gap={3}>
         <Typography variant="h4">Create a New VFE</Typography>
         <Stack direction="row" gap={1}>
-          <TextField
-            required
-            label="VFE Name"
-            sx={{ flexGrow: 1 }}
-            onChange={(e) => {
-              setVFEName(e.target.value);
+            <TextField
+              required
+              label="VFE Name"
+              className="vfe-display-name-input"
+              sx={{ flexGrow: 1 }}
+              onChange={(e) => {
+                setVFEName(e.target.value);
             }}
-          />
+            />
           <TextField
             required
             label="Photosphere Name"
+            className="vfe-scene-name-input"
             sx={{ flexGrow: 1 }}
             onChange={(e) => {
               setPhotosphereName(e.target.value);
@@ -142,6 +146,7 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
         <MuiFileInput
           required
           placeholder="Upload a Panorama *"
+          className="vfe-image-input"
           value={panoFile}
           onChange={handleImageChange}
           inputProps={{ accept: "image/*" }}
@@ -151,6 +156,7 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
         />
         <MuiFileInput
           placeholder="Upload Background Audio"
+          className="vfe-audio-input"
           value={audioFile}
           onChange={handleAudioChange}
           inputProps={{ accept: "audio/*" }}
@@ -160,6 +166,7 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
         />
         <MuiFileInput
           placeholder="Upload Navigation Map"
+          className="vfe-Navigation-map-input"
           value={navMapFile}
           onChange={(file) => {
             if (file) {

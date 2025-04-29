@@ -1,10 +1,10 @@
 import Joyride, {
-  CallBackProps,
-  Status,
-  STATUS,
-  Step,
   ACTIONS,
+  CallBackProps,
   EVENTS,
+  STATUS,
+  Status,
+  Step,
 } from "react-joyride";
 
 interface Props {
@@ -41,7 +41,9 @@ export default function PhotosphereTutorial({
     },
   ];
 
-  function isFinishedOrSkipped(status: Status): status is "finished" | "skipped" {
+  function isFinishedOrSkipped(
+    status: Status,
+  ): status is "finished" | "skipped" {
     return status === STATUS.FINISHED || status === STATUS.SKIPPED;
   }
 
@@ -54,26 +56,32 @@ export default function PhotosphereTutorial({
       showSkipButton
       showProgress
       disableOverlayClose
-      styles={{ 
-        options: { 
-          zIndex: 10000 ,
+      styles={{
+        options: {
+          zIndex: 10000,
           primaryColor: "#1976d2",
         },
         tooltip: {
-            fontFamily: "Roboto, sans-serif",
-            fontSize: "16px",
+          fontFamily: "Roboto, sans-serif",
+          fontSize: "16px",
         },
         buttonClose: {
           display: "none",
-        }
-       }}
+        },
+      }}
+      locale={{
+        last: "Done",
+      }}
       callback={(data: CallBackProps) => {
         const { status, action, index, type } = data;
 
         if (isFinishedOrSkipped(status)) {
           setRunTutorial(false);
           setStepIndex(0);
-        } else if (type === EVENTS.STEP_AFTER || type === EVENTS.TARGET_NOT_FOUND) {
+        } else if (
+          type === EVENTS.STEP_AFTER ||
+          type === EVENTS.TARGET_NOT_FOUND
+        ) {
           if (action === ACTIONS.NEXT) {
             setStepIndex(index + 1);
 
@@ -82,9 +90,7 @@ export default function PhotosphereTutorial({
               setStepIndex(index + 1);
               localStorage.setItem("resumeTutorial", "true");
             }
-          } 
-          else if (action === ACTIONS.PREV) 
-            setStepIndex(index - 1);
+          } else if (action === ACTIONS.PREV) setStepIndex(index - 1);
         }
       }}
     />

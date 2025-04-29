@@ -10,6 +10,7 @@ import {
   Stack,
 } from "@mui/material";
 
+import PhotosphereTutorial from "../PhotosphereFeatures/PhotosphereTutorialLandingPage";
 import Header from "../UI/Header";
 import MuiDropzone from "../UI/MuiDropzone";
 import VFEList from "./PageUtility/VFEList";
@@ -45,6 +46,10 @@ function LandingPage({
     }
   }
 
+  // Joyride tutorial
+  const [runTutorial, setRunTutorial] = useState(false);
+  const [stepIndex, setStepIndex] = useState(0);
+
   return (
     <>
       <Header onCreateVFE={onCreateVFE} onLoadTestVFE={onLoadTestVFE} />
@@ -72,13 +77,14 @@ function LandingPage({
           onInput={(files) => {
             handleFileUpload(files[0]);
           }}
+          className="dropzone-area"
           sx={{
             height: "300px",
             width: "80%",
             margin: "auto",
           }}
         />
-        <VFEList />
+        <VFEList className="vfe-list-area" />
       </Stack>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>

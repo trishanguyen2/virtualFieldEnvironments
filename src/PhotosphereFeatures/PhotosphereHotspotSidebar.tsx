@@ -4,7 +4,6 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import {
   Box,
   Collapse,
@@ -18,23 +17,17 @@ import {
 } from "@mui/material";
 
 import { Hotspot2D, Hotspot3D, VFE } from "../Pages/PageUtility/DataStructures";
-import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 
 export interface PhotosphereHotspotSideBarProps {
   vfe: VFE;
   currentPS: string;
-  onChangePS: (id: string) => void;
-  onUpdateHotspot?: (
-    hotspotPath: string[],
-    update: HotspotUpdate | null,
-  ) => void;
+  setValue: (value: string) => void;
 }
 
 function PhotosphereHotspotSideBar({
   vfe,
   currentPS,
-  onChangePS,
-  onUpdateHotspot,
+  setValue,
 }: PhotosphereHotspotSideBarProps) {
   const [expandDrawer, setExpandDrawer] = React.useState(false);
   const [expandList, setExpandList] = React.useState<{
@@ -59,6 +52,10 @@ function PhotosphereHotspotSideBar({
 
       setExpandDrawer(open);
     };
+  }
+
+  function handleClick(photosphere: string) {
+    currentPS === photosphere ? null : setValue(photosphere);
   }
 
   const nestedHotspotList = (hotspot: Hotspot2D) =>
@@ -145,13 +142,15 @@ function PhotosphereHotspotSideBar({
       <List>
         {Array.from(Object.values(vfe.photospheres)).map((photosphere) => (
           <React.Fragment key={photosphere.id}>
-            <ListItemButton onClick={() => toggleList(photosphere.id)}>
+            <ListItemButton onClick={() => handleClick(photosphere.id)}>
               <ListItemText primary={photosphere.id} />
-              {expandList[photosphere.id] ? (
-                <ExpandLess color="primary" />
-              ) : (
-                <ExpandMore color="primary" />
-              )}
+              <IconButton onClick={() => toggleList(photosphere.id)}>
+                {expandList[photosphere.id] ? (
+                  <ExpandLess color="primary" />
+                ) : (
+                  <ExpandMore color="primary" />
+                )}
+              </IconButton>
             </ListItemButton>
             <Collapse
               in={expandList[photosphere.id]}

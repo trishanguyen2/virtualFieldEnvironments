@@ -6,16 +6,11 @@ const pointsStore = localforage.createInstance({
   name: "pointsStore",
 });
 
-let maxPoints = 100;
 const points = await pointsStore.getItem<number>("Points");
 
 export const getPoints = () => {
   return points;
 };
-
-export function getMaxPoints() {
-  return maxPoints;
-}
 
 //Can also be used to reset points
 export function InitializePoints() {
@@ -28,9 +23,6 @@ export function InitializePoints() {
     .catch((error) => {
       console.error("Error storing data:", error);
     });
-
-  //initialize this if component does not exist, load from VFE save data otherwise
-  maxPoints = 100;
 }
 
 export function usePoints() {
