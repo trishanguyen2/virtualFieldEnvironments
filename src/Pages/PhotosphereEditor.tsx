@@ -6,7 +6,7 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { Box, Button, Stack } from "@mui/material";
 
 import { VisitedState } from "../Hooks/HandleVisit.tsx";
-import PhotosphereViewer from "../PhotosphereFeatures/PhotosphereViewer.tsx";
+import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialEditor";
 import { alertMUI, confirmMUI } from "../UI/StyledDialogWrapper.tsx";
 import AddAudio from "../buttons/AddAudio.tsx";
 import AddHotspot from "../buttons/AddHotspot.tsx";
@@ -26,23 +26,13 @@ import {
 } from "./PageUtility/DataStructures.ts";
 import { deleteStoredVFE, save } from "./PageUtility/FileOperations.ts";
 import { InitializePoints } from "./PageUtility/PointsInterface.tsx";
-import { VisitedState } from "../Hooks/HandleVisit.tsx";
-import PhotosphereViewer from "./PhotosphereViewer.tsx";
-import { alertMUI, confirmMUI } from "../UI/StyledDialogWrapper.tsx";
 import {
   HotspotUpdate,
   convertRuntimeToStored,
   convertVFE,
   updatePhotosphereHotspot,
 } from "./PageUtility/VFEConversion.ts";
-import AddAudio from "../buttons/AddAudio.tsx";
-import AddHotspot from "../buttons/AddHotspot.tsx";
-import AddNavmap from "../buttons/AddNavmap.tsx";
-import AddPhotosphere from "../buttons/AddPhotosphere.tsx";
-import ChangePhotosphere from "../buttons/ChangePhotosphere.tsx";
-import EditNavMap from "../buttons/EditNavMap.tsx";
-import RemovePhotosphere from "../buttons/RemovePhotosphere.tsx";
-import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialEditor";
+import PhotosphereViewer from "./PhotosphereViewer.tsx";
 
 /** Convert from radians to degrees */
 function radToDeg(num: number): number {
@@ -143,8 +133,8 @@ function PhotosphereEditor({
       },
     };
 
-    sessionStorage.setItem('lastEditedHotspot', JSON.stringify(hotspotPath));
-    sessionStorage.setItem('lastEditedHotspotFlag', "1");
+    sessionStorage.setItem("lastEditedHotspot", JSON.stringify(hotspotPath));
+    sessionStorage.setItem("lastEditedHotspotFlag", "1");
 
     onUpdateVFE(updatedVFE);
     setUpdateTrigger((prev) => prev + 1);
@@ -450,8 +440,8 @@ function PhotosphereEditor({
     );
   }
 
-const [runTutorial, setRunTutorial] = useState(false);
-const [stepIndex, setStepIndex] = useState(0);
+  const [runTutorial, setRunTutorial] = useState(false);
+  const [stepIndex, setStepIndex] = useState(0);
 
   return (
     <Box sx={{ height: "100vh" }}>

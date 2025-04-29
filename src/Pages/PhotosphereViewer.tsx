@@ -290,6 +290,30 @@ function PhotosphereViewer({
           }}
         />
       </Box>
+      <Stack
+        direction="row"
+        sx={{
+          position: "absolute",
+          bottom: "44px",
+          left: 0,
+          right: 0,
+          maxWidth: "100%",
+          width: "fit-content",
+          minWidth: "150px",
+          height: "25px",
+          padding: "4px",
+          margin: "auto",
+          backgroundColor: "white",
+          borderRadius: "4px",
+          boxShadow: "0 0 4px grey",
+          zIndex: 100,
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+        gap={1}
+      >
+        <progress value={points ?? 0} max={maxPoints} />{" "}
+      </Stack>
     </>
   );
 }
