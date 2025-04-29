@@ -1,6 +1,6 @@
 /* eslint-disable func-style */
 import localforage from "localforage";
-import { useSyncExternalStore } from "react";
+import { useState } from "react";
 
 // Using a separite instance of localforage so we dont interfere with loading of VFEs
 const pointsStore = localforage.createInstance({
@@ -13,18 +13,6 @@ const points = await pointsStore.getItem<number>("Points");
 export const getPoints = () => {
   return points;
 };
-
-export const subscribe = (callback: () => void): (() => void) => {
-  window.addEventListener("storage", callback);
-  return () => {
-    window.removeEventListener("storage", callback);
-  };
-};
-
-// export function getPointTotal() {
-//   console.log("Points total:" + points);
-//   return points ?? 0;
-// }
 
 export function getMaxPoints() {
   //use effect for constant updates?
@@ -50,37 +38,36 @@ export function InitializePoints() {
 // will need a set maxPoints function eventually that saves the max points to VFE
 // save data when changed in the editor
 
-//Increment Points by Amount, must be whole number
-export async function AddPoints(amount: number) {
-  let points = await pointsStore.getItem<number>("Points");
+export function usePoints() {
+  const [points, setPoints] = useState(getPoints());
+  // will need a set maxPoints function eventually that saves the max points to VFE
+  // save data when changed in the editor
 
-  if (points != null) {
-    points = points + amount;
-  } else {
-    console.log("No Points!");
-    return;
+  //Increment Points by Amount, must be whole number
+  async function AddPoints(amount: number) {
+    let pointsStorage = await pointsStore.getItem<number>("Points");
+
+    if (pointsStorage != null) {
+      pointsStorage = pointsStorage + amount;
+      setPoints(pointsStorage);
+    } else {
+      console.log("No Points!");
+      return;
+    }
+
+    pointsStore
+      .setItem("Points", pointsStorage)
+      .then(() => {
+        console.log(
+          "Points updated successfully! New points are: " + pointsStorage,
+        );
+        window.dispatchEvent(new Event("storage"));
+        return;
+      })
+      .catch((error) => {
+        console.error("Error storing data:", error);
+      });
   }
 
-  pointsStore
-    .setItem("Points", points)
-    .then(() => {
-      console.log("Points updated successfully! New points are: " + points);
-      window.dispatchEvent(new Event("storage"));
-      return;
-    })
-    .catch((error) => {
-      console.error("Error storing data:", error);
-    });
+  return [points, AddPoints] as const;
 }
-
-// export async function GetProgressBarData() {
-//   const [points, setPoints] = useState(0);
-//   const maxPoints = getMaxPoints();
-//   const pointsFromMemory = await getPointTotal();
-
-//   useEffect(() => {
-//     setPoints(pointsFromMemory ? pointsFromMemory : 0);
-//   }, [pointsFromMemory]);
-
-//   return [points, maxPoints];
-// }
