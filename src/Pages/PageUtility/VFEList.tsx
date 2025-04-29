@@ -21,8 +21,11 @@ import { confirmMUI } from "../../UI/StyledDialogWrapper";
 import { convertStoredToRuntime } from "./VFEConversion";
 
 type NavMapRecord = Partial<Record<string, string>>;
+interface VFEListProps {
+  className?: string;
+}
 
-function VFEList() {
+function VFEList({ className }: VFEListProps) {
   const [names, setNames] = useState<string[]>([]);
   const [navMaps, setNavMaps] = useState<NavMapRecord>({});
 
@@ -63,7 +66,7 @@ function VFEList() {
   }
 
   return (
-    <Container sx={{ padding: 3 }}>
+    <Container sx={{ padding: 3 }} className={className}>
       <Grid container gap={3} alignItems="center" justifyContent="center">
         {names.map((name) => (
           <Grid item key={name} xs={12} sm={6} md={4} lg={3}>

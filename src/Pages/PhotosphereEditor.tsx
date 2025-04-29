@@ -16,7 +16,7 @@ import {
 } from "./PageUtility/DataStructures.ts";
 import { deleteStoredVFE, save } from "./PageUtility/FileOperations.ts";
 import { VisitedState } from "../Hooks/HandleVisit.tsx";
-import PhotosphereViewer from "../PhotosphereFeatures/PhotosphereViewer.tsx";
+import PhotosphereViewer from "./PhotosphereViewer.tsx";
 import { alertMUI, confirmMUI } from "../UI/StyledDialogWrapper.tsx";
 import {
   HotspotUpdate,
@@ -31,6 +31,7 @@ import AddPhotosphere from "../buttons/AddPhotosphere.tsx";
 import ChangePhotosphere from "../buttons/ChangePhotosphere.tsx";
 import EditNavMap from "../buttons/EditNavMap.tsx";
 import RemovePhotosphere from "../buttons/RemovePhotosphere.tsx";
+import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialEditor";
 
 /** Convert from radians to degrees */
 function radToDeg(num: number): number {
@@ -435,8 +436,17 @@ function PhotosphereEditor({
     );
   }
 
+const [runTutorial, setRunTutorial] = useState(false);
+const [stepIndex, setStepIndex] = useState(0);
+
   return (
     <Box sx={{ height: "100vh" }}>
+      <PhotosphereTutorialEditor
+        runTutorial={runTutorial}
+        stepIndex={stepIndex}
+        setRunTutorial={setRunTutorial}
+        setStepIndex={setStepIndex}
+      />
       <Stack
         sx={{
           position: "absolute",
@@ -451,6 +461,7 @@ function PhotosphereEditor({
         {!showAddFeatures && !showChangeFeatures && !showRemoveFeatures && (
           <>
             <Button
+              className="add-features-button"
               sx={{ margin: "10px 0" }}
               onClick={() => {
                 setShowAddFeatures(true);
@@ -460,6 +471,7 @@ function PhotosphereEditor({
               Add Features
             </Button>
             <Button
+              className="edit-features-button"
               sx={{
                 margin: "10px 0",
               }}
@@ -471,6 +483,7 @@ function PhotosphereEditor({
               Edit Features
             </Button>
             <Button
+              className="remove-features-button"
               sx={{ margin: "10px 0" }}
               onClick={() => {
                 setShowRemoveFeatures(true);
@@ -480,6 +493,7 @@ function PhotosphereEditor({
               Remove Features
             </Button>
             <Button
+              className="export-button"
               sx={{ margin: "10px 0" }}
               onClick={() => {
                 void handleExport();
