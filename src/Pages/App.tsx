@@ -2,14 +2,17 @@ import localforage from "localforage";
 import { Route, Routes, useNavigate } from "react-router-dom";
 
 import CreateVFEForm from "../Pages/CreateVFE.tsx";
+import LandingPage from "../Pages/LandingPage.tsx";
+import Prototype from "../Prototype/Prototype.tsx";
 import { VFE } from "./PageUtility/DataStructures.ts";
 import { load } from "./PageUtility/FileOperations.ts";
-import LandingPage from "../Pages/LandingPage.tsx";
+import {
+  convertRuntimeToStored,
+  convertVFE,
+} from "./PageUtility/VFEConversion.ts";
+import VFELoader from "./PageUtility/VFELoader.tsx";
 import PhotosphereEditor from "./PhotosphereEditor.tsx";
 import PhotosphereViewer from "./PhotosphereViewer.tsx";
-import Prototype from "../Prototype/Prototype.tsx";
-import { convertRuntimeToStored, convertVFE } from "./PageUtility/VFEConversion.ts";
-import VFELoader from "./PageUtility/VFELoader.tsx";
 
 // Main component acts as a main entry point for the application
 // Should decide what we are doing, going to LandingPage/Rendering VFE
@@ -82,7 +85,7 @@ function AppRoot() {
           <VFELoader render={(props) => <PhotosphereViewer {...props} />} />
         }
       >
-        <Route path=":photosphereID" element={null} />
+        <Route path=":photosphereID" element={null}></Route>
       </Route>
       <Route
         path="/editor/:vfeID"
@@ -90,7 +93,7 @@ function AppRoot() {
           <VFELoader render={(props) => <PhotosphereEditor {...props} />} />
         }
       >
-        <Route path=":photosphereID" element={null} />
+        <Route path=":photosphereID" element={null}></Route>
       </Route>
     </Routes>
   );

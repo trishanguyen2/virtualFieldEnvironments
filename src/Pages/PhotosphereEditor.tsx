@@ -44,7 +44,7 @@ interface PhotosphereEditorProps {
   vfe: VFE;
   onUpdateVFE: (updatedVFE: VFE) => void;
   currentPS: string;
-  onChangePS: (id: string) => void;
+  onChangePS: (id: string, childId?: string) => void;
 }
 
 function PhotosphereEditor({
@@ -71,6 +71,8 @@ function PhotosphereEditor({
   const [showAddFeatures, setShowAddFeatures] = useState(false);
   const [showChangeFeatures, setShowChangeFeatures] = useState(false);
   const [showRemoveFeatures, setShowRemoveFeatures] = useState(false);
+
+  const [showAddTimeStep, setShowAddTimeStep] = useState(false);
 
   const visitedState = JSON.parse(
     localStorage.getItem("visitedState") ?? "{}",
@@ -203,8 +205,26 @@ function PhotosphereEditor({
     };
 
     onUpdateVFE(updatedVFE); // Propagate the change to the AppRoot
-    onChangePS(newPhotosphere.id); // Switch to new photosphere
+    onChangePS(currentPS, newPhotosphere.id); // Switch to new photosphere
     setShowAddPhotosphere(false);
+    setUpdateTrigger((prev) => prev + 1);
+  }
+
+  function handleAddTimeStep(newPhotosphere: Photosphere) {
+    const updatedVFE: VFE = {
+      ...vfe,
+      photospheres: {
+        ...vfe.photospheres,
+      },
+    };
+
+    updatedVFE.photospheres[currentPS].timeline = {
+      ...updatedVFE.photospheres[currentPS].timeline,
+      [Date.now().toString()]: newPhotosphere,
+    };
+    onUpdateVFE(updatedVFE);
+    onChangePS(currentPS); // will continue to view the same PS at the moment
+    setShowAddTimeStep(false);
     setUpdateTrigger((prev) => prev + 1);
   }
 
@@ -295,6 +315,14 @@ function PhotosphereEditor({
           }}
           onClose={handleCloseRemovePhotosphere}
           vfe={vfe}
+        />
+      );
+    if (showAddTimeStep)
+      return (
+        <AddPhotosphere
+          vfe={vfe}
+          onAddPhotosphere={handleAddTimeStep}
+          onCancel={resetStates}
         />
       );
     return null;
@@ -551,6 +579,16 @@ function PhotosphereEditor({
               variant="contained"
             >
               Add New Hotspot
+            </Button>
+            <Button
+              sx={{ margin: "10px 0" }}
+              onClick={() => {
+                resetStates();
+                setShowAddTimeStep(true);
+              }}
+              variant="contained"
+            >
+              Add Time Step
             </Button>
             <MuiFileInput
               placeholder="Upload Background Audio"

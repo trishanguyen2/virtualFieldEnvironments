@@ -24,6 +24,7 @@
         "id": "SouthScene.jpg"
       },
       "center": { "x": 450, "y": 800 },
+      "timeline": {},
       "hotspots": {
         "OutcropWideView": {
           "id": "OutcropWideView",
@@ -478,7 +479,8 @@
           },
           "level": 0
         }
-      }
+      },
+      "timeline": {}
     },
     "West": {
       "id": "West",
@@ -521,7 +523,8 @@
           },
           "level": 0
         }
-      }
+      },
+      "timeline": {}
     },
     "North": {
       "id": "North",
@@ -565,6 +568,7 @@
           "level": 0
         }
       }
+   , "timeline": {} 
     },
     "East": {
       "id": "East",
@@ -608,6 +612,7 @@
           "level": 0
         }
       }
+, "timeline": {}
     }
   }
 }
