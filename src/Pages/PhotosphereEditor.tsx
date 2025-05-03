@@ -215,12 +215,13 @@ function PhotosphereEditor({
       ...vfe,
       photospheres: {
         ...vfe.photospheres,
+        [newPhotosphere.id]: newPhotosphere,
       },
     };
 
     updatedVFE.photospheres[currentPS].timeline = {
       ...updatedVFE.photospheres[currentPS].timeline,
-      [Date.now().toString()]: newPhotosphere,
+      [Date.now().toString()]: newPhotosphere.id,
     };
     onUpdateVFE(updatedVFE);
     onChangePS(currentPS); // will continue to view the same PS at the moment
