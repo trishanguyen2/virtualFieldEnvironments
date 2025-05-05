@@ -25,10 +25,7 @@ import {
   photosphereLinkTooltip,
 } from "./PageUtility/DataStructures.ts";
 import { deleteStoredVFE, save } from "./PageUtility/FileOperations.ts";
-import {
-  useGamificationState,
-  usePoints,
-} from "./PageUtility/PointsInterface.tsx";
+import { useGamificationState } from "./PageUtility/PointsInterface.tsx";
 import {
   HotspotUpdate,
   convertRuntimeToStored,

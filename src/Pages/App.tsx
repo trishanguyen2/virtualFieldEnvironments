@@ -2,19 +2,24 @@ import localforage from "localforage";
 import { Route, Routes, useNavigate } from "react-router-dom";
 
 import CreateVFEForm from "../Pages/CreateVFE.tsx";
+import LandingPage from "../Pages/LandingPage.tsx";
+import Prototype from "../Prototype/Prototype.tsx";
 import { VFE } from "./PageUtility/DataStructures.ts";
 import { load } from "./PageUtility/FileOperations.ts";
-import LandingPage from "../Pages/LandingPage.tsx";
+import { useGamificationState } from "./PageUtility/PointsInterface.tsx";
+import {
+  convertRuntimeToStored,
+  convertVFE,
+} from "./PageUtility/VFEConversion.ts";
+import VFELoader from "./PageUtility/VFELoader.tsx";
 import PhotosphereEditor from "./PhotosphereEditor.tsx";
 import PhotosphereViewer from "./PhotosphereViewer.tsx";
-import Prototype from "../Prototype/Prototype.tsx";
-import { convertRuntimeToStored, convertVFE } from "./PageUtility/VFEConversion.ts";
-import VFELoader from "./PageUtility/VFELoader.tsx";
 
 // Main component acts as a main entry point for the application
 // Should decide what we are doing, going to LandingPage/Rendering VFE
 function AppRoot() {
   const navigate = useNavigate();
+  const [isGamified] = useGamificationState();
 
   //Create a function to set useState true
   function handleLoadTestVFE() {
@@ -79,7 +84,11 @@ function AppRoot() {
       <Route
         path="/viewer/:vfeID"
         element={
-          <VFELoader render={(props) => <PhotosphereViewer {...props} />} />
+          <VFELoader
+            render={(props) => (
+              <PhotosphereViewer isGamified={isGamified ?? false} {...props} />
+            )}
+          />
         }
       >
         <Route path=":photosphereID" element={null} />
