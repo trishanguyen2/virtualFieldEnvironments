@@ -82,6 +82,7 @@ export interface PhotosphereViewerProps {
     update: HotspotUpdate | null,
   ) => void;
   photosphereOptions?: string[];
+  isGamified: boolean;
 }
 
 export interface ViewerStates {
@@ -110,6 +111,7 @@ function PhotosphereViewer({
   onViewerClick,
   onUpdateHotspot,
   photosphereOptions,
+  isGamified,
 }: PhotosphereViewerProps) {
   const primaryPsRef = React.useRef<ViewerAPI | null>(null);
   const splitRef = React.useRef<ViewerAPI | null>(null);
@@ -124,8 +126,6 @@ function PhotosphereViewer({
   const [lockViews, setLockViews] = useState(false);
 
   const [points, AddPoints] = usePoints();
-  const [Gamified] = useGamificationState();
-  console.log("viewer gamified is: " + Gamified);
 
   const maxPoints = 100;
 
@@ -228,7 +228,7 @@ function PhotosphereViewer({
           }}
           sx={{ margin: 0 }}
         />
-        {Gamified && (
+        {isGamified && (
           <Box sx={{ padding: "0 5px" }}>
             <Button
               sx={{ padding: "0", width: "4px", height: "40px" }}
@@ -298,30 +298,32 @@ function PhotosphereViewer({
           }}
         />
       </Box>
-      <Stack
-        direction="row"
-        sx={{
-          position: "absolute",
-          bottom: "44px",
-          left: 0,
-          right: 0,
-          maxWidth: "100%",
-          width: "fit-content",
-          minWidth: "150px",
-          height: "25px",
-          padding: "4px",
-          margin: "auto",
-          backgroundColor: "white",
-          borderRadius: "4px",
-          boxShadow: "0 0 4px grey",
-          zIndex: 100,
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-        gap={1}
-      >
-        <progress value={points ?? 0} max={maxPoints} />{" "}
-      </Stack>
+      {isGamified && (
+        <Stack
+          direction="row"
+          sx={{
+            position: "absolute",
+            bottom: "44px",
+            left: 0,
+            right: 0,
+            maxWidth: "100%",
+            width: "fit-content",
+            minWidth: "150px",
+            height: "25px",
+            padding: "4px",
+            margin: "auto",
+            backgroundColor: "white",
+            borderRadius: "4px",
+            boxShadow: "0 0 4px grey",
+            zIndex: 100,
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+          gap={1}
+        >
+          <progress value={points ?? 0} max={maxPoints} />{" "}
+        </Stack>
+      )}
     </>
   );
 }

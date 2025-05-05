@@ -446,7 +446,7 @@ function PhotosphereEditor({
   const [runTutorial, setRunTutorial] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
 
-  const [, SwapGamifyState] = useGamificationState();
+  const [gamifiedState, SwapGamifyState] = useGamificationState();
 
   return (
     <Box sx={{ height: "100vh" }}>
@@ -657,6 +657,7 @@ function PhotosphereEditor({
           onUpdateHotspot={(hotspotPath, update) => {
             void handleUpdateHotspot(hotspotPath, update);
           }}
+          isGamified={gamifiedState ?? false}
         />
         <ActiveComponent />
       </Box>

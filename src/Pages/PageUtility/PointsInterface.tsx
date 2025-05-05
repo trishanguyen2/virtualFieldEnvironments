@@ -17,7 +17,6 @@ export const getGamifiedState = () => {
   return gamifiedState;
 };
 
-//Can also be used to reset points
 export function InitializePoints() {
   pointsStore
     .setItem("Points", 0)
