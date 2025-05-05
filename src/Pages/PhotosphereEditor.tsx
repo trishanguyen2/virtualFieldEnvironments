@@ -25,7 +25,10 @@ import {
   photosphereLinkTooltip,
 } from "./PageUtility/DataStructures.ts";
 import { deleteStoredVFE, save } from "./PageUtility/FileOperations.ts";
-import { InitializePoints } from "./PageUtility/PointsInterface.tsx";
+import {
+  useGamificationState,
+  usePoints,
+} from "./PageUtility/PointsInterface.tsx";
 import {
   HotspotUpdate,
   convertRuntimeToStored,
@@ -443,6 +446,8 @@ function PhotosphereEditor({
   const [runTutorial, setRunTutorial] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
 
+  const [, SwapGamifyState] = useGamificationState();
+
   return (
     <Box sx={{ height: "100vh" }}>
       <PhotosphereTutorialEditor
@@ -509,7 +514,7 @@ function PhotosphereEditor({
             <Button
               sx={{ margin: "10px 0" }}
               onClick={() => {
-                InitializePoints();
+                SwapGamifyState();
               }}
               variant="contained"
             >

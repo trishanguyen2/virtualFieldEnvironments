@@ -13,7 +13,10 @@ import {
 } from "@mui/material";
 
 import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
-import { usePoints } from "../Pages/PageUtility/PointsInterface.tsx";
+import {
+  useGamificationState,
+  usePoints,
+} from "../Pages/PageUtility/PointsInterface.tsx";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspotSidebar.tsx";
 import PhotospherePlaceholder from "../PhotosphereFeatures/PhotospherePlaceholder";
@@ -121,6 +124,9 @@ function PhotosphereViewer({
   const [lockViews, setLockViews] = useState(false);
 
   const [points, AddPoints] = usePoints();
+  const [Gamified] = useGamificationState();
+  console.log("viewer gamified is: " + Gamified);
+
   const maxPoints = 100;
 
   const viewerProps: ViewerProps = {
@@ -222,18 +228,20 @@ function PhotosphereViewer({
           }}
           sx={{ margin: 0 }}
         />
-        <Box sx={{ padding: "0 5px" }}>
-          <Button
-            sx={{ padding: "0", width: "4px", height: "40px" }}
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              void AddPoints(10);
-            }}
-          >
-            Add Points!
-          </Button>
-        </Box>
+        {Gamified && (
+          <Box sx={{ padding: "0 5px" }}>
+            <Button
+              sx={{ padding: "0", width: "4px", height: "40px" }}
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                void AddPoints(10);
+              }}
+            >
+              Add Points!
+            </Button>
+          </Box>
+        )}
       </Stack>
       <Stack
         direction="row"
