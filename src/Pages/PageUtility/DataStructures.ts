@@ -49,6 +49,7 @@ export interface VFE {
   map?: NavMap;
   defaultPhotosphereID: string;
   photospheres: Record<string, Photosphere>;
+  gamificationToggle?: boolean;
 }
 
 // Navigation map: a birdseye view of the various hotspots within a single 360-environment

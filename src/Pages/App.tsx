@@ -19,7 +19,7 @@ import PhotosphereViewer from "./PhotosphereViewer.tsx";
 // Should decide what we are doing, going to LandingPage/Rendering VFE
 function AppRoot() {
   const navigate = useNavigate();
-  const [isGamified] = useGamificationState();
+  const [isGamified, , SetGamifyState] = useGamificationState();
 
   //Create a function to set useState true
   function handleLoadTestVFE() {
@@ -36,6 +36,7 @@ function AppRoot() {
       convertRuntimeToStored(networkVFE.name),
     );
     await localforage.setItem(localVFE.name, localVFE);
+    await SetGamifyState(localVFE.gamificationToggle ?? false);
     navigate(`/editor/${localVFE.name}/${localVFE.defaultPhotosphereID}`);
   }
 

@@ -103,5 +103,18 @@ export function useGamificationState() {
       });
   }
 
-  return [gamifiedState, SwapGamifyState] as const;
+  async function SetGamifyState(state: boolean) {
+    pointsStore
+      .setItem("GamifiedState", state)
+      .then(() => {
+        console.log("The state storage was set to: " + state);
+        window.dispatchEvent(new Event("storage"));
+        return;
+      })
+      .catch((error) => {
+        console.error("Error storing data:", error);
+      });
+  }
+
+  return [gamifiedState, SwapGamifyState, SetGamifyState] as const;
 }
