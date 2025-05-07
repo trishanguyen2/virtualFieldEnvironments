@@ -36,7 +36,6 @@ function AppRoot() {
       convertRuntimeToStored(networkVFE.name),
     );
     await localforage.setItem(localVFE.name, localVFE);
-    await SetGamifyState(localVFE.gamificationToggle ?? false);
     navigate(`/editor/${localVFE.name}/${localVFE.defaultPhotosphereID}`);
   }
 
@@ -44,6 +43,9 @@ function AppRoot() {
     const localVFE = await load(file);
     if (localVFE) {
       await localforage.setItem(localVFE.name, localVFE);
+      console.log("The state from save is: " + localVFE.gamificationToggle);
+      await SetGamifyState(localVFE.gamificationToggle ?? false);
+      console.log("The state in local memory is: " + isGamified);
       const target = openInViewer ? "viewer" : "editor";
       navigate(`/${target}/${localVFE.name}/${localVFE.defaultPhotosphereID}`);
     }
