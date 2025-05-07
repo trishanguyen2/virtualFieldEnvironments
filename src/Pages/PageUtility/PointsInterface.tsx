@@ -104,6 +104,7 @@ export function useGamificationState() {
   }
 
   async function SetGamifyState(state: boolean) {
+    setGamifiedState(state);
     pointsStore
       .setItem("GamifiedState", state)
       .then(() => {
