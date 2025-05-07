@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { MenuItem, Select, SelectChangeEvent, Stack } from "@mui/material";
+import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
 
 import { VFE } from "../Pages/PageUtility/DataStructures";
 
@@ -15,8 +15,16 @@ function PhotosphereTimelineSelect({
   parentPs,
   vfe,
 }: PhotosphereTimelineSelectProps) {
-  const [selected, setSelected] = useState<string>("");
-  const timeline: Record<string, string> = vfe.photospheres[parentPs].timeline;
+  const [selected, setSelected] = useState<string>(parentPs);
+  const parentPS = vfe.photospheres[parentPs].parentPS
+    ? vfe.photospheres[vfe.photospheres[parentPs].parentPS]
+    : vfe.photospheres[parentPs];
+  var timeline: Record<string, string> = parentPS.timeline;
+  timeline = { ...timeline, ["Now"]: parentPS.id };
+
+  useEffect(() => {
+    setSelected(parentPS.id);
+  }, [parentPS]);
 
   function handleChange(e: SelectChangeEvent) {
     setSelected(e.target.value);
@@ -29,7 +37,7 @@ function PhotosphereTimelineSelect({
         PaperProps: {
           sx: {
             position: "absolute",
-            height: "10px",
+            height: "fit-content",
             zIndex: 100,
             p: 0,
           },
@@ -40,7 +48,7 @@ function PhotosphereTimelineSelect({
     >
       {Object.entries(timeline).map(([time, ps]) => (
         <MenuItem key={time} value={ps}>
-          time
+          {time}
         </MenuItem>
       ))}
     </Select>
