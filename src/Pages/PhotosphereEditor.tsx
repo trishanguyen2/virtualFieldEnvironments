@@ -25,7 +25,7 @@ import {
   photosphereLinkTooltip,
 } from "./PageUtility/DataStructures.ts";
 import { deleteStoredVFE, save } from "./PageUtility/FileOperations.ts";
-import { InitializePoints } from "./PageUtility/PointsInterface.tsx";
+import { useGamificationState } from "./PageUtility/PointsInterface.tsx";
 import {
   HotspotUpdate,
   convertRuntimeToStored,
@@ -71,6 +71,8 @@ function PhotosphereEditor({
   const [showAddFeatures, setShowAddFeatures] = useState(false);
   const [showChangeFeatures, setShowChangeFeatures] = useState(false);
   const [showRemoveFeatures, setShowRemoveFeatures] = useState(false);
+
+  const [gamifiedState, SwapGamifyState] = useGamificationState();
 
   const visitedState = JSON.parse(
     localStorage.getItem("visitedState") ?? "{}",
@@ -508,8 +510,16 @@ function PhotosphereEditor({
             </Button>
             <Button
               sx={{ margin: "10px 0" }}
-              onClick={() => {
-                InitializePoints();
+              onClick={async () => {
+                await SwapGamifyState();
+                //correcting for it always setting saved state to the opposite of what it should be for some reason.  Timing issue?
+                vfe.gamificationToggle = !gamifiedState;
+                console.log(
+                  "The gamified state is: " +
+                    !gamifiedState +
+                    " and the vfe gamification state is: " +
+                    vfe.gamificationToggle,
+                );
               }}
               variant="contained"
             >
@@ -652,6 +662,7 @@ function PhotosphereEditor({
           onUpdateHotspot={(hotspotPath, update) => {
             void handleUpdateHotspot(hotspotPath, update);
           }}
+          isGamified={gamifiedState ?? false}
         />
         <ActiveComponent />
       </Box>

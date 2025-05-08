@@ -7,12 +7,16 @@ const pointsStore = localforage.createInstance({
 });
 
 const points = await pointsStore.getItem<number>("Points");
+const gamifiedState = await pointsStore.getItem<boolean>("GamifiedState");
 
 export const getPoints = () => {
   return points;
 };
 
-//Can also be used to reset points
+export const getGamifiedState = () => {
+  return gamifiedState;
+};
+
 export function InitializePoints() {
   pointsStore
     .setItem("Points", 0)
@@ -22,6 +26,18 @@ export function InitializePoints() {
     })
     .catch((error) => {
       console.error("Error storing data:", error);
+    });
+}
+
+export function InitializeState() {
+  pointsStore
+    .setItem("GamifiedState", true)
+    .then(() => {
+      window.dispatchEvent(new Event("storage"));
+      console.log("State initialized successfully!");
+    })
+    .catch((error) => {
+      console.error("Error storing state data:", error);
     });
 }
 
@@ -57,4 +73,59 @@ export function usePoints() {
   }
 
   return [points, AddPoints] as const;
+}
+
+export function useGamificationState() {
+  const [gamifiedState, setGamifiedState] = useState(getGamifiedState());
+
+  async function SwapGamifyState() {
+    let stateStorage = await pointsStore.getItem<boolean>("GamifiedState");
+    InitializePoints();
+
+    if (stateStorage != null) {
+      stateStorage = !stateStorage;
+      setGamifiedState(stateStorage);
+    } else {
+      console.log("No State, intialize!");
+      InitializeState();
+      setGamifiedState(true);
+    }
+
+    pointsStore
+      .setItem("GamifiedState", stateStorage)
+      .then(() => {
+        console.log("The state storage is: " + stateStorage);
+        window.dispatchEvent(new Event("storage"));
+        return;
+      })
+      .catch((error) => {
+        console.error("Error storing data:", error);
+      });
+    return;
+  }
+
+  async function SetGamifyState(state: boolean) {
+    let stateStorage = await pointsStore.getItem<boolean>("GamifiedState");
+
+    if (stateStorage != null) {
+      setGamifiedState(state);
+    } else {
+      console.log("No State, intialize!");
+      InitializeState();
+      setGamifiedState(state);
+    }
+    pointsStore
+      .setItem("GamifiedState", state)
+      .then(() => {
+        console.log("The state storage was set to: " + state);
+        window.dispatchEvent(new Event("storage"));
+        return;
+      })
+      .catch((error) => {
+        console.error("Error storing data:", error);
+      });
+    return;
+  }
+
+  return [gamifiedState, SwapGamifyState, SetGamifyState] as const;
 }
