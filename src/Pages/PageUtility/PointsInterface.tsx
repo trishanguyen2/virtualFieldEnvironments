@@ -88,7 +88,7 @@ export function useGamificationState() {
     } else {
       console.log("No State, intialize!");
       InitializeState();
-      return;
+      setGamifiedState(true);
     }
 
     pointsStore
@@ -101,10 +101,19 @@ export function useGamificationState() {
       .catch((error) => {
         console.error("Error storing data:", error);
       });
+    return;
   }
 
   async function SetGamifyState(state: boolean) {
-    setGamifiedState(state);
+    let stateStorage = await pointsStore.getItem<boolean>("GamifiedState");
+
+    if (stateStorage != null) {
+      setGamifiedState(state);
+    } else {
+      console.log("No State, intialize!");
+      InitializeState();
+      setGamifiedState(state);
+    }
     pointsStore
       .setItem("GamifiedState", state)
       .then(() => {
@@ -115,6 +124,7 @@ export function useGamificationState() {
       .catch((error) => {
         console.error("Error storing data:", error);
       });
+    return;
   }
 
   return [gamifiedState, SwapGamifyState, SetGamifyState] as const;
