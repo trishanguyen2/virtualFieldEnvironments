@@ -72,6 +72,8 @@ function PhotosphereEditor({
   const [showChangeFeatures, setShowChangeFeatures] = useState(false);
   const [showRemoveFeatures, setShowRemoveFeatures] = useState(false);
 
+  const [gamifiedState, SwapGamifyState] = useGamificationState();
+
   const visitedState = JSON.parse(
     localStorage.getItem("visitedState") ?? "{}",
   ) as VisitedState;
@@ -442,8 +444,6 @@ function PhotosphereEditor({
 
   const [runTutorial, setRunTutorial] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
-
-  const [gamifiedState, SwapGamifyState] = useGamificationState();
 
   return (
     <Box sx={{ height: "100vh" }}>
