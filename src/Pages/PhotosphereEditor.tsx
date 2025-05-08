@@ -6,6 +6,7 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { Box, Button, Stack } from "@mui/material";
 
 import { VisitedState } from "../Hooks/HandleVisit.tsx";
+import { useVFELoaderContext } from "../Hooks/VFELoaderContext.tsx";
 import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialEditor";
 import { alertMUI, confirmMUI } from "../UI/StyledDialogWrapper.tsx";
 import AddAudio from "../buttons/AddAudio.tsx";
@@ -39,20 +40,8 @@ function radToDeg(num: number): number {
   return num * (180 / Math.PI);
 }
 
-// Properties passed down from parent
-interface PhotosphereEditorProps {
-  vfe: VFE;
-  onUpdateVFE: (updatedVFE: VFE) => void;
-  currentPS: string;
-  onChangePS: (id: string, childId?: string) => void;
-}
-
-function PhotosphereEditor({
-  vfe,
-  onUpdateVFE,
-  currentPS,
-  onChangePS,
-}: PhotosphereEditorProps): JSX.Element {
+function PhotosphereEditor(): JSX.Element {
+  const { vfe, onUpdateVFE, currentPS, onChangePS } = useVFELoaderContext();
   const photosphereOptions = Object.keys(vfe.photospheres);
   // Get existing hotspots from the current photosphere
   const existingHotspots = vfe.photospheres[currentPS].hotspots;
@@ -205,12 +194,13 @@ function PhotosphereEditor({
     };
 
     onUpdateVFE(updatedVFE); // Propagate the change to the AppRoot
-    onChangePS(currentPS, newPhotosphere.id); // Switch to new photosphere
+    onChangePS(currentPS); // Switch to new photosphere
     setShowAddPhotosphere(false);
     setUpdateTrigger((prev) => prev + 1);
   }
 
   function handleAddTimeStep(newPhotosphere: Photosphere) {
+    newPhotosphere.parentPS = currentPS;
     const updatedVFE: VFE = {
       ...vfe,
       photospheres: {
@@ -223,6 +213,8 @@ function PhotosphereEditor({
       ...updatedVFE.photospheres[currentPS].timeline,
       [Date.now().toString()]: newPhotosphere.id,
     };
+
+    console.log(updatedVFE.photospheres[currentPS]);
     onUpdateVFE(updatedVFE);
     onChangePS(currentPS); // will continue to view the same PS at the moment
     setShowAddTimeStep(false);
@@ -682,11 +674,8 @@ function PhotosphereEditor({
       </Stack>
       <Box style={{ width: "100%", height: "100%" }}>
         <PhotosphereViewer
-          currentPS={currentPS}
-          onChangePS={onChangePS}
           onViewerClick={handleLocation}
           key={updateTrigger}
-          vfe={vfe}
           photosphereOptions={availablePhotosphereOptions}
           onUpdateHotspot={(hotspotPath, update) => {
             void handleUpdateHotspot(hotspotPath, update);

@@ -12,6 +12,7 @@ import {
   styled,
 } from "@mui/material";
 
+import { useVFELoaderContext } from "../Hooks/VFELoaderContext.tsx";
 import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
 import { usePoints } from "../Pages/PageUtility/PointsInterface.tsx";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
@@ -70,9 +71,6 @@ const StyledSwitch = styled((props: SwitchProps) => (
 }));
 
 export interface PhotosphereViewerProps {
-  vfe: VFE;
-  currentPS: string;
-  onChangePS: (id: string) => void;
   onViewerClick?: (elevation: number, direction: number) => void;
   onUpdateHotspot?: (
     hotspotPath: string[],
@@ -88,9 +86,6 @@ export interface ViewerStates {
 }
 
 export interface ViewerProps {
-  vfe: VFE;
-  currentPS: string;
-  onChangePS: (id: string) => void;
   onViewerClick?: (elevation: number, direction: number) => void;
   onUpdateHotspot?: (
     hotspotPath: string[],
@@ -101,13 +96,11 @@ export interface ViewerProps {
 }
 
 function PhotosphereViewer({
-  vfe,
-  currentPS,
-  onChangePS,
   onViewerClick,
   onUpdateHotspot,
   photosphereOptions,
 }: PhotosphereViewerProps) {
+  const { vfe, currentPS, onChangePS } = useVFELoaderContext();
   const primaryPsRef = React.useRef<ViewerAPI | null>(null);
   const splitRef = React.useRef<ViewerAPI | null>(null);
   const [primaryPhotosphere, setPrimaryPhotosphere] =
@@ -124,9 +117,6 @@ function PhotosphereViewer({
   const maxPoints = 100;
 
   const viewerProps: ViewerProps = {
-    vfe,
-    currentPS,
-    onChangePS,
     onViewerClick,
     onUpdateHotspot,
     photosphereOptions,

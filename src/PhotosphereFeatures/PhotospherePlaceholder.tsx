@@ -19,6 +19,7 @@ import { Box, Stack, Typography, alpha } from "@mui/material";
 import { common } from "@mui/material/colors";
 
 import { useVisitedState } from "../Hooks/HandleVisit";
+import { useVFELoaderContext } from "../Hooks/VFELoaderContext";
 import {
   Hotspot2D,
   Hotspot3D,
@@ -150,15 +151,9 @@ function PhotospherePlaceholder({
   mapStatic,
   lockViews,
 }: PhotospherePlaceholderProps) {
-  const {
-    vfe,
-    currentPS,
-    onChangePS,
-    onUpdateHotspot,
-    onViewerClick,
-    photosphereOptions,
-    states,
-  } = viewerProps;
+  const { onUpdateHotspot, onViewerClick, photosphereOptions, states } =
+    viewerProps;
+  const { vfe, currentPS, onChangePS } = useVFELoaderContext();
   const statesIdx = isPrimary ? 0 : 1;
   const photosphereRef = states.references[statesIdx];
 
@@ -386,8 +381,6 @@ function PhotospherePlaceholder({
         >
           <Typography> Change Time </Typography>
           <PhotosphereTimelineSelect
-            parentPs={currentPS}
-            vfe={vfe}
             onSelect={(ps: string) => {
               console.log(ps);
               setCurrentPhotosphere(vfe.photospheres[ps]);

@@ -2,23 +2,20 @@ import { useEffect, useState } from "react";
 
 import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
 
-import { VFE } from "../Pages/PageUtility/DataStructures";
+import { useVFELoaderContext } from "../Hooks/VFELoaderContext";
 
 export interface PhotosphereTimelineSelectProps {
   onSelect: (psId: string) => void;
-  parentPs: string;
-  vfe: VFE;
 }
 
 function PhotosphereTimelineSelect({
   onSelect,
-  parentPs,
-  vfe,
 }: PhotosphereTimelineSelectProps) {
-  const [selected, setSelected] = useState<string>(parentPs);
-  const parentPS = vfe.photospheres[parentPs].parentPS
-    ? vfe.photospheres[vfe.photospheres[parentPs].parentPS]
-    : vfe.photospheres[parentPs];
+  const { vfe, currentPS } = useVFELoaderContext();
+  const [selected, setSelected] = useState<string>(currentPS);
+  const parentPS = vfe.photospheres[currentPS].parentPS
+    ? vfe.photospheres[vfe.photospheres[currentPS].parentPS]
+    : vfe.photospheres[currentPS];
   var timeline: Record<string, string> = parentPS.timeline;
   timeline = { ...timeline, ["Now"]: parentPS.id };
 

@@ -81,17 +81,13 @@ function AppRoot() {
       />
       <Route
         path="/viewer/:vfeID"
-        element={
-          <VFELoader render={(props) => <PhotosphereViewer {...props} />} />
-        }
+        element={<VFELoader ChildComponent={PhotosphereViewer} />}
       >
         <Route path=":photosphereID" element={null}></Route>
       </Route>
       <Route
         path="/editor/:vfeID"
-        element={
-          <VFELoader render={(props) => <PhotosphereEditor {...props} />} />
-        }
+        element={<VFELoader ChildComponent={PhotosphereEditor} />}
       >
         <Route path=":photosphereID" element={null}></Route>
       </Route>

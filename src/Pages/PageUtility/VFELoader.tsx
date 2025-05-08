@@ -1,9 +1,10 @@
 import localforage from "localforage";
-import { ReactElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Alert, Stack } from "@mui/material";
 
+import { VFELoaderContext } from "../../Hooks/VFELoaderContext";
 import { VFE } from "./DataStructures";
 import {
   convertRuntimeToStored,
@@ -19,10 +20,10 @@ export interface ElementProps {
 }
 
 export interface PhotosphereLoaderProps {
-  render: (props: ElementProps) => ReactElement;
+  ChildComponent: React.FC;
 }
 
-function VFELoader({ render }: PhotosphereLoaderProps) {
+function VFELoader({ ChildComponent }: PhotosphereLoaderProps) {
   const navigate = useNavigate();
   const { vfeID, photosphereID } = useParams() as {
     vfeID: string;
@@ -73,19 +74,25 @@ function VFELoader({ render }: PhotosphereLoaderProps) {
     );
   }
 
-  return render({
-    vfe,
-    onUpdateVFE: (updatedVFE) => {
-      setVFE(updatedVFE);
-      void saveVFE(updatedVFE);
-    },
-    currentPS: photosphereID ?? vfe.defaultPhotosphereID,
-    onChangePS: (id) => {
-      if (id !== photosphereID) {
-        navigate(id, { replace: true });
-      }
-    },
-  });
+  return (
+    <VFELoaderContext.Provider
+      value={{
+        vfe,
+        onUpdateVFE: (updatedVFE) => {
+          setVFE(updatedVFE);
+          void saveVFE(updatedVFE);
+        },
+        currentPS: photosphereID ?? vfe.defaultPhotosphereID,
+        onChangePS: (id) => {
+          if (id !== photosphereID) {
+            navigate(id, { replace: true });
+          }
+        },
+      }}
+    >
+      <ChildComponent />
+    </VFELoaderContext.Provider>
+  );
 }
 
 export default VFELoader;
