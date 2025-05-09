@@ -61,8 +61,6 @@ function PhotosphereEditor(): JSX.Element {
   const [showChangeFeatures, setShowChangeFeatures] = useState(false);
   const [showRemoveFeatures, setShowRemoveFeatures] = useState(false);
 
-  const [showAddTimeStep, setShowAddTimeStep] = useState(false);
-
   const visitedState = JSON.parse(
     localStorage.getItem("visitedState") ?? "{}",
   ) as VisitedState;
@@ -199,28 +197,6 @@ function PhotosphereEditor(): JSX.Element {
     setUpdateTrigger((prev) => prev + 1);
   }
 
-  function handleAddTimeStep(newPhotosphere: Photosphere) {
-    newPhotosphere.parentPS = currentPS;
-    const updatedVFE: VFE = {
-      ...vfe,
-      photospheres: {
-        ...vfe.photospheres,
-        [newPhotosphere.id]: newPhotosphere,
-      },
-    };
-
-    updatedVFE.photospheres[currentPS].timeline = {
-      ...updatedVFE.photospheres[currentPS].timeline,
-      ["2000-12-10"]: newPhotosphere.id,
-    };
-
-    console.log(updatedVFE.photospheres[currentPS]);
-    onUpdateVFE(updatedVFE);
-    onChangePS(currentPS); // will continue to view the same PS at the moment
-    setShowAddTimeStep(false);
-    setUpdateTrigger((prev) => prev + 1);
-  }
-
   function handleCreateNavMap(updatedNavMap: NavMap) {
     const updatedVFE: VFE = {
       ...vfe,
@@ -308,14 +284,6 @@ function PhotosphereEditor(): JSX.Element {
           }}
           onClose={handleCloseRemovePhotosphere}
           vfe={vfe}
-        />
-      );
-    if (showAddTimeStep)
-      return (
-        <AddPhotosphere
-          vfe={vfe}
-          onAddPhotosphere={handleAddTimeStep}
-          onCancel={resetStates}
         />
       );
     return null;
@@ -572,16 +540,6 @@ function PhotosphereEditor(): JSX.Element {
               variant="contained"
             >
               Add New Hotspot
-            </Button>
-            <Button
-              sx={{ margin: "10px 0" }}
-              onClick={() => {
-                resetStates();
-                setShowAddTimeStep(true);
-              }}
-              variant="contained"
-            >
-              Add Time Step
             </Button>
             <MuiFileInput
               placeholder="Upload Background Audio"
