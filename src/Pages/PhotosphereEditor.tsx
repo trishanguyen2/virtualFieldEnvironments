@@ -26,7 +26,7 @@ import {
   photosphereLinkTooltip,
 } from "./PageUtility/DataStructures.ts";
 import { deleteStoredVFE, save } from "./PageUtility/FileOperations.ts";
-import { InitializePoints } from "./PageUtility/PointsInterface.tsx";
+import { useGamificationState } from "./PageUtility/PointsInterface.tsx";
 import {
   HotspotUpdate,
   convertRuntimeToStored,
@@ -40,7 +40,13 @@ function radToDeg(num: number): number {
   return num * (180 / Math.PI);
 }
 
-function PhotosphereEditor(): JSX.Element {
+interface PhotosphereEditorProps {
+  isGamified: boolean;
+}
+
+function PhotosphereEditor({
+  isGamified,
+}: PhotosphereEditorProps): JSX.Element {
   const { vfe, onUpdateVFE, currentPS, onChangePS } = useVFELoaderContext();
   const photosphereOptions = Object.keys(vfe.photospheres);
   // Get existing hotspots from the current photosphere
@@ -61,6 +67,8 @@ function PhotosphereEditor(): JSX.Element {
   const [showChangeFeatures, setShowChangeFeatures] = useState(false);
   const [showRemoveFeatures, setShowRemoveFeatures] = useState(false);
 
+  const [gamifiedState, SwapGamifyState] = useGamificationState(isGamified);
+  
   const visitedState = JSON.parse(
     localStorage.getItem("visitedState") ?? "{}",
   ) as VisitedState;
@@ -497,8 +505,17 @@ function PhotosphereEditor(): JSX.Element {
             </Button>
             <Button
               sx={{ margin: "10px 0" }}
-              onClick={() => {
-                InitializePoints();
+              onClick={async () => {
+                await SwapGamifyState();
+                //correcting for it always setting saved state to the opposite of what it should be for some reason.  Timing issue?
+                vfe.gamificationToggle = !gamifiedState;
+                console.log(
+                  "The gamified state is: " +
+                    !gamifiedState +
+                    " and the vfe gamification state is: " +
+                    vfe.gamificationToggle,
+                );
+                onUpdateVFE(vfe);
               }}
               variant="contained"
             >
@@ -638,6 +655,7 @@ function PhotosphereEditor(): JSX.Element {
           onUpdateHotspot={(hotspotPath, update) => {
             void handleUpdateHotspot(hotspotPath, update);
           }}
+          isGamified={gamifiedState ?? false}
         />
         <ActiveComponent />
       </Box>

@@ -6,6 +6,7 @@ import { Alert, Stack } from "@mui/material";
 
 import { VFELoaderContext } from "../../Hooks/VFELoaderContext";
 import { VFE } from "./DataStructures";
+import { useGamificationState } from "./PointsInterface.tsx";
 import {
   convertRuntimeToStored,
   convertStoredToRuntime,
@@ -20,10 +21,11 @@ export interface ElementProps {
 }
 
 export interface PhotosphereLoaderProps {
-  ChildComponent: React.FC;
+  ChildComponent: React.FC<{ isGamified: boolean }>;
 }
 
 function VFELoader({ ChildComponent }: PhotosphereLoaderProps) {
+  const [isGamified, , SetGamifyState] = useGamificationState();
   const navigate = useNavigate();
   const { vfeID, photosphereID } = useParams() as {
     vfeID: string;
@@ -39,6 +41,9 @@ function VFELoader({ ChildComponent }: PhotosphereLoaderProps) {
           vfe,
           convertStoredToRuntime(vfe.name),
         );
+        console.log("The state from save is: " + networkVFE.gamificationToggle);
+        await SetGamifyState(networkVFE.gamificationToggle ?? false);
+        console.log("The state in local memory is: " + isGamified);
         setVFE(networkVFE);
       }
     }
@@ -90,7 +95,8 @@ function VFELoader({ ChildComponent }: PhotosphereLoaderProps) {
         },
       }}
     >
-      <ChildComponent />
+      <ChildComponent isGamified={isGamified ?? false
+      } />
     </VFELoaderContext.Provider>
   );
 }
