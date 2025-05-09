@@ -638,20 +638,24 @@
     "CHILD_South_1": {
       "id": "CHILD_South_1",
       "src": {
-        "tag": "Stored",
-        "id": "d2a16d62-b492-4ea9-ab14-545b8b434df3",
-        "path": "d2a16d62-b492-4ea9-ab14-545b8b434df3"
+        "tag": "Runtime",
+        "id": "child_south_1.jpg",
+        "path": "/VFEdata/ERI_SouthScene_Past_tester.jpg"
+      },
+      "center": {
+        "x": 450,
+        "y": 800
       },
       "hotspots": {
-        "e2513edd-0e11-4d4a-819d-c8e9627260be": {
-          "id": "e2513edd-0e11-4d4a-819d-c8e9627260be",
+        "WHALE": {
+          "id": "WHALE",
           "tooltip": "WHALE!",
           "elevation": 0.2954789294646916,
           "direction": 230.20045523538158,
           "level": 0,
           "icon": {
             "tag": "Runtime",
-            "id": "0da36818-ef17-4f31-a8f4-facedb027e87",
+            "id": "blue-pin.png",
             "path": "/pin-blue.png"
           },
           "data": {
@@ -659,15 +663,15 @@
             "content": "There used to be whales here"
           }
         },
-        "3bd94eef-01b5-4981-a941-4a5d35004314": {
-          "id": "3bd94eef-01b5-4981-a941-4a5d35004314",
+        "Trees": {
+          "id": "Trees",
           "tooltip": "Trees",
           "elevation": 0.63427033960122,
           "direction": 130.84256823803437,
           "level": 0,
           "icon": {
             "tag": "Runtime",
-            "id": "f457a67f-da19-4206-94af-e6ba4df5193c",
+            "id": "blue-pin.png",
             "path": "/pin-blue.png"
           },
           "data": {
@@ -675,27 +679,27 @@
             "content": "Trees were thriving"
           }
         },
-        "519d8c14-2ba2-4da2-b8a3-9cf860a2b61c": {
-          "id": "519d8c14-2ba2-4da2-b8a3-9cf860a2b61c",
+        "Whale recording": {
+          "id": "Whale recording",
           "tooltip": "Whale recording",
           "elevation": -11.371125486525557,
           "direction": 228.25943434974107,
           "level": 0,
           "icon": {
             "tag": "Runtime",
-            "id": "924f17f9-622c-4a0a-ae33-7e32db79e3dc",
+            "id": "blue-pin.png",
             "path": "/pin-blue.png"
           },
           "data": {
             "tag": "Audio",
             "src": {
-              "tag": "Stored",
-              "id": "86e7f64b-9d40-4951-9e99-6b04aa6e5b08",
-              "path": "86e7f64b-9d40-4951-9e99-6b04aa6e5b08"
+              "tag": "Runtime",
+              "id": "whale.wav",
+              "path": "/VFEdata/whale-recording.wav"
             }
           }
         },
-	"Go West": {
+        "Go West": {
           "id": "Go West",
           "elevation": 0,
           "direction": -35,
@@ -734,20 +738,24 @@
     "CHILD_South_2": {
       "id": "CHILD_South_2",
       "src": {
-        "tag": "Stored",
-        "id": "cf0fab31-cf8b-4689-a7e4-c600c5c07dbc",
-        "path": "cf0fab31-cf8b-4689-a7e4-c600c5c07dbc"
+        "tag": "Runtime",
+        "id": "child_south_2.jpg",
+        "path":"/VFEdata/ERI_SouthScene_Past_tester_2.jpg"
+      },
+      "center": {
+        "x": 450,
+        "y": 800
       },
       "hotspots": {
-        "c5651e47-e7f3-463c-afab-9a9a0feea438": {
-          "id": "c5651e47-e7f3-463c-afab-9a9a0feea438",
+        "Bad Weather": {
+          "id": "Bad Weather",
           "tooltip": "Bad Weather?",
           "elevation": 7.712088030949307,
           "direction": 356.2424384813748,
           "level": 0,
           "icon": {
             "tag": "Runtime",
-            "id": "0baca2a9-341e-4dd2-a41b-4ec47206811b",
+            "id": "blue-pin.png",
             "path": "/pin-blue.png"
           },
           "data": {
@@ -755,30 +763,30 @@
             "content": "There appears to be bad climate during this time"
           }
         },
-        "ca4c7b2d-27f1-4e4a-b317-2f8ae1d98daa": {
-          "id": "ca4c7b2d-27f1-4e4a-b317-2f8ae1d98daa",
+        "Less Trees": {
+          "id": "Less Trees",
           "tooltip": "Less trees then now",
           "elevation": 5.544461505472647,
           "direction": 43.1805411063664,
           "level": 0,
           "icon": {
             "tag": "Runtime",
-            "id": "c1f7b2b6-87c9-46e2-8387-c74cb2309d9b",
+            "id": "blue-pin.png",
             "path": "/pin-red.png"
           },
           "data": {
             "tag": "Image",
             "src": {
-              "tag": "Stored",
-              "id": "791e42af-21cc-4d22-8230-093e443265e2",
-              "path": "791e42af-21cc-4d22-8230-093e443265e2"
+              "tag": "Runtime",
+              "id": "lesstrees.jpg",
+              "path": "/VFEdata/south-present-trees.png"
             },
             "width": 673,
             "height": 452,
             "hotspots": {}
           }
         },
-	"Go West": {
+        "Go West": {
           "id": "Go West",
           "elevation": 0,
           "direction": -35,
