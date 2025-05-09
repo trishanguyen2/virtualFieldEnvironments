@@ -1,5 +1,7 @@
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useState } from "react";
+
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+
 import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialEditor";
 
 export interface PhotosphereSelectorProps {
@@ -20,8 +22,10 @@ function PhotosphereSelector({
     return size === "small" ? value : defaultValue;
   }
 
-const [runTutorial, setRunTutorial] = useState(false);
-const [stepIndex, setStepIndex] = useState(0);
+  const [runTutorial, setRunTutorial] = useState(false);
+  const [stepIndex, setStepIndex] = useState(0);
+
+  options = options.filter((id) => !id.startsWith("CHILD_"));
 
   return (
     <FormControl size={size}>

@@ -184,7 +184,11 @@ function PhotosphereViewer({
           <PhotosphereSelector
             size="small"
             options={Object.keys(vfe.photospheres)}
-            value={primaryPhotosphere.id}
+            value={
+              primaryPhotosphere.parentPS
+                ? primaryPhotosphere.parentPS
+                : primaryPhotosphere.id
+            }
             setValue={(id) => {
               setPrimaryPhotosphere(vfe.photospheres[id]);
               setSplitPhotosphere(vfe.photospheres[id]);
