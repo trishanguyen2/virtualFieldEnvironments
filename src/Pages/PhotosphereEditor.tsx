@@ -211,7 +211,7 @@ function PhotosphereEditor(): JSX.Element {
 
     updatedVFE.photospheres[currentPS].timeline = {
       ...updatedVFE.photospheres[currentPS].timeline,
-      [Date.now().toString()]: newPhotosphere.id,
+      ["2000-12-10"]: newPhotosphere.id,
     };
 
     console.log(updatedVFE.photospheres[currentPS]);
