@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
 import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
@@ -43,11 +44,23 @@ function PhotosphereTimelineSelect({
       value={selected}
       onChange={handleChange}
     >
-      {Object.entries(timeline).map(([time, ps]) => (
-        <MenuItem key={time} value={ps}>
-          {time}
-        </MenuItem>
-      ))}
+      {Object.entries(timeline).map(([time, ps]) => {
+        let time_string;
+        if (time !== "Now") {
+          const curr_time = dayjs();
+          const pass_time = dayjs(time);
+          const difference = curr_time.diff(pass_time, "months");
+          time_string =
+            pass_time.format("YYYY-DD-MM") + "(" + difference + "months ago)";
+        } else {
+          time_string = time;
+        }
+        return (
+          <MenuItem key={time} value={ps}>
+            {time_string}
+          </MenuItem>
+        );
+      })}
     </Select>
   );
 }
