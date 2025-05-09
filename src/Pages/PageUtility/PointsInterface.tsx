@@ -72,7 +72,12 @@ export function usePoints() {
       });
   }
 
-  return [points, AddPoints] as const;
+  async function ResetPoints() {
+    InitializePoints();
+    setPoints(0);
+  }
+
+  return [points, AddPoints, ResetPoints] as const;
 }
 
 export function useGamificationState() {

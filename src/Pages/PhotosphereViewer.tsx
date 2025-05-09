@@ -122,7 +122,7 @@ function PhotosphereViewer({
   const [isSplitView, setIsSplitView] = useState(false);
   const [lockViews, setLockViews] = useState(false);
 
-  const [points, AddPoints] = usePoints();
+  const [points, AddPoints, ResetPoints] = usePoints();
 
   const maxPoints = 100;
 
@@ -236,6 +236,20 @@ function PhotosphereViewer({
               }}
             >
               Add Points!
+            </Button>
+          </Box>
+        )}
+        {isGamified && (
+          <Box sx={{ padding: "0 5px" }}>
+            <Button
+              sx={{ padding: "0", width: "4px", height: "40px" }}
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                void ResetPoints();
+              }}
+            >
+              Reset Points!
             </Button>
           </Box>
         )}
