@@ -4,16 +4,16 @@ import { useState } from "react";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { Button, Stack, TextField, Typography } from "@mui/material";
 
+import PhotosphereLocationSelector from "../PhotosphereFeatures/PhotosphereLocationSelector.tsx";
+import PhotosphereTutorialCreate from "../PhotosphereFeatures/PhotosphereTutorialCreate.tsx";
+import Header, { HeaderProps } from "../UI/Header.tsx";
+import { alertMUI } from "../UI/StyledDialogWrapper.tsx";
 import {
   NavMap,
   VFE,
   calculateImageDimensions,
   newID,
 } from "./PageUtility/DataStructures.ts";
-import Header, { HeaderProps } from "../UI/Header.tsx";
-import PhotosphereLocationSelector from "../PhotosphereFeatures/PhotosphereLocationSelector.tsx";
-import PhotosphereTutorialCreate from "../PhotosphereFeatures/PhotosphereTutorialCreate.tsx";
-import { alertMUI } from "../UI/StyledDialogWrapper.tsx";
 
 //import { PhotosphereCenterFieldset } from "./buttons/AddPhotosphere.tsx";
 
@@ -75,6 +75,7 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
           backgroundAudio: audio
             ? { tag: "Runtime", id: newID(), path: audio }
             : undefined,
+          timeline: {},
         },
       },
       map: navMap,
@@ -124,15 +125,15 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
       <Stack sx={{ width: 450, margin: "auto", paddingTop: 10 }} gap={3}>
         <Typography variant="h4">Create a New VFE</Typography>
         <Stack direction="row" gap={1}>
-            <TextField
-              required
-              label="VFE Name"
-              className="vfe-display-name-input"
-              sx={{ flexGrow: 1 }}
-              onChange={(e) => {
-                setVFEName(e.target.value);
+          <TextField
+            required
+            label="VFE Name"
+            className="vfe-display-name-input"
+            sx={{ flexGrow: 1 }}
+            onChange={(e) => {
+              setVFEName(e.target.value);
             }}
-            />
+          />
           <TextField
             required
             label="Photosphere Name"

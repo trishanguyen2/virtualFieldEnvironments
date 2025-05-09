@@ -10,7 +10,10 @@
     },
     "rotation": 0,
     "defaultZoom": 20,
-    "defaultCenter": { "x": 592.5, "y": 511.5 },
+    "defaultCenter": {
+      "x": 592.5,
+      "y": 511.5
+    },
     "width": 1185,
     "height": 1023,
     "size": 300
@@ -23,7 +26,14 @@
         "path": "/VFEdata/ERI_SouthScene_6-IMG_20231006_081813_00_122.jpg",
         "id": "SouthScene.jpg"
       },
-      "center": { "x": 450, "y": 800 },
+      "center": {
+        "x": 450,
+        "y": 800
+      },
+      "timeline": {
+        "2020-10-10": "CHILD_South_1",
+        "2000-12-10": "CHILD_South_2"
+      },
       "hotspots": {
         "OutcropWideView": {
           "id": "OutcropWideView",
@@ -444,7 +454,10 @@
         "path": "/VFEdata/ERI_Entrance-Scene0-IMG_20231006_080232_00_120.jpg",
         "id": "entrance.jpg"
       },
-      "center": { "x": 650, "y": 930 },
+      "center": {
+        "x": 650,
+        "y": 930
+      },
       "hotspots": {
         "Go East": {
           "id": "Go East",
@@ -478,7 +491,8 @@
           },
           "level": 0
         }
-      }
+      },
+      "timeline": {}
     },
     "West": {
       "id": "West",
@@ -487,7 +501,10 @@
         "path": "/VFEdata/ERI_West-Scene7-IMG_20231006_084114_00_123.jpg",
         "id": "west.jpg"
       },
-      "center": { "x": 95, "y": 530 },
+      "center": {
+        "x": 95,
+        "y": 530
+      },
       "hotspots": {
         "Go North": {
           "id": "Go North",
@@ -521,7 +538,8 @@
           },
           "level": 0
         }
-      }
+      },
+      "timeline": {}
     },
     "North": {
       "id": "North",
@@ -530,7 +548,10 @@
         "path": "/VFEdata/ERI_North-Scene8-IMG_20231006_091050_00_124.jpg",
         "id": "north.jpg"
       },
-      "center": { "x": 390, "y": 50 },
+      "center": {
+        "x": 390,
+        "y": 50
+      },
       "hotspots": {
         "Go West": {
           "id": "Go West",
@@ -564,7 +585,8 @@
           },
           "level": 0
         }
-      }
+      },
+      "timeline": {}
     },
     "East": {
       "id": "East",
@@ -573,7 +595,10 @@
         "path": "/VFEdata/ERI_East-Scene9-IMG_20231006_092207_00_125.jpg",
         "id": "east.jpg"
       },
-      "center": { "x": 550, "y": 450 },
+      "center": {
+        "x": 550,
+        "y": 450
+      },
       "hotspots": {
         "Go North": {
           "id": "Go North",
@@ -607,7 +632,195 @@
           },
           "level": 0
         }
-      }
+      },
+      "timeline": {}
+    },
+    "CHILD_South_1": {
+      "id": "CHILD_South_1",
+      "src": {
+        "tag": "Runtime",
+        "id": "child_south_1.jpg",
+        "path": "/VFEdata/ERI_SouthScene_Past_tester.jpg"
+      },
+      "center": {
+        "x": 450,
+        "y": 800
+      },
+      "hotspots": {
+        "WHALE": {
+          "id": "WHALE",
+          "tooltip": "WHALE!",
+          "elevation": 0.2954789294646916,
+          "direction": 230.20045523538158,
+          "level": 0,
+          "icon": {
+            "tag": "Runtime",
+            "id": "blue-pin.png",
+            "path": "/pin-blue.png"
+          },
+          "data": {
+            "tag": "Message",
+            "content": "There used to be whales here"
+          }
+        },
+        "Trees": {
+          "id": "Trees",
+          "tooltip": "Trees",
+          "elevation": 0.63427033960122,
+          "direction": 130.84256823803437,
+          "level": 0,
+          "icon": {
+            "tag": "Runtime",
+            "id": "blue-pin.png",
+            "path": "/pin-blue.png"
+          },
+          "data": {
+            "tag": "Message",
+            "content": "Trees were thriving"
+          }
+        },
+        "Whale recording": {
+          "id": "Whale recording",
+          "tooltip": "Whale recording",
+          "elevation": -11.371125486525557,
+          "direction": 228.25943434974107,
+          "level": 0,
+          "icon": {
+            "tag": "Runtime",
+            "id": "blue-pin.png",
+            "path": "/pin-blue.png"
+          },
+          "data": {
+            "tag": "Audio",
+            "src": {
+              "tag": "Runtime",
+              "id": "whale.wav",
+              "path": "/VFEdata/whale-recording.wav"
+            }
+          }
+        },
+        "Go West": {
+          "id": "Go West",
+          "elevation": 0,
+          "direction": -35,
+          "icon": {
+            "tag": "Runtime",
+            "path": "/pin-blue.png",
+            "id": "blue-pin.png"
+          },
+          "tooltip": "Go West",
+          "data": {
+            "tag": "PhotosphereLink",
+            "photosphereID": "West"
+          },
+          "level": 0
+        },
+        "Go to Entrance": {
+          "id": "Go to Entrance",
+          "elevation": -7,
+          "direction": 125,
+          "icon": {
+            "tag": "Runtime",
+            "path": "/pin-blue.png",
+            "id": "blue-pin.png"
+          },
+          "tooltip": "Go to Entrance",
+          "data": {
+            "tag": "PhotosphereLink",
+            "photosphereID": "Entrance"
+          },
+          "level": 0
+        }
+      },
+      "timeline": {},
+      "parentPS": "South"
+    },
+    "CHILD_South_2": {
+      "id": "CHILD_South_2",
+      "src": {
+        "tag": "Runtime",
+        "id": "child_south_2.jpg",
+        "path":"/VFEdata/ERI_SouthScene_Past_tester_2.jpg"
+      },
+      "center": {
+        "x": 450,
+        "y": 800
+      },
+      "hotspots": {
+        "Bad Weather": {
+          "id": "Bad Weather",
+          "tooltip": "Bad Weather?",
+          "elevation": 7.712088030949307,
+          "direction": 356.2424384813748,
+          "level": 0,
+          "icon": {
+            "tag": "Runtime",
+            "id": "blue-pin.png",
+            "path": "/pin-blue.png"
+          },
+          "data": {
+            "tag": "Message",
+            "content": "There appears to be bad climate during this time"
+          }
+        },
+        "Less Trees": {
+          "id": "Less Trees",
+          "tooltip": "Less trees then now",
+          "elevation": 5.544461505472647,
+          "direction": 43.1805411063664,
+          "level": 0,
+          "icon": {
+            "tag": "Runtime",
+            "id": "blue-pin.png",
+            "path": "/pin-red.png"
+          },
+          "data": {
+            "tag": "Image",
+            "src": {
+              "tag": "Runtime",
+              "id": "lesstrees.jpg",
+              "path": "/VFEdata/south-present-trees.png"
+            },
+            "width": 673,
+            "height": 452,
+            "hotspots": {}
+          }
+        },
+        "Go West": {
+          "id": "Go West",
+          "elevation": 0,
+          "direction": -35,
+          "icon": {
+            "tag": "Runtime",
+            "path": "/pin-blue.png",
+            "id": "blue-pin.png"
+          },
+          "tooltip": "Go West",
+          "data": {
+            "tag": "PhotosphereLink",
+            "photosphereID": "West"
+          },
+          "level": 0
+        },
+        "Go to Entrance": {
+          "id": "Go to Entrance",
+          "elevation": -7,
+          "direction": 125,
+          "icon": {
+            "tag": "Runtime",
+            "path": "/pin-blue.png",
+            "id": "blue-pin.png"
+          },
+          "tooltip": "Go to Entrance",
+          "data": {
+            "tag": "PhotosphereLink",
+            "photosphereID": "Entrance"
+          },
+          "level": 0
+        }
+      },
+      "timeline": {},
+      "parentPS": "South"
     }
   }
 }

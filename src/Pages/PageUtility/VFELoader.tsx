@@ -1,10 +1,12 @@
 import localforage from "localforage";
-import { ReactElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Alert, Stack } from "@mui/material";
 
+import { VFELoaderContext } from "../../Hooks/VFELoaderContext";
 import { VFE } from "./DataStructures";
+import { useGamificationState } from "./PointsInterface.tsx";
 import {
   convertRuntimeToStored,
   convertStoredToRuntime,
@@ -19,10 +21,11 @@ export interface ElementProps {
 }
 
 export interface PhotosphereLoaderProps {
-  render: (props: ElementProps) => ReactElement;
+  ChildComponent: React.FC<{ isGamified: boolean }>;
 }
 
-function VFELoader({ render }: PhotosphereLoaderProps) {
+function VFELoader({ ChildComponent }: PhotosphereLoaderProps) {
+  const [isGamified, , SetGamifyState] = useGamificationState();
   const navigate = useNavigate();
   const { vfeID, photosphereID } = useParams() as {
     vfeID: string;
@@ -38,6 +41,9 @@ function VFELoader({ render }: PhotosphereLoaderProps) {
           vfe,
           convertStoredToRuntime(vfe.name),
         );
+        console.log("The state from save is: " + networkVFE.gamificationToggle);
+        await SetGamifyState(networkVFE.gamificationToggle ?? false);
+        console.log("The state in local memory is: " + isGamified);
         setVFE(networkVFE);
       }
     }
@@ -73,19 +79,26 @@ function VFELoader({ render }: PhotosphereLoaderProps) {
     );
   }
 
-  return render({
-    vfe,
-    onUpdateVFE: (updatedVFE) => {
-      setVFE(updatedVFE);
-      void saveVFE(updatedVFE);
-    },
-    currentPS: photosphereID ?? vfe.defaultPhotosphereID,
-    onChangePS: (id) => {
-      if (id !== photosphereID) {
-        navigate(id, { replace: true });
-      }
-    },
-  });
+  return (
+    <VFELoaderContext.Provider
+      value={{
+        vfe,
+        onUpdateVFE: (updatedVFE) => {
+          setVFE(updatedVFE);
+          void saveVFE(updatedVFE);
+        },
+        currentPS: photosphereID ?? vfe.defaultPhotosphereID,
+        onChangePS: (id) => {
+          if (id !== photosphereID) {
+            navigate(id, { replace: true });
+          }
+        },
+      }}
+    >
+      <ChildComponent isGamified={isGamified ?? false
+      } />
+    </VFELoaderContext.Provider>
+  );
 }
 
 export default VFELoader;

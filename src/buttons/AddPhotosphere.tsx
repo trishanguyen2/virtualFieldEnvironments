@@ -12,7 +12,11 @@ import {
   TextField,
 } from "@mui/material";
 
-import { Photosphere, VFE, newID } from "../Pages/PageUtility/DataStructures.ts";
+import {
+  Photosphere,
+  VFE,
+  newID,
+} from "../Pages/PageUtility/DataStructures.ts";
 import PhotosphereLocationSelector from "../PhotosphereFeatures/PhotosphereLocationSelector.tsx";
 import { alertMUI } from "../UI/StyledDialogWrapper.tsx";
 
@@ -68,6 +72,7 @@ function AddPhotosphere({
       backgroundAudio: audioFileStr
         ? { tag: "Runtime", id: newID(), path: audioFileStr }
         : undefined,
+      timeline: {},
     };
 
     onAddPhotosphere(newPhotosphere);

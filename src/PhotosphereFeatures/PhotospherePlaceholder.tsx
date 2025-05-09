@@ -15,10 +15,11 @@ import {
   VirtualTourPluginConfig,
 } from "react-photo-sphere-viewer";
 
-import { alpha } from "@mui/material";
+import { Box, Stack, Typography, alpha } from "@mui/material";
 import { common } from "@mui/material/colors";
 
 import { useVisitedState } from "../Hooks/HandleVisit";
+import { useVFELoaderContext } from "../Hooks/VFELoaderContext";
 import {
   Hotspot2D,
   Hotspot3D,
@@ -26,8 +27,9 @@ import {
   Photosphere,
 } from "../Pages/PageUtility/DataStructures";
 import PopOver from "../Pages/PageUtility/PopOver";
-import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
 import { ViewerProps } from "../Pages/PhotosphereViewer";
+import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
+import PhotosphereTimelineSelect from "./PhotosphereTimelineSelect";
 
 /** Convert sizes from numbers to strings ending in "px" */
 function sizeToStr(val: number): string {
@@ -149,15 +151,9 @@ function PhotospherePlaceholder({
   mapStatic,
   lockViews,
 }: PhotospherePlaceholderProps) {
-  const {
-    vfe,
-    currentPS,
-    onChangePS,
-    onUpdateHotspot,
-    onViewerClick,
-    photosphereOptions,
-    states,
-  } = viewerProps;
+  const { onUpdateHotspot, onViewerClick, photosphereOptions, states } =
+    viewerProps;
+  const { vfe, currentPS, onChangePS } = useVFELoaderContext();
   const statesIdx = isPrimary ? 0 : 1;
   const photosphereRef = states.references[statesIdx];
 
@@ -243,22 +239,34 @@ function PhotospherePlaceholder({
       // setCurrentPhotosphere has to be used to get the current state value because
       // the value of currentPhotosphere does not get updated in an event listener
       setCurrentPhotosphere((currentState) => {
-        let passMarker: Hotspot2D | Hotspot3D = currentState.hotspots[marker.config.id];
+        let passMarker: Hotspot2D | Hotspot3D =
+          currentState.hotspots[marker.config.id];
         let passMarkerList: (Hotspot2D | Hotspot3D)[] = [passMarker];
 
-        const lastEditedHotspotFlag = Number(sessionStorage.getItem('lastEditedHotspotFlag'));
-        const lastEditedHotspot = JSON.parse(sessionStorage.getItem('lastEditedHotspot') || "{}");
+        const lastEditedHotspotFlag = Number(
+          sessionStorage.getItem("lastEditedHotspotFlag"),
+        );
+        const lastEditedHotspot = JSON.parse(
+          sessionStorage.getItem("lastEditedHotspot") || "{}",
+        );
 
-        if (lastEditedHotspotFlag == 1 && lastEditedHotspot != null && lastEditedHotspot.length > 1 && lastEditedHotspot[0] == marker.config.id) {
+        if (
+          lastEditedHotspotFlag == 1 &&
+          lastEditedHotspot != null &&
+          lastEditedHotspot.length > 1 &&
+          lastEditedHotspot[0] == marker.config.id
+        ) {
           for (let i = 1; i < lastEditedHotspot.length; ++i) {
             if (passMarker.data.tag == "Image") {
-              passMarkerList.push( passMarker.data.hotspots[lastEditedHotspot[i]] );
+              passMarkerList.push(
+                passMarker.data.hotspots[lastEditedHotspot[i]],
+              );
               passMarker = passMarker.data.hotspots[lastEditedHotspot[i]];
             }
           }
-          sessionStorage.setItem('lastEditedHotspotFlag', "0");
+          sessionStorage.setItem("lastEditedHotspotFlag", "0");
         }
-        
+
         setHotspotArray(passMarkerList);
         handleVisit(currentState.id, marker.config.id);
         return currentState;
@@ -300,8 +308,12 @@ function PhotospherePlaceholder({
 
     virtualTour.setNodes(nodes, currentPS);
     virtualTour.addEventListener("node-changed", ({ node }) => {
-      // want to travel both viewers
-      states.setStates.forEach((func) => func(vfe.photospheres[node.id]));
+      if (!vfe.photospheres[node.id].parentPS) {
+        // want to travel both viewers only if we traveled to a parent node
+        states.setStates.forEach((setStateFunc) =>
+          setStateFunc(vfe.photospheres[node.id]),
+        );
+      }
       onChangePS(node.id);
       setHotspotArray([]); // clear popovers on scene change
     });
@@ -342,17 +354,51 @@ function PhotospherePlaceholder({
           photosphereOptions={photosphereOptions}
         />
       )}
+      <Box
+        sx={{
+          width: "100%",
+          height: "100vh",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <Stack
+          direction="column"
+          sx={{
+            position: "absolute",
+            height: "60px",
+            top: 100,
+            left: 8,
+            border: "1px solid gray",
+            p: 4,
+            pt: 0,
+            zIndex: 100,
+            backgroundColor: "white",
+            borderRadius: "4px",
+            boxShadow: "0 0 4px grey",
+            mt: 0,
+          }}
+        >
+          <Typography> Change Time </Typography>
+          <PhotosphereTimelineSelect
+            onSelect={(ps: string) => {
+              console.log(ps);
+              setCurrentPhotosphere(vfe.photospheres[ps]);
+            }}
+          />
+        </Stack>
 
-      <ReactPhotoSphereViewer
-        key={mapStatic ? "static" : "dynamic"}
-        onReady={handleReady}
-        ref={photosphereRef}
-        src={defaultPan.current}
-        plugins={plugins}
-        height={"100vh"}
-        width={"100%"}
-        navbar={["autorotate", "zoom", "caption", "download", "fullscreen"]}
-      />
+        <ReactPhotoSphereViewer
+          key={mapStatic ? "static" : "dynamic"}
+          onReady={handleReady}
+          ref={photosphereRef}
+          src={defaultPan.current}
+          plugins={plugins}
+          height={"100vh"}
+          width={"100%"}
+          navbar={["autorotate", "zoom", "caption", "download", "fullscreen"]}
+        />
+      </Box>
     </>
   );
 }
