@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 
 import { useVFELoaderContext } from "../Hooks/VFELoaderContext.tsx";
-import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
+import { Photosphere } from "../Pages/PageUtility/DataStructures";
 import { usePoints } from "../Pages/PageUtility/PointsInterface.tsx";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspotSidebar.tsx";
