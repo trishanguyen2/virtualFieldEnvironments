@@ -4,7 +4,7 @@ import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import ReactPlayer from "react-player";
 
-import { ArrowBack, Close } from "@mui/icons-material";
+import { Add, ArrowBack, Close } from "@mui/icons-material";
 import {
   Button,
   Dialog,
@@ -20,9 +20,10 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 
-import { Asset, Hotspot2D, Hotspot3D, HotspotData } from "./DataStructures";
-import HotspotEditor, { HotspotIcon, NestedHotspotBox } from "../HotspotEditor";
 import { confirmMUI } from "../../UI/StyledDialogWrapper";
+import HotspotEditor, { HotspotIcon, NestedHotspotBox } from "../HotspotEditor";
+import { Asset, Hotspot2D, Hotspot3D, HotspotData } from "./DataStructures";
+import { usePoints } from "./PointsInterface";
 import { HotspotUpdate } from "./VFEConversion";
 
 interface HotspotContentProps {
@@ -30,6 +31,7 @@ interface HotspotContentProps {
   hotspot: HotspotData;
   openNestedHotspot: (add: Hotspot2D) => void;
   changeScene: (id: string) => void;
+  addPoints: (amount: number) => Promise<void>;
 }
 
 function HotspotContent({
@@ -37,9 +39,16 @@ function HotspotContent({
   hotspot,
   openNestedHotspot,
   changeScene,
+  addPoints: AddPoints,
 }: HotspotContentProps) {
   const [answer, setAnswer] = useState(""); // State to hold the answer
   const [feedback, setFeedback] = useState("");
+  const [visited, setVisited] = useState(false);
+
+  if (!visited) {
+    AddPoints(10);
+    setVisited(true);
+  }
 
   switch (hotspot.tag) {
     case "Image": {
@@ -198,6 +207,7 @@ export interface PopOverProps {
   ) => void;
   photosphereOptions?: string[];
   changeScene: (id: string) => void;
+  addPoints: (amount: number) => Promise<void>;
 }
 
 function PopOver({
@@ -209,6 +219,7 @@ function PopOver({
   onUpdateHotspot,
   photosphereOptions = [],
   changeScene,
+  addPoints,
 }: PopOverProps) {
   const [edited, setEdited] = useState(false);
 
@@ -350,6 +361,7 @@ function PopOver({
                 hotspot={previewData}
                 openNestedHotspot={openNestedHotspot}
                 changeScene={changeScene}
+                addPoints={addPoints}
               />
             </DialogContent>
           )}

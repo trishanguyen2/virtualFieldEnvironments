@@ -278,6 +278,7 @@ function PhotosphereViewer({
           isPrimary={true}
           mapStatic={mapStatic}
           lockViews={lockViews}
+          addPoints={AddPoints}
         />
         {isSplitView && (
           <PhotospherePlaceholder
@@ -285,6 +286,7 @@ function PhotosphereViewer({
             isPrimary={false}
             mapStatic={mapStatic}
             lockViews={lockViews}
+            addPoints={AddPoints}
           />
         )}
       </Stack>

@@ -25,9 +25,10 @@ import {
   NavMap,
   Photosphere,
 } from "../Pages/PageUtility/DataStructures";
+import { usePoints } from "../Pages/PageUtility/PointsInterface";
 import PopOver from "../Pages/PageUtility/PopOver";
-import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
 import { ViewerProps } from "../Pages/PhotosphereViewer";
+import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
 
 /** Convert sizes from numbers to strings ending in "px" */
 function sizeToStr(val: number): string {
@@ -141,6 +142,7 @@ interface PhotospherePlaceholderProps {
   isPrimary: boolean;
   mapStatic: boolean;
   lockViews: boolean;
+  addPoints: (amount: number) => Promise<void>;
 }
 
 function PhotospherePlaceholder({
@@ -148,6 +150,7 @@ function PhotospherePlaceholder({
   isPrimary,
   mapStatic,
   lockViews,
+  addPoints,
 }: PhotospherePlaceholderProps) {
   const {
     vfe,
@@ -243,22 +246,34 @@ function PhotospherePlaceholder({
       // setCurrentPhotosphere has to be used to get the current state value because
       // the value of currentPhotosphere does not get updated in an event listener
       setCurrentPhotosphere((currentState) => {
-        let passMarker: Hotspot2D | Hotspot3D = currentState.hotspots[marker.config.id];
+        let passMarker: Hotspot2D | Hotspot3D =
+          currentState.hotspots[marker.config.id];
         let passMarkerList: (Hotspot2D | Hotspot3D)[] = [passMarker];
 
-        const lastEditedHotspotFlag = Number(sessionStorage.getItem('lastEditedHotspotFlag'));
-        const lastEditedHotspot = JSON.parse(sessionStorage.getItem('lastEditedHotspot') || "{}");
+        const lastEditedHotspotFlag = Number(
+          sessionStorage.getItem("lastEditedHotspotFlag"),
+        );
+        const lastEditedHotspot = JSON.parse(
+          sessionStorage.getItem("lastEditedHotspot") || "{}",
+        );
 
-        if (lastEditedHotspotFlag == 1 && lastEditedHotspot != null && lastEditedHotspot.length > 1 && lastEditedHotspot[0] == marker.config.id) {
+        if (
+          lastEditedHotspotFlag == 1 &&
+          lastEditedHotspot != null &&
+          lastEditedHotspot.length > 1 &&
+          lastEditedHotspot[0] == marker.config.id
+        ) {
           for (let i = 1; i < lastEditedHotspot.length; ++i) {
             if (passMarker.data.tag == "Image") {
-              passMarkerList.push( passMarker.data.hotspots[lastEditedHotspot[i]] );
+              passMarkerList.push(
+                passMarker.data.hotspots[lastEditedHotspot[i]],
+              );
               passMarker = passMarker.data.hotspots[lastEditedHotspot[i]];
             }
           }
-          sessionStorage.setItem('lastEditedHotspotFlag', "0");
+          sessionStorage.setItem("lastEditedHotspotFlag", "0");
         }
-        
+
         setHotspotArray(passMarkerList);
         handleVisit(currentState.id, marker.config.id);
         return currentState;
@@ -340,6 +355,7 @@ function PhotospherePlaceholder({
             onChangePS(id);
           }}
           photosphereOptions={photosphereOptions}
+          addPoints={addPoints}
         />
       )}
 
