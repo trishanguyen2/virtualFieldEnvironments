@@ -23,7 +23,6 @@ import Box from "@mui/material/Box";
 import { confirmMUI } from "../../UI/StyledDialogWrapper";
 import HotspotEditor, { HotspotIcon, NestedHotspotBox } from "../HotspotEditor";
 import { Asset, Hotspot2D, Hotspot3D, HotspotData } from "./DataStructures";
-import { usePoints } from "./PointsInterface";
 import { HotspotUpdate } from "./VFEConversion";
 
 interface HotspotContentProps {

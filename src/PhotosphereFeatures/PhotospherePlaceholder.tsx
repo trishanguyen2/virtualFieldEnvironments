@@ -25,7 +25,6 @@ import {
   NavMap,
   Photosphere,
 } from "../Pages/PageUtility/DataStructures";
-import { usePoints } from "../Pages/PageUtility/PointsInterface";
 import PopOver from "../Pages/PageUtility/PopOver";
 import { ViewerProps } from "../Pages/PhotosphereViewer";
 import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
