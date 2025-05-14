@@ -71,6 +71,8 @@ export interface Photosphere {
   hotspots: Record<string, Hotspot3D>;
   center?: { x: number; y: number };
   backgroundAudio?: Asset;
+  timeline: Record<string, string>;
+  parentPS?: string;
 }
 
 // Hotspot2D: a clickable resource that is inside a 2D image (x, y)

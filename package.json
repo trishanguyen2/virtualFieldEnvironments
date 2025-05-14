@@ -17,6 +17,8 @@
     "@fontsource/roboto": "^5.0.13",
     "@mui/icons-material": "^5.15.14",
     "@mui/material": "^5.15.14",
+    "@mui/x-date-pickers": "^8.3.0",
+    "dayjs": "^1.11.13",
     "file-saver": "^2.0.5",
     "jszip": "^3.10.1",
     "localforage": "^1.10.0",

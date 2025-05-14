@@ -12,7 +12,8 @@ import {
   styled,
 } from "@mui/material";
 
-import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
+import { useVFELoaderContext } from "../Hooks/VFELoaderContext.tsx";
+import { Photosphere } from "../Pages/PageUtility/DataStructures";
 import { usePoints } from "../Pages/PageUtility/PointsInterface.tsx";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspotSidebar.tsx";
@@ -70,9 +71,6 @@ const StyledSwitch = styled((props: SwitchProps) => (
 }));
 
 export interface PhotosphereViewerProps {
-  vfe: VFE;
-  currentPS: string;
-  onChangePS: (id: string) => void;
   onViewerClick?: (elevation: number, direction: number) => void;
   onUpdateHotspot?: (
     hotspotPath: string[],
@@ -89,9 +87,6 @@ export interface ViewerStates {
 }
 
 export interface ViewerProps {
-  vfe: VFE;
-  currentPS: string;
-  onChangePS: (id: string) => void;
   onViewerClick?: (elevation: number, direction: number) => void;
   onUpdateHotspot?: (
     hotspotPath: string[],
@@ -102,14 +97,12 @@ export interface ViewerProps {
 }
 
 function PhotosphereViewer({
-  vfe,
-  currentPS,
-  onChangePS,
   onViewerClick,
   onUpdateHotspot,
   photosphereOptions,
   isGamified,
 }: PhotosphereViewerProps) {
+  const { vfe, currentPS, onChangePS } = useVFELoaderContext();
   const primaryPsRef = React.useRef<ViewerAPI | null>(null);
   const splitRef = React.useRef<ViewerAPI | null>(null);
   const [primaryPhotosphere, setPrimaryPhotosphere] =
@@ -127,9 +120,6 @@ function PhotosphereViewer({
   const maxPoints = 100;
 
   const viewerProps: ViewerProps = {
-    vfe,
-    currentPS,
-    onChangePS,
     onViewerClick,
     onUpdateHotspot,
     photosphereOptions,
@@ -197,7 +187,11 @@ function PhotosphereViewer({
           <PhotosphereSelector
             size="small"
             options={Object.keys(vfe.photospheres)}
-            value={primaryPhotosphere.id}
+            value={
+              primaryPhotosphere.parentPS
+                ? primaryPhotosphere.parentPS
+                : primaryPhotosphere.id
+            }
             setValue={(id) => {
               setPrimaryPhotosphere(vfe.photospheres[id]);
               setSplitPhotosphere(vfe.photospheres[id]);

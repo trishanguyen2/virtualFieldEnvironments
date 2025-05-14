@@ -6,6 +6,7 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { Box, Button, Stack } from "@mui/material";
 
 import { VisitedState } from "../Hooks/HandleVisit.tsx";
+import { useVFELoaderContext } from "../Hooks/VFELoaderContext.tsx";
 import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialEditor";
 import { alertMUI, confirmMUI } from "../UI/StyledDialogWrapper.tsx";
 import AddAudio from "../buttons/AddAudio.tsx";
@@ -39,20 +40,14 @@ function radToDeg(num: number): number {
   return num * (180 / Math.PI);
 }
 
-// Properties passed down from parent
 interface PhotosphereEditorProps {
-  vfe: VFE;
-  onUpdateVFE: (updatedVFE: VFE) => void;
-  currentPS: string;
-  onChangePS: (id: string) => void;
+  isGamified: boolean;
 }
 
 function PhotosphereEditor({
-  vfe,
-  onUpdateVFE,
-  currentPS,
-  onChangePS,
+  isGamified,
 }: PhotosphereEditorProps): JSX.Element {
+  const { vfe, onUpdateVFE, currentPS, onChangePS } = useVFELoaderContext();
   const photosphereOptions = Object.keys(vfe.photospheres);
   // Get existing hotspots from the current photosphere
   const existingHotspots = vfe.photospheres[currentPS].hotspots;
@@ -72,8 +67,8 @@ function PhotosphereEditor({
   const [showChangeFeatures, setShowChangeFeatures] = useState(false);
   const [showRemoveFeatures, setShowRemoveFeatures] = useState(false);
 
-  const [gamifiedState, SwapGamifyState] = useGamificationState();
-
+  const [gamifiedState, SwapGamifyState] = useGamificationState(isGamified);
+  
   const visitedState = JSON.parse(
     localStorage.getItem("visitedState") ?? "{}",
   ) as VisitedState;
@@ -205,7 +200,7 @@ function PhotosphereEditor({
     };
 
     onUpdateVFE(updatedVFE); // Propagate the change to the AppRoot
-    onChangePS(newPhotosphere.id); // Switch to new photosphere
+    onChangePS(currentPS); // Switch to new photosphere
     setShowAddPhotosphere(false);
     setUpdateTrigger((prev) => prev + 1);
   }
@@ -520,6 +515,7 @@ function PhotosphereEditor({
                     " and the vfe gamification state is: " +
                     vfe.gamificationToggle,
                 );
+                onUpdateVFE(vfe);
               }}
               variant="contained"
             >
@@ -653,11 +649,8 @@ function PhotosphereEditor({
       </Stack>
       <Box style={{ width: "100%", height: "100%" }}>
         <PhotosphereViewer
-          currentPS={currentPS}
-          onChangePS={onChangePS}
           onViewerClick={handleLocation}
           key={updateTrigger}
-          vfe={vfe}
           photosphereOptions={availablePhotosphereOptions}
           onUpdateHotspot={(hotspotPath, update) => {
             void handleUpdateHotspot(hotspotPath, update);

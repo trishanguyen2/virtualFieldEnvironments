@@ -75,8 +75,8 @@ export function usePoints() {
   return [points, AddPoints] as const;
 }
 
-export function useGamificationState() {
-  const [gamifiedState, setGamifiedState] = useState(getGamifiedState());
+export function useGamificationState(initialState?: boolean) {
+  const [gamifiedState, setGamifiedState] = useState(initialState ? initialState : getGamifiedState());
 
   async function SwapGamifyState() {
     let stateStorage = await pointsStore.getItem<boolean>("GamifiedState");

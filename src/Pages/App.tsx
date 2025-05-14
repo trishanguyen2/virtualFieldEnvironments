@@ -6,7 +6,6 @@ import LandingPage from "../Pages/LandingPage.tsx";
 import Prototype from "../Prototype/Prototype.tsx";
 import { VFE } from "./PageUtility/DataStructures.ts";
 import { load } from "./PageUtility/FileOperations.ts";
-import { useGamificationState } from "./PageUtility/PointsInterface.tsx";
 import {
   convertRuntimeToStored,
   convertVFE,
@@ -19,7 +18,6 @@ import PhotosphereViewer from "./PhotosphereViewer.tsx";
 // Should decide what we are doing, going to LandingPage/Rendering VFE
 function AppRoot() {
   const navigate = useNavigate();
-  const [isGamified, , SetGamifyState] = useGamificationState();
 
   //Create a function to set useState true
   function handleLoadTestVFE() {
@@ -43,9 +41,6 @@ function AppRoot() {
     const localVFE = await load(file);
     if (localVFE) {
       await localforage.setItem(localVFE.name, localVFE);
-      console.log("The state from save is: " + localVFE.gamificationToggle);
-      await SetGamifyState(localVFE.gamificationToggle ?? false);
-      console.log("The state in local memory is: " + isGamified);
       const target = openInViewer ? "viewer" : "editor";
       navigate(`/${target}/${localVFE.name}/${localVFE.defaultPhotosphereID}`);
     }
@@ -86,23 +81,15 @@ function AppRoot() {
       />
       <Route
         path="/viewer/:vfeID"
-        element={
-          <VFELoader
-            render={(props) => (
-              <PhotosphereViewer isGamified={isGamified ?? false} {...props} />
-            )}
-          />
-        }
+        element={<VFELoader ChildComponent={PhotosphereViewer} />}
       >
-        <Route path=":photosphereID" element={null} />
+        <Route path=":photosphereID" element={null}></Route>
       </Route>
       <Route
         path="/editor/:vfeID"
-        element={
-          <VFELoader render={(props) => <PhotosphereEditor {...props} />} />
-        }
+        element={<VFELoader ChildComponent={PhotosphereEditor} />}
       >
-        <Route path=":photosphereID" element={null} />
+        <Route path=":photosphereID" element={null}></Route>
       </Route>
     </Routes>
   );
