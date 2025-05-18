@@ -259,8 +259,8 @@ function PhotosphereViewer({
           </Stack>
           <Box sx={{ padding: "0 5px" }}>
             <Button
-              sx={{ height: "35px" }}
-              variant="outlined"
+              sx={{ height: "45px" }}
+              variant={isSplitView ? "contained" : "outlined"}
               onClick={() => {
                 setIsSplitView(!isSplitView);
               }}
@@ -274,7 +274,7 @@ function PhotosphereViewer({
                 <Button
                   variant={lockViews ? "contained" : "outlined"}
                   sx={{
-                    height: "35px",
+                    height: "45px",
                   }}
                   onClick={() => {
                     setLockViews(!lockViews);

@@ -32,6 +32,7 @@ function PhotosphereTimelineSelect({
     <Select
       sx={{
         width: "fit-content",
+        maxWidth: "110px",
       }}
       value={selected}
       onChange={handleChange}
@@ -49,7 +50,7 @@ function PhotosphereTimelineSelect({
           time_string = time;
         }
         return (
-          <MenuItem key={time} value={ps} sx={{ fontSize: "small" }}>
+          <MenuItem key={time} value={ps} sx={{ overflow: "hidden" }}>
             {time_string}
           </MenuItem>
         );
