@@ -15,7 +15,7 @@ import {
   VirtualTourPluginConfig,
 } from "react-photo-sphere-viewer";
 
-import { Box, Stack, Typography, alpha } from "@mui/material";
+import { Box, alpha } from "@mui/material";
 import { common } from "@mui/material/colors";
 
 import { useVisitedState } from "../Hooks/HandleVisit";
@@ -29,7 +29,6 @@ import {
 import PopOver from "../Pages/PageUtility/PopOver";
 import { ViewerProps } from "../Pages/PhotosphereViewer";
 import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
-import PhotosphereTimelineSelect from "./PhotosphereTimelineSelect";
 
 /** Convert sizes from numbers to strings ending in "px" */
 function sizeToStr(val: number): string {
