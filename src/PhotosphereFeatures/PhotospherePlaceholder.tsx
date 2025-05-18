@@ -362,32 +362,6 @@ function PhotospherePlaceholder({
           overflow: "hidden",
         }}
       >
-        <Stack
-          direction="column"
-          sx={{
-            position: "absolute",
-            height: "60px",
-            top: 100,
-            left: 8,
-            border: "1px solid gray",
-            p: 4,
-            pt: 0,
-            zIndex: 100,
-            backgroundColor: "white",
-            borderRadius: "4px",
-            boxShadow: "0 0 4px grey",
-            mt: 0,
-          }}
-        >
-          <Typography> Change Time </Typography>
-          <PhotosphereTimelineSelect
-            onSelect={(ps: string) => {
-              console.log(ps);
-              setCurrentPhotosphere(vfe.photospheres[ps]);
-            }}
-          />
-        </Stack>
-
         <ReactPhotoSphereViewer
           key={mapStatic ? "static" : "dynamic"}
           onReady={handleReady}

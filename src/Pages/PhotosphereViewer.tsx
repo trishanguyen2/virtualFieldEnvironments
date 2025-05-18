@@ -19,6 +19,7 @@ import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspotSidebar.tsx";
 import PhotospherePlaceholder from "../PhotosphereFeatures/PhotospherePlaceholder";
 import PhotosphereSelector from "../PhotosphereFeatures/PhotosphereSelector";
+import PhotosphereTimelineSelect from "../PhotosphereFeatures/PhotosphereTimelineSelect.tsx";
 import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialCreate.tsx";
 import AudioToggleButton from "../buttons/AudioToggleButton";
 
@@ -172,18 +173,6 @@ function PhotosphereViewer({
           gap={1}
         >
           <Box sx={{ padding: "0 5px" }}>
-            <Button
-              sx={{ height: "35px" }}
-              variant="outlined"
-              onClick={() => {
-                setIsSplitView(!isSplitView);
-              }}
-            >
-              <Typography sx={{ fontSize: "14px" }}>Split View</Typography>
-            </Button>
-          </Box>
-
-          <Box sx={{ padding: "0 5px" }}>
             <PhotosphereSelector
               size="small"
               options={Object.keys(vfe.photospheres)}
@@ -235,36 +224,91 @@ function PhotosphereViewer({
           )}
         </Stack>
 
-        {isSplitView && (
+        <Stack
+          direction="row"
+          sx={{
+            maxWidth: "100%",
+            width: "93%",
+            minWidth: "150px",
+            height: "fit-content",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+          gap={1}
+        >
           <Stack
-            direction="row"
+            direction="column"
             sx={{
-              maxWidth: "100%",
+              border: "1px solid gray",
               width: "fit-content",
-              minWidth: "150px",
-              mb: "5px",
-              justifyContent: "space-between",
-              alignItems: "center",
+              height: "fit-content",
+              backgroundColor: "white",
+              borderRadius: "4px",
+              boxShadow: "0 0 4px grey",
+              mt: 0,
+              p: 1,
             }}
-            gap={1}
           >
-            <Box>
-              <Button
-                variant={lockViews ? "contained" : "outlined"}
+            <Typography variant="caption"> Change Time </Typography>
+            <PhotosphereTimelineSelect
+              onSelect={(ps: string) => {
+                console.log(ps);
+                setPrimaryPhotosphere(vfe.photospheres[ps]);
+              }}
+            />
+          </Stack>
+          <Box sx={{ padding: "0 5px" }}>
+            <Button
+              sx={{ height: "35px" }}
+              variant="outlined"
+              onClick={() => {
+                setIsSplitView(!isSplitView);
+              }}
+            >
+              <Typography sx={{ fontSize: "14px" }}>Split View</Typography>
+            </Button>
+          </Box>
+          {isSplitView && (
+            <>
+              <Box>
+                <Button
+                  variant={lockViews ? "contained" : "outlined"}
+                  sx={{
+                    height: "35px",
+                  }}
+                  onClick={() => {
+                    setLockViews(!lockViews);
+                  }}
+                >
+                  <Typography sx={{ fontSize: "14px" }}>
+                    {lockViews ? "Unl" : "L"}ock Views
+                  </Typography>
+                </Button>
+              </Box>
+              <Stack
+                direction="column"
                 sx={{
-                  height: "35px",
-                }}
-                onClick={() => {
-                  setLockViews(!lockViews);
+                  border: "1px solid gray",
+                  width: "fit-content",
+                  height: "fit-content",
+                  backgroundColor: "white",
+                  borderRadius: "4px",
+                  boxShadow: "0 0 4px grey",
+                  mt: 0,
+                  p: 1,
                 }}
               >
-                <Typography sx={{ fontSize: "14px" }}>
-                  {lockViews ? "Unl" : "L"}ock Views
-                </Typography>
-              </Button>
-            </Box>
-          </Stack>
-        )}
+                <Typography variant="caption"> Change Time </Typography>
+                <PhotosphereTimelineSelect
+                  onSelect={(ps: string) => {
+                    console.log(ps);
+                    setSplitPhotosphere(vfe.photospheres[ps]);
+                  }}
+                />
+              </Stack>
+            </>
+          )}
+        </Stack>
       </Stack>
       <Stack
         direction="row"

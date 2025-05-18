@@ -30,19 +30,12 @@ function PhotosphereTimelineSelect({
   }
   return (
     <Select
-      MenuProps={{
-        disablePortal: true,
-        PaperProps: {
-          sx: {
-            position: "absolute",
-            height: "fit-content",
-            zIndex: 100,
-            p: 0,
-          },
-        },
+      sx={{
+        width: "fit-content",
       }}
       value={selected}
       onChange={handleChange}
+      size="small"
     >
       {Object.entries(timeline).map(([time, ps]) => {
         let time_string;
@@ -56,7 +49,7 @@ function PhotosphereTimelineSelect({
           time_string = time;
         }
         return (
-          <MenuItem key={time} value={ps}>
+          <MenuItem key={time} value={ps} sx={{ fontSize: "small" }}>
             {time_string}
           </MenuItem>
         );
