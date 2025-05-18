@@ -114,7 +114,7 @@ function PhotosphereViewer({
   const [mapStatic, setMapStatic] = useState(false);
 
   const [isSplitView, setIsSplitView] = useState(false);
-  const [lockViews, setLockViews] = useState(false);
+  const [lockViews, setLockViews] = useState(true);
 
   const [points, AddPoints] = usePoints();
 
