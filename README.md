@@ -61,10 +61,15 @@ npm run preview
 
 ## Authors
 Trisha Nguyen (Team Lead) 
+
 Kris Cooper 
+
 Hector Ojeda 
+
 Braulio Reyes 
+
 Carl Swinford
+
 Dan Turrill
 
 ## License
