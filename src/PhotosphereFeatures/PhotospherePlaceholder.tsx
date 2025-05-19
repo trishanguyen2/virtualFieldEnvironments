@@ -188,7 +188,18 @@ function PhotospherePlaceholder({
   }, {});
 
   const [visited, handleVisit] = useVisitedState(initialPhotosphereHotspots);
-  console.log("in viewer", visited);
+  console.log("in viewer: ", visited);
+
+  const visitedData = visited[currentPS];
+  console.log("in visted data TOP: ", visitedData);
+
+  function getVistedState(marker) {
+    let isHotspotVisited: boolean = visitedData
+      ? visitedData[marker.config.id]
+      : false;
+    console.log("isHotspotVisited: ", isHotspotVisited);
+    return isHotspotVisited;
+  }
 
   const isViewerMode = onUpdateHotspot === undefined;
 
@@ -242,6 +253,10 @@ function PhotospherePlaceholder({
     markerTestPlugin.addEventListener("select-marker", ({ marker }) => {
       if (marker.config.id.includes("__tour-link")) return;
 
+      console.log("visitedData: ", visitedData);
+
+      const isHotspotVisited: boolean = getVistedState(marker);
+
       // setCurrentPhotosphere has to be used to get the current state value because
       // the value of currentPhotosphere does not get updated in an event listener
       setCurrentPhotosphere((currentState) => {
@@ -274,6 +289,10 @@ function PhotospherePlaceholder({
         }
 
         setHotspotArray(passMarkerList);
+
+        if (!isHotspotVisited) {
+          void addPoints(10);
+        }
         handleVisit(currentState.id, marker.config.id);
         return currentState;
       });
@@ -315,7 +334,9 @@ function PhotospherePlaceholder({
     virtualTour.setNodes(nodes, currentPS);
     virtualTour.addEventListener("node-changed", ({ node }) => {
       // want to travel both viewers
-      states.setStates.forEach((func) => func(vfe.photospheres[node.id]));
+      states.setStates.forEach((func) => {
+        func(vfe.photospheres[node.id]);
+      });
       onChangePS(node.id);
       setHotspotArray([]); // clear popovers on scene change
     });
@@ -354,7 +375,6 @@ function PhotospherePlaceholder({
             onChangePS(id);
           }}
           photosphereOptions={photosphereOptions}
-          addPoints={addPoints}
         />
       )}
 

@@ -30,7 +30,6 @@ interface HotspotContentProps {
   hotspot: HotspotData;
   openNestedHotspot: (add: Hotspot2D) => void;
   changeScene: (id: string) => void;
-  addPoints: (amount: number) => Promise<void>;
 }
 
 function HotspotContent({
@@ -38,16 +37,9 @@ function HotspotContent({
   hotspot,
   openNestedHotspot,
   changeScene,
-  addPoints: AddPoints,
 }: HotspotContentProps) {
   const [answer, setAnswer] = useState(""); // State to hold the answer
   const [feedback, setFeedback] = useState("");
-  const [visited, setVisited] = useState(false);
-
-  if (!visited) {
-    AddPoints(10);
-    setVisited(true);
-  }
 
   switch (hotspot.tag) {
     case "Image": {
@@ -206,7 +198,6 @@ export interface PopOverProps {
   ) => void;
   photosphereOptions?: string[];
   changeScene: (id: string) => void;
-  addPoints: (amount: number) => Promise<void>;
 }
 
 function PopOver({
@@ -218,7 +209,6 @@ function PopOver({
   onUpdateHotspot,
   photosphereOptions = [],
   changeScene,
-  addPoints,
 }: PopOverProps) {
   const [edited, setEdited] = useState(false);
 
@@ -360,7 +350,6 @@ function PopOver({
                 hotspot={previewData}
                 openNestedHotspot={openNestedHotspot}
                 changeScene={changeScene}
-                addPoints={addPoints}
               />
             </DialogContent>
           )}

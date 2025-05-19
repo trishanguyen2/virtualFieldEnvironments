@@ -72,7 +72,7 @@ export function usePoints() {
       });
   }
 
-  async function ResetPoints() {
+  function ResetPoints() {
     InitializePoints();
     setPoints(0);
   }
@@ -110,7 +110,7 @@ export function useGamificationState() {
   }
 
   async function SetGamifyState(state: boolean) {
-    let stateStorage = await pointsStore.getItem<boolean>("GamifiedState");
+    const stateStorage = await pointsStore.getItem<boolean>("GamifiedState");
 
     if (stateStorage != null) {
       setGamifiedState(state);
