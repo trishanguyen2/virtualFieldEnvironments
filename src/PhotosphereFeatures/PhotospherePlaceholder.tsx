@@ -396,7 +396,7 @@ function PhotospherePlaceholder({
           plugins={plugins}
           height={"100vh"}
           width={"100%"}
-          navbar={["autorotate", "zoom", "caption", "download", "fullscreen"]}
+          navbar={["zoom", "caption", "download", "fullscreen"]}
         />
       </Box>
     </>
