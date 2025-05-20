@@ -194,7 +194,7 @@ function PhotosphereViewer({
           <FormControlLabel
             control={
               <StyledSwitch
-                defaultChecked
+                checked={mapRotationEnabled}
                 onChange={() => {
                   setMapRotationEnabled(!mapRotationEnabled);
                 }}
