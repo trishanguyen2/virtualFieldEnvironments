@@ -15,7 +15,7 @@ import {
   VirtualTourPluginConfig,
 } from "react-photo-sphere-viewer";
 
-import { Box, Stack, Typography, alpha } from "@mui/material";
+import { Box, alpha } from "@mui/material";
 import { common } from "@mui/material/colors";
 
 import { useVisitedState } from "../Hooks/HandleVisit";
@@ -29,7 +29,6 @@ import {
 import PopOver from "../Pages/PageUtility/PopOver";
 import { ViewerProps } from "../Pages/PhotosphereViewer";
 import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
-import PhotosphereTimelineSelect from "./PhotosphereTimelineSelect";
 
 /** Convert sizes from numbers to strings ending in "px" */
 function sizeToStr(val: number): string {
@@ -362,32 +361,6 @@ function PhotospherePlaceholder({
           overflow: "hidden",
         }}
       >
-        <Stack
-          direction="column"
-          sx={{
-            position: "absolute",
-            height: "60px",
-            top: 100,
-            left: 8,
-            border: "1px solid gray",
-            p: 4,
-            pt: 0,
-            zIndex: 100,
-            backgroundColor: "white",
-            borderRadius: "4px",
-            boxShadow: "0 0 4px grey",
-            mt: 0,
-          }}
-        >
-          <Typography> Change Time </Typography>
-          <PhotosphereTimelineSelect
-            onSelect={(ps: string) => {
-              console.log(ps);
-              setCurrentPhotosphere(vfe.photospheres[ps]);
-            }}
-          />
-        </Stack>
-
         <ReactPhotoSphereViewer
           key={mapStatic ? "static" : "dynamic"}
           onReady={handleReady}

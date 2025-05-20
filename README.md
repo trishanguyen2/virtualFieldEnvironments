@@ -23,6 +23,7 @@ Before installing, make sure you have the following:
 - Node.js
 - npm
 - a modern web browser (Chrome, Firefox, etc.)
+  
 
 ### Installing
 
@@ -40,6 +41,7 @@ To run this project locally:
    
 3. Optional: Modify `src/Prototype/data.json` IF you would like to preload your own VFE
 
+
 ### Executing Program
 
 Running the app locally: 
@@ -48,6 +50,7 @@ npm run dev
 ```
 
 Then open your browser to the local host link 
+
 
 ### Building for Production
 ```
@@ -58,6 +61,7 @@ To preview the production build:
 ```
 npm run preview
 ```
+---
 
 ## Authors
 Trisha Nguyen (Team Lead) 
@@ -72,8 +76,12 @@ Carl Swinford
 
 Dan Turrill
 
+---
+
 ## License
 This project is licensed under the **GNU Affero General Public License v3.0** -- See the [LICENSE](./LICENSE) file for details. 
+
+---
 
 ## Acknowledgements
 - Portland State University Capstone Winter/Spring 2025
