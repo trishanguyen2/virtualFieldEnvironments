@@ -27,14 +27,14 @@ interface AddPhotosphereProps {
   onAddPhotosphere: (newPhotosphere: Photosphere, date?: Dayjs) => void;
   onCancel: () => void;
   vfe: VFE;
-  pickDate?: boolean;
+  isTimestep?: boolean;
 }
 
 function AddPhotosphere({
   onAddPhotosphere,
   onCancel,
   vfe,
-  pickDate,
+  isTimestep,
 }: AddPhotosphereProps): JSX.Element {
   const [photosphereID, setPhotosphereID] = useState("");
   const [panoImage, setPanoImage] = useState("");
@@ -80,8 +80,8 @@ function AddPhotosphere({
         : undefined,
       timeline: {},
     };
-    if (pickDate) {
-      onAddPhotosphere(newPhotosphere, selectedDate);
+    if (isTimestep) {
+      onAddPhotosphere(newPhotosphere, selectedDate ? selectedDate : undefined);
     } else {
       onAddPhotosphere(newPhotosphere);
     }
@@ -123,13 +123,15 @@ function AddPhotosphere({
               startAdornment: <AttachFileIcon />,
             }}
           />
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              value={selectedDate}
-              onChange={(newDate) => setSelectedDate(newDate)}
-            />
-          </LocalizationProvider>
-          {map && (
+          {isTimestep && (
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                value={selectedDate}
+                onChange={(newDate) => setSelectedDate(newDate)}
+              />
+            </LocalizationProvider>
+          )}
+          {!isTimestep && map && (
             <Button
               variant="outlined"
               onClick={() => {

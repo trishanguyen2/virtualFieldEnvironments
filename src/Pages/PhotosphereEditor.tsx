@@ -266,6 +266,7 @@ function PhotosphereEditor({
   // Reset all states so we dont have issues with handling different components at the same time
   function resetStates() {
     setShowAddPhotosphere(false);
+    setShowAddTimestep(false);
     setShowAddNavMap(false);
     setShowAddHotspot(false);
     setShowChangePhotosphere(false);
@@ -337,7 +338,7 @@ function PhotosphereEditor({
           vfe={vfe}
           onAddPhotosphere={handleAddTimestep}
           onCancel={resetStates}
-          pickDate={true}
+          isTimestep={true}
         />
       );
     return null;
@@ -603,16 +604,6 @@ function PhotosphereEditor({
             >
               Add New Hotspot
             </Button>
-            <MuiFileInput
-              placeholder="Upload Background Audio"
-              value={audioFile}
-              onChange={handleAudioChange}
-              inputProps={{ accept: "audio/*" }}
-              InputProps={{
-                startAdornment: <AttachFileIcon />,
-              }}
-              sx={{ width: "275px", margin: "5px 0" }}
-            />{" "}
             <Button
               sx={{ margin: "10px 0" }}
               onClick={() => {
@@ -624,6 +615,17 @@ function PhotosphereEditor({
             >
               Add Time Step
             </Button>
+            <MuiFileInput
+              placeholder="Upload Background Audio"
+              value={audioFile}
+              onChange={handleAudioChange}
+              inputProps={{ accept: "audio/*" }}
+              InputProps={{
+                startAdornment: <AttachFileIcon />,
+              }}
+              sx={{ width: "275px", margin: "5px 0" }}
+            />
+
             <Button
               sx={{ margin: "10px 0" }}
               onClick={() => {
