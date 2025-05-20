@@ -23,6 +23,7 @@ import {
 } from "../Pages/PageUtility/DataStructures.ts";
 import PhotosphereSelector from "../PhotosphereFeatures/PhotosphereSelector.tsx";
 import { alertMUI } from "../UI/StyledDialogWrapper.tsx";
+import { MapPin, PushPinSimple, MapTrifold } from "phosphor-react";
 
 // from https://github.com/Alcumus/react-doc-viewer?tab=readme-ov-file#current-renderable-file-types
 const documentAcceptTypes = [
@@ -449,6 +450,9 @@ function AddHotspot({
   const [level, setLevel] = useState(0); // State for level
   const [iconAsset, setIconAsset] = useState<Asset | null>(defaultIcon());
   const [color, setColor] = useState("#1976d2"); 
+  const [isCustomIcon, setIsCustomIcon] = useState(false);
+  const [customIconFile, setCustomIconFile] = useState<File | null>(null);
+
 
   async function handleAddHotspot() {
     if (
@@ -475,7 +479,7 @@ function AddHotspot({
       level,
       icon: iconAsset ?? defaultIcon(), // store default icon for photosphere links
       data: hotspotData,
-      color,
+      color: isCustomIcon ? undefined : color,
     };
 
     onAddHotspot(newHotspot);
@@ -520,14 +524,6 @@ function AddHotspot({
           defaultValue={String(direction.toFixed(2))}
           sx={{ flexGrow: 1 }}
         />
-        <TextField
-          type="color"
-          label="Pin Color"
-          value={color}
-          onChange={(e) => setColor(e.target.value)}
-          sx={{ width: "150px" }}
-          InputLabelProps={{ shrink: true }}
-        />
       </Stack>
 
       {hotspotData?.tag !== "PhotosphereLink" && (
@@ -540,15 +536,86 @@ function AddHotspot({
         />
       )}
 
+    <FormControl fullWidth>
+      <InputLabel id="pin-type-label">Pin Type</InputLabel>
+      <Select
+        labelId="pin-type-label"
+        label="Pin Type"
+        value={isCustomIcon ? "custom" : iconAsset?.path || ""}
+        onChange={(e) => {
+          const value = e.target.value;
+          if (value === "custom") {
+            setIsCustomIcon(true);
+            setIconAsset(null);
+          } else {
+            setIsCustomIcon(false);
+            setIconAsset({
+              tag: "Runtime",
+              id: newID(),
+              path: value,
+            });
+          }
+        }}
+      >
+        <MenuItem value="">Select Icon</MenuItem>
+        <MenuItem value="MapPin">
+          <Stack direction="row" alignItems="center" gap={1}>
+            <MapPin size={20} />
+            Map Pin
+          </Stack>
+        </MenuItem>
+        <MenuItem value="PushPinSimple">
+          <Stack direction="row" alignItems="center" gap={1}>
+            <PushPinSimple size={20} />
+            Push Pin Simple
+          </Stack>
+        </MenuItem>
+        <MenuItem value="MapTrifold">
+          <Stack direction="row" alignItems="center" gap={1}>
+            <MapTrifold size={20} />
+            Map Trifold
+          </Stack>
+        </MenuItem>
+        <MenuItem value="custom">Custom Icon</MenuItem>
+      </Select>
+    </FormControl>
+
+          {/* Only show color picker for built-in icons */}
+          {!isCustomIcon && (
+            <TextField
+              label="Pin Color"
+              type="color"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              fullWidth
+            />
+          )}
+
+          {/* Only show file input for custom icon */}
+          {isCustomIcon && (
+            <MuiFileInput
+              label="Upload Custom Icon*"
+              value={customIconFile}
+              onChange={(file) => {
+                setCustomIconFile(file);
+                if (file) {
+                  setIconAsset({
+                    tag: "Runtime",
+                    id: newID(),
+                    path: URL.createObjectURL(file),
+                  });
+                }
+              }}
+              inputProps={{ accept: "image/*" }}
+              fullWidth
+            />
+          )}
       <HotspotDataEditor
         hotspotData={hotspotData}
         setHotspotData={setHotspotData}
         photosphereOptions={photosphereOptions}
       />
-
-      {hotspotData?.tag !== "PhotosphereLink" && (
-        <HotspotIconEditor iconAsset={iconAsset} setIconAsset={setIconAsset} />
-      )}
 
       <TextField
         label="Level"

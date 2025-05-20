@@ -29,7 +29,6 @@ import {
 import PopOver from "../Pages/PageUtility/PopOver";
 import { ViewerProps } from "../Pages/PhotosphereViewer";
 import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
-import PhotosphereTimelineSelect from "./PhotosphereTimelineSelect";
 import { MapPin } from "phosphor-react";
 import ReactDOMServer from "react-dom/server";
 
@@ -99,7 +98,7 @@ function convertHotspots(
         color: alpha(common.white, 0.8),
         size: 80,
       });
-    } else if (hotspot.icon?.path?.endsWith(".svg")) {
+    } else if (hotspot.icon?.path?.startsWith("blob:") || hotspot.icon?.path?.match(/\.(png|jpe?g|svg)$/)) {
       marker.image = hotspot.icon.path;
     } else { 
       marker.html = ReactDOMServer.renderToString(
