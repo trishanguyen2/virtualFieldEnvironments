@@ -38,9 +38,17 @@ function RemovePhotosphere({
     options: options,
     value: selectedPhotosphere,
     setValue: setSelectedPhotosphere,
+    defaultPhotosphereID: vfe.defaultPhotosphereID,
   };
 
   async function handleRemovePhotosphere() {
+    if (selectedPhotosphere === vfe.defaultPhotosphereID) {
+      await alertMUI(
+        `"${selectedPhotosphere}" is the default scene and cannot be removed.\n`
+      );
+      return;
+    }
+    
     if (!selectedPhotosphere) {
       await alertMUI("Please select a photosphere to remove.");
       return;

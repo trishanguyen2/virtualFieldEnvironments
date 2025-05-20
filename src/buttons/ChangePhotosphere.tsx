@@ -10,6 +10,8 @@ import {
   DialogTitle,
   Stack,
   TextField,
+  FormControlLabel, 
+  Checkbox
 } from "@mui/material";
 
 import { Photosphere } from "../Pages/PageUtility/DataStructures";
@@ -19,16 +21,21 @@ interface ChangePhotosphereProps {
   onChangePhotosphere: (name: string, background: string) => void;
   onCancel: () => void;
   ps: Photosphere;
+  defaultPhotosphereID: string;
+  onChangeDefault: (newDefaultID: string) => void;
 }
 
 function ChangePhotosphere({
   onChangePhotosphere,
   onCancel,
   ps,
+  defaultPhotosphereID,
+  onChangeDefault,
 }: ChangePhotosphereProps) {
   const [name, setName] = useState(ps.id);
   const [background, setBackground] = useState(ps.src.path);
   const [backgroundFile, setBackgroundFile] = useState<File | null>(null);
+  const [isDefault, setIsDefault] = useState(ps.id === defaultPhotosphereID);
 
   function handleBackgroundChange(file: File | null) {
     if (file) {
@@ -43,6 +50,9 @@ function ChangePhotosphere({
       return;
     }
     onChangePhotosphere(name, background);
+    if (isDefault && ps.id !== defaultPhotosphereID) {
+      onChangeDefault(ps.id); 
+    }
   }
 
   return (
@@ -65,6 +75,15 @@ function ChangePhotosphere({
             InputProps={{
               startAdornment: <AttachFileIcon />,
             }}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={isDefault}
+                onChange={(e) => setIsDefault(e.target.checked)}
+              />
+            }
+            label="Set as default scene"
           />
         </Stack>
       </DialogContent>

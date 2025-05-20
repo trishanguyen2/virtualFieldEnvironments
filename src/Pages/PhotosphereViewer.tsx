@@ -19,6 +19,7 @@ import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspotSidebar.tsx";
 import PhotospherePlaceholder from "../PhotosphereFeatures/PhotospherePlaceholder";
 import PhotosphereSelector from "../PhotosphereFeatures/PhotosphereSelector";
+import PhotosphereTimelineSelect from "../PhotosphereFeatures/PhotosphereTimelineSelect.tsx";
 import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialCreate.tsx";
 import AudioToggleButton from "../buttons/AudioToggleButton";
 
@@ -113,7 +114,7 @@ function PhotosphereViewer({
   const [mapStatic, setMapStatic] = useState(false);
 
   const [isSplitView, setIsSplitView] = useState(false);
-  const [lockViews, setLockViews] = useState(false);
+  const [lockViews, setLockViews] = useState(true);
 
   const [points, AddPoints] = usePoints();
 
@@ -134,7 +135,7 @@ function PhotosphereViewer({
     <>
       <PhotosphereTutorialEditor /> {}
       <Stack
-        direction="row"
+        direction="column"
         sx={{
           position: "absolute",
           top: "16px",
@@ -143,7 +144,7 @@ function PhotosphereViewer({
           maxWidth: "100%",
           width: "fit-content",
           minWidth: "150px",
-          height: "45px",
+          height: "fit-content",
           padding: "4px",
           margin: "auto",
           backgroundColor: "white",
@@ -155,84 +156,159 @@ function PhotosphereViewer({
         }}
         gap={1}
       >
-        <Box sx={{ padding: "0 5px" }}>
-          <Button
-            sx={{ height: "35px" }}
-            variant="outlined"
-            onClick={() => {
-              setIsSplitView(!isSplitView);
-            }}
-          >
-            <Typography sx={{ fontSize: "14px" }}>Split View</Typography>
-          </Button>
-        </Box>
-        {isSplitView && (
-          <Box>
-            <Button
-              variant={lockViews ? "contained" : "outlined"}
-              sx={{
-                height: "35px",
-              }}
-              onClick={() => {
-                setLockViews(!lockViews);
-              }}
-            >
-              <Typography sx={{ fontSize: "14px" }}>
-                {lockViews ? "Unl" : "L"}ock Views
-              </Typography>
-            </Button>
-          </Box>
-        )}
-        <Box sx={{ padding: "0 5px" }}>
-          <PhotosphereSelector
-            size="small"
-            options={Object.keys(vfe.photospheres)}
-            value={
-              primaryPhotosphere.parentPS
-                ? primaryPhotosphere.parentPS
-                : primaryPhotosphere.id
-            }
-            setValue={(id) => {
-              setPrimaryPhotosphere(vfe.photospheres[id]);
-              setSplitPhotosphere(vfe.photospheres[id]);
-              onChangePS(id);
-            }}
-          />
-        </Box>
-        {primaryPhotosphere.backgroundAudio && (
-          <AudioToggleButton src={primaryPhotosphere.backgroundAudio.path} />
-        )}
-        <FormControlLabel
-          control={
-            <StyledSwitch
-              defaultChecked
-              onChange={() => {
-                setMapStatic(!mapStatic);
+        <Stack
+          direction="row"
+          sx={{
+            maxWidth: "100%",
+            width: "fit-content",
+            minWidth: "150px",
+            height: "48px",
+            padding: "4px",
+            margin: "auto",
+            backgroundColor: "white",
+            borderRadius: "4px",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+          gap={1}
+        >
+          <Box sx={{ padding: "0 5px" }}>
+            <PhotosphereSelector
+              size="small"
+              options={Object.keys(vfe.photospheres)}
+              value={
+                primaryPhotosphere.parentPS
+                  ? primaryPhotosphere.parentPS
+                  : primaryPhotosphere.id
+              }
+              setValue={(id) => {
+                setPrimaryPhotosphere(vfe.photospheres[id]);
+                setSplitPhotosphere(vfe.photospheres[id]);
+                onChangePS(id);
               }}
             />
-          }
-          label="Map Rotation"
-          componentsProps={{
-            typography: {
-              sx: { fontSize: "14px", padding: 1, width: "60px" },
-            },
+          </Box>
+          {primaryPhotosphere.backgroundAudio && (
+            <AudioToggleButton src={primaryPhotosphere.backgroundAudio.path} />
+          )}
+          <FormControlLabel
+            control={
+              <StyledSwitch
+                defaultChecked
+                onChange={() => {
+                  setMapStatic(!mapStatic);
+                }}
+              />
+            }
+            label="Map Rotation"
+            componentsProps={{
+              typography: {
+                sx: { fontSize: "14px", padding: 1, width: "60px" },
+              },
+            }}
+            sx={{ margin: 0 }}
+          />
+          {isGamified && (
+            <Box sx={{ padding: "0 5px" }}>
+              <Button
+                sx={{ padding: "0", width: "4px", height: "40px" }}
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  void AddPoints(10);
+                }}
+              >
+                Add Points!
+              </Button>
+            </Box>
+          )}
+        </Stack>
+
+        <Stack
+          direction="row"
+          sx={{
+            maxWidth: "100%",
+            width: "93%",
+            minWidth: "150px",
+            height: "fit-content",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
-          sx={{ margin: 0 }}
-        />
-        {isGamified && (
+          gap={1}
+        >
+          <Stack
+            direction="column"
+            sx={{
+              border: "1px solid gray",
+              width: "fit-content",
+              height: "fit-content",
+              backgroundColor: "white",
+              borderRadius: "4px",
+              boxShadow: "0 0 4px grey",
+              mt: 0,
+              p: 1,
+            }}
+          >
+            <Typography variant="caption"> Change Time </Typography>
+            <PhotosphereTimelineSelect
+              onSelect={(ps: string) => {
+                console.log(ps);
+                setPrimaryPhotosphere(vfe.photospheres[ps]);
+              }}
+            />
+          </Stack>
           <Box sx={{ padding: "0 5px" }}>
             <Button
-              sx={{ padding: "0", width: "4px", height: "40px" }}
-              variant="contained"
-              color="primary"
+              sx={{ height: "45px" }}
+              variant={isSplitView ? "contained" : "outlined"}
               onClick={() => {
-                void AddPoints(10);
+                setIsSplitView(!isSplitView);
               }}
             >
-              Add Points!
+              <Typography sx={{ fontSize: "14px" }}>Split View</Typography>
             </Button>
           </Box>
-        )}
+          {isSplitView && (
+            <>
+              <Box>
+                <Button
+                  variant={lockViews ? "contained" : "outlined"}
+                  sx={{
+                    height: "45px",
+                  }}
+                  onClick={() => {
+                    setLockViews(!lockViews);
+                  }}
+                >
+                  <Typography sx={{ fontSize: "14px" }}>
+                    {lockViews ? "Unl" : "L"}ock Views
+                  </Typography>
+                </Button>
+              </Box>
+              <Stack
+                direction="column"
+                sx={{
+                  border: "1px solid gray",
+                  width: "fit-content",
+                  height: "fit-content",
+                  backgroundColor: "white",
+                  borderRadius: "4px",
+                  boxShadow: "0 0 4px grey",
+                  mt: 0,
+                  p: 1,
+                }}
+              >
+                <Typography variant="caption"> Change Time </Typography>
+                <PhotosphereTimelineSelect
+                  onSelect={(ps: string) => {
+                    console.log(ps);
+                    setSplitPhotosphere(vfe.photospheres[ps]);
+                  }}
+                />
+              </Stack>
+            </>
+          )}
+        </Stack>
       </Stack>
       <Stack
         direction="row"
@@ -268,27 +344,6 @@ function PhotosphereViewer({
           />
         )}
       </Stack>
-      <Box
-        sx={{
-          position: "fixed",
-          top: "16px",
-          right: "16px",
-          backgroundColor: "white",
-          borderRadius: "50%",
-          boxShadow: "0 0 4px grey",
-          zIndex: 110, // Ensure it appears above other elements
-        }}
-      >
-        <PhotosphereHotspotSideBar
-          vfe={vfe}
-          currentPS={primaryPhotosphere.id}
-          setValue={(id) => {
-            setPrimaryPhotosphere(vfe.photospheres[id]);
-            setSplitPhotosphere(vfe.photospheres[id]);
-            onChangePS(id);
-          }}
-        />
-      </Box>
       {isGamified && (
         <Stack
           direction="row"
@@ -315,6 +370,27 @@ function PhotosphereViewer({
           <progress value={points ?? 0} max={maxPoints} />{" "}
         </Stack>
       )}
+      <Box
+        sx={{
+          position: "fixed",
+          top: "16px",
+          right: "16px",
+          backgroundColor: "white",
+          borderRadius: "50%",
+          boxShadow: "0 0 4px grey",
+          zIndex: 110, // Ensure it appears above other elements
+        }}
+      >
+        <PhotosphereHotspotSideBar
+          vfe={vfe}
+          currentPS={primaryPhotosphere.id}
+          setValue={(id) => {
+            setPrimaryPhotosphere(vfe.photospheres[id]);
+            setSplitPhotosphere(vfe.photospheres[id]);
+            onChangePS(id);
+          }}
+        />
+      </Box>
     </>
   );
 }

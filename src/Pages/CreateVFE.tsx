@@ -1,4 +1,5 @@
 import { MuiFileInput } from "mui-file-input";
+import PhotosphereSelector from "../PhotosphereFeatures/PhotosphereSelector.tsx";
 import { useState } from "react";
 
 import AttachFileIcon from "@mui/icons-material/AttachFile";
@@ -9,6 +10,7 @@ import PhotosphereTutorialCreate from "../PhotosphereFeatures/PhotosphereTutoria
 import Header, { HeaderProps } from "../UI/Header.tsx";
 import { alertMUI } from "../UI/StyledDialogWrapper.tsx";
 import {
+  Photosphere,
   NavMap,
   VFE,
   calculateImageDimensions,
@@ -41,6 +43,8 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
   // Base states
   const [vfeName, setVFEName] = useState("");
   const [photosphereName, setPhotosphereName] = useState(""); // State for Photosphere Name
+  const [photospheres, setPhotospheres] = useState<Record<string, Photosphere>>({});
+  const [defaultPhotosphereID, setDefaultPhotosphereID] = useState("");
   const [panoImage, setPanoImage] = useState("");
   const [panoFile, setPanoFile] = useState<File | null>(null); // needed for MuiFileInput
   const [audio, setAudio] = useState("");
@@ -57,13 +61,17 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
   // Error Handling: Ensure the data is not empty
 
   async function handleCreateVFE() {
-    if (vfeName.trim() === "" || photosphereName.trim() === "" || !panoImage) {
+    if (
+      vfeName.trim() === "" ||
+      Object.keys(photospheres).length === 0 ||
+      !defaultPhotosphereID
+    ) {
       await alertMUI(
-        "Please, provide a VFE name, Photosphere name, and an image.",
+        "Please provide a VFE name, add at least one scene, and choose a default starting point.",
       );
       return;
     }
-    // Input data into new VFE
+  
     const data: VFE = {
       name: vfeName,
       defaultPhotosphereID: photosphereName,
@@ -82,8 +90,9 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
       },
       map: navMap,
     };
+  
     onCreateVFE(data);
-  }
+  }  
 
   function handleImageChange(file: File | null) {
     if (file) {
@@ -126,6 +135,56 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
       <PhotosphereTutorialCreate /> {}
       <Stack sx={{ width: 450, margin: "auto", paddingTop: 10 }} gap={3}>
         <Typography variant="h4">Create a New VFE</Typography>
+        <Button
+          variant="outlined"
+          onClick={async () => {
+            if (!photosphereName || !panoImage) {
+              await alertMUI("Please provide a scene name and panorama image.");
+              return;
+            }
+
+            const newPS: Photosphere = {
+              id: photosphereName,
+              src: { tag: "Runtime", id: newID(), path: panoImage },
+              center: photospherePosition ?? undefined,
+              hotspots: {},
+              backgroundAudio: audio
+                ? { tag: "Runtime", id: newID(), path: audio }
+                : undefined,
+              timeline: {},
+            };
+
+            setPhotospheres((prev) => ({ ...prev, [photosphereName]: newPS }));
+
+            if (!defaultPhotosphereID) {
+              setDefaultPhotosphereID(photosphereName);
+            }
+
+            // Clear inputs
+            setPhotosphereName("");
+            setPanoImage("");
+            setPanoFile(null);
+            setAudio("");
+            setAudioFile(null);
+          }}
+        >
+          Add Scene
+        </Button>
+
+        {Object.keys(photospheres).length > 0 && (
+        <Stack direction="row" alignItems="center" gap={1}>
+          <Typography>Default Starting Scene:</Typography>
+          <PhotosphereSelector
+            size="small"
+            options={Object.keys(photospheres)}
+            value={defaultPhotosphereID}
+            setValue={setDefaultPhotosphereID}
+            defaultPhotosphereID={defaultPhotosphereID}
+          />
+        </Stack>
+      )}
+
+
         <Stack direction="row" gap={1}>
           <TextField
             required
