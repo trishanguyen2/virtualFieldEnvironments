@@ -111,7 +111,7 @@ function PhotosphereViewer({
   const [splitPhotosphere, setSplitPhotosphere] = React.useState<Photosphere>(
     vfe.photospheres[currentPS],
   );
-  const [mapStatic, setMapStatic] = useState(false);
+  const [mapRotationEnabled, setMapRotationEnabled] = useState(false);
 
   const [isSplitView, setIsSplitView] = useState(false);
   const [lockViews, setLockViews] = useState(true);
@@ -194,9 +194,9 @@ function PhotosphereViewer({
           <FormControlLabel
             control={
               <StyledSwitch
-                defaultChecked
+                checked={mapRotationEnabled}
                 onChange={() => {
-                  setMapStatic(!mapStatic);
+                  setMapRotationEnabled(!mapRotationEnabled);
                 }}
               />
             }
@@ -332,14 +332,14 @@ function PhotosphereViewer({
         <PhotospherePlaceholder
           viewerProps={viewerProps}
           isPrimary={true}
-          mapStatic={mapStatic}
+          mapStatic={!mapRotationEnabled}
           lockViews={lockViews}
         />
         {isSplitView && (
           <PhotospherePlaceholder
             viewerProps={viewerProps}
             isPrimary={false}
-            mapStatic={mapStatic}
+            mapStatic={!mapRotationEnabled}
             lockViews={lockViews}
           />
         )}
