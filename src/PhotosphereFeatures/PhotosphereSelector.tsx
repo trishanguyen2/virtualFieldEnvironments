@@ -9,6 +9,7 @@ export interface PhotosphereSelectorProps {
   value: string;
   setValue: (value: string) => void;
   size?: "medium" | "small";
+  defaultPhotosphereID?: string;
 }
 
 function PhotosphereSelector({
@@ -16,6 +17,7 @@ function PhotosphereSelector({
   value,
   setValue,
   size = "medium",
+  defaultPhotosphereID
 }: PhotosphereSelectorProps) {
   // Helper function to reduce ternary/undefined repetition.
   function ifSmall<T, D>(value: T, defaultValue?: D): T | D | undefined {
@@ -25,7 +27,13 @@ function PhotosphereSelector({
   const [runTutorial, setRunTutorial] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
 
-  options = options.filter((id) => !id.startsWith("CHILD_"));
+  const displayOptions = options
+  .filter((id) => !id.startsWith("CHILD_"))
+  .map((id) => ({
+    label: id === defaultPhotosphereID ? `${id} (default)` : id,
+    raw: id,
+  }));
+
 
   return (
     <FormControl size={size}>
@@ -55,15 +63,11 @@ function PhotosphereSelector({
           { minWidth: "150px" },
         )}
       >
-        {options.map((option) => (
-          <MenuItem
-            key={option}
-            value={option}
-            sx={ifSmall({ fontSize: "13px" })}
-          >
-            {option}
-          </MenuItem>
-        ))}
+      {displayOptions.map(({ raw, label }) => (
+        <MenuItem key={raw} value={raw} sx={ifSmall({ fontSize: "13px" })}>
+        {label}
+        </MenuItem>
+      ))}
       </Select>
     </FormControl>
   );

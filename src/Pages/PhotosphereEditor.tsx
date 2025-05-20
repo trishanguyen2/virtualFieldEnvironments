@@ -275,15 +275,20 @@ function PhotosphereEditor({
           photosphereOptions={availablePhotosphereOptions}
         />
       );
-    if (showChangePhotosphere) {
-      return (
-        <ChangePhotosphere
-          ps={vfe.photospheres[currentPS]}
-          onCancel={resetStates}
-          onChangePhotosphere={handleChangePhotosphere}
-        />
-      );
-    }
+      if (showChangePhotosphere) {
+        return (
+          <ChangePhotosphere
+            ps={vfe.photospheres[currentPS]}
+            onCancel={resetStates}
+            onChangePhotosphere={handleChangePhotosphere}
+            defaultPhotosphereID={vfe.defaultPhotosphereID}
+            onChangeDefault={(newID) => {
+              onUpdateVFE({ ...vfe, defaultPhotosphereID: newID });
+            }}
+          />
+        );
+      }
+      
     if (showRemovePhotosphere)
       return (
         <RemovePhotosphere
