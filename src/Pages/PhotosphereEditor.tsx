@@ -1,3 +1,4 @@
+import dayjs, { Dayjs } from "dayjs";
 import { MuiFileInput } from "mui-file-input";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -68,7 +69,7 @@ function PhotosphereEditor({
   const [showRemoveFeatures, setShowRemoveFeatures] = useState(false);
 
   const [gamifiedState, SwapGamifyState] = useGamificationState(isGamified);
-  
+
   const visitedState = JSON.parse(
     localStorage.getItem("visitedState") ?? "{}",
   ) as VisitedState;
@@ -78,6 +79,8 @@ function PhotosphereEditor({
 
   const [showRemovePhotosphere, setShowRemovePhotosphere] = useState(false);
   const [showEditNavMap, setShowEditNavMap] = useState(false);
+
+  const [showAddTimestep, setShowAddTimestep] = useState(false);
 
   // Filter hotspots to find used photospheres
   const usedPhotospheres = Object.values(existingHotspots)
@@ -205,6 +208,35 @@ function PhotosphereEditor({
     setUpdateTrigger((prev) => prev + 1);
   }
 
+  function handleAddTimestep(newPhotosphere: Photosphere, date?: Dayjs) {
+    if (!date) console.error("No date provided for the timestep");
+
+    newPhotosphere.parentPS = currentPS;
+    const updatedVFE: VFE = {
+      ...vfe,
+
+      photospheres: {
+        ...vfe.photospheres,
+
+        [newPhotosphere.id]: newPhotosphere,
+      },
+    };
+
+    updatedVFE.photospheres[currentPS].timeline = {
+      ...updatedVFE.photospheres[currentPS].timeline,
+
+      [date ? date.format("YYYY-DD-MM") : dayjs().format("YYYY-DD-MM")]:
+        newPhotosphere.id,
+    };
+
+    console.log(updatedVFE.photospheres[currentPS]);
+
+    onUpdateVFE(updatedVFE);
+    onChangePS(newPhotosphere.id);
+    setShowAddTimestep(false);
+    setUpdateTrigger((prev) => prev + 1);
+  }
+
   function handleCreateNavMap(updatedNavMap: NavMap) {
     const updatedVFE: VFE = {
       ...vfe,
@@ -275,20 +307,20 @@ function PhotosphereEditor({
           photosphereOptions={availablePhotosphereOptions}
         />
       );
-      if (showChangePhotosphere) {
-        return (
-          <ChangePhotosphere
-            ps={vfe.photospheres[currentPS]}
-            onCancel={resetStates}
-            onChangePhotosphere={handleChangePhotosphere}
-            defaultPhotosphereID={vfe.defaultPhotosphereID}
-            onChangeDefault={(newID) => {
-              onUpdateVFE({ ...vfe, defaultPhotosphereID: newID });
-            }}
-          />
-        );
-      }
-      
+    if (showChangePhotosphere) {
+      return (
+        <ChangePhotosphere
+          ps={vfe.photospheres[currentPS]}
+          onCancel={resetStates}
+          onChangePhotosphere={handleChangePhotosphere}
+          defaultPhotosphereID={vfe.defaultPhotosphereID}
+          onChangeDefault={(newID) => {
+            onUpdateVFE({ ...vfe, defaultPhotosphereID: newID });
+          }}
+        />
+      );
+    }
+
     if (showRemovePhotosphere)
       return (
         <RemovePhotosphere
@@ -297,6 +329,15 @@ function PhotosphereEditor({
           }}
           onClose={handleCloseRemovePhotosphere}
           vfe={vfe}
+        />
+      );
+    if (showAddTimestep)
+      return (
+        <AddPhotosphere
+          vfe={vfe}
+          onAddPhotosphere={handleAddTimestep}
+          onCancel={resetStates}
+          pickDate={true}
         />
       );
     return null;
@@ -540,7 +581,6 @@ function PhotosphereEditor({
             >
               Add New Photosphere
             </Button>
-
             <Button
               sx={{ margin: "10px 0" }}
               onClick={() => {
@@ -572,7 +612,18 @@ function PhotosphereEditor({
                 startAdornment: <AttachFileIcon />,
               }}
               sx={{ width: "275px", margin: "5px 0" }}
-            />
+            />{" "}
+            <Button
+              sx={{ margin: "10px 0" }}
+              onClick={() => {
+                resetStates();
+
+                setShowAddTimestep(true);
+              }}
+              variant="contained"
+            >
+              Add Time Step
+            </Button>
             <Button
               sx={{ margin: "10px 0" }}
               onClick={() => {
