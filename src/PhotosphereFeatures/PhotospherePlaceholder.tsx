@@ -30,6 +30,8 @@ import PopOver from "../Pages/PageUtility/PopOver";
 import { ViewerProps } from "../Pages/PhotosphereViewer";
 import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
 import PhotosphereTimelineSelect from "./PhotosphereTimelineSelect";
+import { MapPin } from "phosphor-react";
+import ReactDOMServer from "react-dom/server";
 
 /** Convert sizes from numbers to strings ending in "px" */
 function sizeToStr(val: number): string {
@@ -97,8 +99,18 @@ function convertHotspots(
         color: alpha(common.white, 0.8),
         size: 80,
       });
-    } else {
+    } else if (hotspot.icon?.path?.endsWith(".svg")) {
       marker.image = hotspot.icon.path;
+    } else { 
+      marker.html = ReactDOMServer.renderToString(
+        <MapPin
+        size={32}
+        weight="duotone"
+        color={hotspot.color}
+        className="hotspot-icon"
+    />,
+
+      );
     }
 
     markers.push(marker);

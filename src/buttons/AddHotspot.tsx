@@ -448,6 +448,7 @@ function AddHotspot({
   const [hotspotData, setHotspotData] = useState<HotspotData | null>(null);
   const [level, setLevel] = useState(0); // State for level
   const [iconAsset, setIconAsset] = useState<Asset | null>(defaultIcon());
+  const [color, setColor] = useState("#1976d2"); 
 
   async function handleAddHotspot() {
     if (
@@ -474,6 +475,7 @@ function AddHotspot({
       level,
       icon: iconAsset ?? defaultIcon(), // store default icon for photosphere links
       data: hotspotData,
+      color,
     };
 
     onAddHotspot(newHotspot);
@@ -517,6 +519,14 @@ function AddHotspot({
           }}
           defaultValue={String(direction.toFixed(2))}
           sx={{ flexGrow: 1 }}
+        />
+        <TextField
+          type="color"
+          label="Pin Color"
+          value={color}
+          onChange={(e) => setColor(e.target.value)}
+          sx={{ width: "150px" }}
+          InputLabelProps={{ shrink: true }}
         />
       </Stack>
 

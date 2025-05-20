@@ -52,6 +52,7 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
     x: number;
     y: number;
   } | null>(null);
+  const [pinColor, setPinColor] = useState("1976d2"); 
 
   // Error Handling: Ensure the data is not empty
 
@@ -76,6 +77,7 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
             ? { tag: "Runtime", id: newID(), path: audio }
             : undefined,
           timeline: {},
+          color: pinColor, 
         },
       },
       map: navMap,
@@ -144,6 +146,14 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
             }}
           />
         </Stack>
+        <TextField
+          label="Pin Color"
+          type="color"
+          value={pinColor}
+          onChange={(e) => setPinColor(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+          fullWidth
+        />
         <MuiFileInput
           required
           placeholder="Upload a Panorama *"
