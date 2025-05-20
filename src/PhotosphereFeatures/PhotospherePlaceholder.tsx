@@ -190,16 +190,8 @@ function PhotospherePlaceholder({
   const [visited, handleVisit] = useVisitedState(initialPhotosphereHotspots);
   console.log("in viewer: ", visited);
 
-  const visitedData = visited[currentPS];
+  const visitedData = useRef(visited[currentPS]);
   console.log("in visted data TOP: ", visitedData);
-
-  function getVistedState(marker) {
-    let isHotspotVisited: boolean = visitedData
-      ? visitedData[marker.config.id]
-      : false;
-    console.log("isHotspotVisited: ", isHotspotVisited);
-    return isHotspotVisited;
-  }
 
   const isViewerMode = onUpdateHotspot === undefined;
 
@@ -255,7 +247,10 @@ function PhotospherePlaceholder({
 
       console.log("visitedData: ", visitedData);
 
-      const isHotspotVisited: boolean = getVistedState(marker);
+      const isHotspotVisited: boolean = visitedData.current
+        ? visitedData.current[marker.config.id]
+        : false;
+      console.log("isHotspotVisited: ", isHotspotVisited);
 
       // setCurrentPhotosphere has to be used to get the current state value because
       // the value of currentPhotosphere does not get updated in an event listener
