@@ -191,6 +191,11 @@ function PhotospherePlaceholder({
   console.log("in viewer: ", visited);
 
   const visitedData = useRef(visited[currentPS]);
+
+  useEffect(() => {
+    visitedData.current = visited[currentPS];
+  });
+
   console.log("in visted data TOP: ", visitedData);
 
   const isViewerMode = onUpdateHotspot === undefined;
@@ -247,6 +252,7 @@ function PhotospherePlaceholder({
 
       console.log("visitedData: ", visitedData);
 
+      // This works on reload but not re-render.  visitedData is only pulled when this function is created, and never again
       const isHotspotVisited: boolean = visitedData.current
         ? visitedData.current[marker.config.id]
         : false;
@@ -285,6 +291,7 @@ function PhotospherePlaceholder({
 
         setHotspotArray(passMarkerList);
 
+        // Points check has to live here as long as handleVisit is here.  Handle visit cant be passed down further easily, as it causes reload issues.
         if (!isHotspotVisited) {
           void addPoints(10);
         }
