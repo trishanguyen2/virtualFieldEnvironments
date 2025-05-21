@@ -19,6 +19,7 @@ import { Box, alpha } from "@mui/material";
 import { common } from "@mui/material/colors";
 
 import { useVisitedState } from "../Hooks/HandleVisit";
+import { useTimelineSelectedContext } from "../Hooks/TimelineSelected";
 import { useVFELoaderContext } from "../Hooks/VFELoaderContext";
 import {
   Hotspot2D,
@@ -166,6 +167,9 @@ function PhotospherePlaceholder({
 
   const lockViewsRef = useRef(lockViews);
 
+  const { wasTimelineSelected, setWasTimelineSelected } =
+    useTimelineSelectedContext();
+
   useEffect(() => {
     lockViewsRef.current = lockViews;
   }, [lockViews]);
@@ -307,11 +311,14 @@ function PhotospherePlaceholder({
 
     virtualTour.setNodes(nodes, currentPS);
     virtualTour.addEventListener("node-changed", ({ node }) => {
-      if (!vfe.photospheres[node.id].parentPS) {
-        // want to travel both viewers only if we traveled to a parent node
+      if (!vfe.photospheres[node.id].parentPS && !wasTimelineSelected) {
         states.setStates.forEach((setStateFunc) =>
           setStateFunc(vfe.photospheres[node.id]),
         );
+      } else {
+        // just reset it and don't update all nodes
+        console.log("Timeline was selected");
+        setWasTimelineSelected(false);
       }
       onChangePS(node.id);
       setHotspotArray([]); // clear popovers on scene change
