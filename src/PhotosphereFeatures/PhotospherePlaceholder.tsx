@@ -262,9 +262,7 @@ function PhotospherePlaceholder({
       setCurrentPhotosphere((currentState) => {
         let passMarker: Hotspot2D | Hotspot3D =
           currentState.hotspots[marker.config.id];
-        let passMarker: Hotspot2D | Hotspot3D =
-          currentState.hotspots[marker.config.id];
-        let passMarkerList: (Hotspot2D | Hotspot3D)[] = [passMarker];
+        const passMarkerList: (Hotspot2D | Hotspot3D)[] = [passMarker];
 
         const lastEditedHotspotFlag = Number(
           sessionStorage.getItem("lastEditedHotspotFlag"),
@@ -272,19 +270,7 @@ function PhotospherePlaceholder({
         const lastEditedHotspot = JSON.parse(
           sessionStorage.getItem("lastEditedHotspot") || "{}",
         );
-        const lastEditedHotspotFlag = Number(
-          sessionStorage.getItem("lastEditedHotspotFlag"),
-        );
-        const lastEditedHotspot = JSON.parse(
-          sessionStorage.getItem("lastEditedHotspot") || "{}",
-        );
 
-        if (
-          lastEditedHotspotFlag == 1 &&
-          lastEditedHotspot != null &&
-          lastEditedHotspot.length > 1 &&
-          lastEditedHotspot[0] == marker.config.id
-        ) {
         if (
           lastEditedHotspotFlag == 1 &&
           lastEditedHotspot != null &&
@@ -296,16 +282,11 @@ function PhotospherePlaceholder({
               passMarkerList.push(
                 passMarker.data.hotspots[lastEditedHotspot[i]],
               );
-              passMarkerList.push(
-                passMarker.data.hotspots[lastEditedHotspot[i]],
-              );
               passMarker = passMarker.data.hotspots[lastEditedHotspot[i]];
             }
           }
           sessionStorage.setItem("lastEditedHotspotFlag", "0");
-          sessionStorage.setItem("lastEditedHotspotFlag", "0");
         }
-
 
         setHotspotArray(passMarkerList);
 

@@ -14,7 +14,7 @@ import {
 
 import { useVisitedState } from "../Hooks/HandleVisit.tsx";
 import { useVFELoaderContext } from "../Hooks/VFELoaderContext.tsx";
-import { Photosphere } from "../Pages/PageUtility/DataStructures";
+import { Hotspot3D, Photosphere } from "../Pages/PageUtility/DataStructures";
 import { usePoints } from "../Pages/PageUtility/PointsInterface.tsx";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspotSidebar.tsx";
@@ -296,20 +296,6 @@ function PhotosphereViewer({
             }}
             sx={{ margin: 0 }}
           />
-          {isGamified && (
-            <Box sx={{ padding: "0 5px" }}>
-              <Button
-                sx={{ padding: "0", width: "4px", height: "40px" }}
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  void AddPoints(10);
-                }}
-              >
-                Add Points!
-              </Button>
-            </Box>
-          )}
         </Stack>
 
         <Stack
