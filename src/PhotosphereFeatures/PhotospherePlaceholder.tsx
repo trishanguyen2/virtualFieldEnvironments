@@ -283,7 +283,6 @@ function PhotospherePlaceholder({
     });
 
     instance.addEventListener("position-updated", ({ position }) => {
-      console.log(lockViewsRef.current);
       if (!lockViewsRef.current) return;
       const [otherRef] = states.references.filter((ref) => {
         if (ref != photosphereRef) return ref;
@@ -317,7 +316,7 @@ function PhotospherePlaceholder({
         );
       } else {
         // just reset it and don't update all nodes
-        console.log("Timeline was selected");
+        console.log("Resetting timeline flag");
         setWasTimelineSelected(false);
       }
       onChangePS(node.id);

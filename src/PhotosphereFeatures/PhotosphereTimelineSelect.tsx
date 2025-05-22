@@ -15,7 +15,8 @@ function PhotosphereTimelineSelect({
 }: PhotosphereTimelineSelectProps) {
   const { vfe, currentPS } = useVFELoaderContext();
   const [selected, setSelected] = useState<string>(currentPS);
-  const { wasTimelineSelected: _, setWasTimelineSelected } =
+  const [currentSelected, setCurrentSelected] = useState<string>(currentPS);
+  const { wasTimelineSelected, setWasTimelineSelected } =
     useTimelineSelectedContext();
   const parentPS = vfe.photospheres[currentPS].parentPS
     ? vfe.photospheres[vfe.photospheres[currentPS].parentPS]
@@ -24,11 +25,16 @@ function PhotosphereTimelineSelect({
   timeline = { ...timeline, ["Now"]: parentPS.id };
 
   useEffect(() => {
-    setSelected(currentPS);
+    if (wasTimelineSelected) {
+      // make sure not to change both scenes when
+      // going back to parent PS
+      onSelect(currentSelected);
+    }
   }, [currentPS]);
 
   function handleChange(e: SelectChangeEvent) {
     setWasTimelineSelected(true);
+    setCurrentSelected(e.target.value);
     setSelected(e.target.value);
     onSelect(e.target.value);
   }
