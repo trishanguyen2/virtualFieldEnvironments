@@ -167,7 +167,7 @@ function PhotospherePlaceholder({
 
   const lockViewsRef = useRef(lockViews);
 
-  const { wasTimelineSelected, setWasTimelineSelected } =
+  const { wasTimelineSelected: _, setWasTimelineSelected } =
     useTimelineSelectedContext();
 
   useEffect(() => {
@@ -184,8 +184,7 @@ function PhotospherePlaceholder({
     return acc;
   }, {});
 
-  const [visited, handleVisit] = useVisitedState(initialPhotosphereHotspots);
-  console.log("in viewer", visited);
+  const [__, handleVisit] = useVisitedState(initialPhotosphereHotspots);
 
   const isViewerMode = onUpdateHotspot === undefined;
 
@@ -316,7 +315,6 @@ function PhotospherePlaceholder({
         );
       } else {
         // just reset it and don't update all nodes
-        console.log("Resetting timeline flag");
         setWasTimelineSelected(false);
       }
       onChangePS(node.id);

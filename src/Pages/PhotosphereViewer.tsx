@@ -277,7 +277,6 @@ function PhotosphereViewer({
                 <Typography variant="caption"> Change Time </Typography>
                 <PhotosphereTimelineSelect
                   onSelect={(ps: string) => {
-                    console.log(ps);
                     setPrimaryPhotosphere(vfe.photospheres[ps]);
                   }}
                 />
@@ -340,7 +339,6 @@ function PhotosphereViewer({
                     <Typography variant="caption"> Change Time </Typography>
                     <PhotosphereTimelineSelect
                       onSelect={(ps: string) => {
-                        console.log(ps);
                         setSplitPhotosphere(vfe.photospheres[ps]);
                       }}
                     />
