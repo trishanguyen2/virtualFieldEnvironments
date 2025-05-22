@@ -310,7 +310,7 @@ function PhotospherePlaceholder({
 
     virtualTour.setNodes(nodes, currentPS);
     virtualTour.addEventListener("node-changed", ({ node }) => {
-      if (!vfe.photospheres[node.id].parentPS && !wasTimelineSelected) {
+      if (!vfe.photospheres[node.id].parentPS) {
         states.setStates.forEach((setStateFunc) =>
           setStateFunc(vfe.photospheres[node.id]),
         );
