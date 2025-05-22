@@ -25,7 +25,10 @@ function PhotosphereTimelineSelect({
   timeline = { ...timeline, ["Now"]: parentPS.id };
 
   useEffect(() => {
-    if (wasTimelineSelected) {
+    if (!vfe.photospheres[currentPS].parentPS && !wasTimelineSelected) {
+      setCurrentSelected(currentPS);
+      setSelected(currentPS);
+    } else if (wasTimelineSelected) {
       // make sure not to change both scenes when
       // going back to parent PS
       onSelect(currentSelected);
