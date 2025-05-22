@@ -50,5 +50,10 @@ export function useVisitedState(initialHotspots: Record<string, Hotspot3D[]>) {
     [],
   );
 
-  return [visited, handleVisit] as const;
+  function resetVistedState() {
+    setVisited({});
+    initializeVisitedState;
+  }
+
+  return [visited, handleVisit, resetVistedState] as const;
 }

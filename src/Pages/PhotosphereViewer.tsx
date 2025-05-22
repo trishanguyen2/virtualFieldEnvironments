@@ -12,7 +12,12 @@ import {
   styled,
 } from "@mui/material";
 
-import { Photosphere, VFE } from "../Pages/PageUtility/DataStructures";
+import { useVisitedState } from "../Hooks/HandleVisit.tsx";
+import {
+  Hotspot3D,
+  Photosphere,
+  VFE,
+} from "../Pages/PageUtility/DataStructures";
 import { usePoints } from "../Pages/PageUtility/PointsInterface.tsx";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspotSidebar.tsx";
@@ -124,6 +129,18 @@ function PhotosphereViewer({
 
   const [points, AddPoints, ResetPoints] = usePoints();
 
+  const initialPhotosphereHotspots: Record<string, Hotspot3D[]> = Object.keys(
+    vfe.photospheres,
+  ).reduce<Record<string, Hotspot3D[]>>((acc, psId) => {
+    acc[psId] = Object.values(vfe.photospheres[psId].hotspots);
+    return acc;
+  }, {});
+
+  const [visited, handleVisit, ResetVistedState] = useVisitedState(
+    initialPhotosphereHotspots,
+  );
+  console.log("in viewer: ", visited);
+
   const maxPoints = 100;
 
   const viewerProps: ViewerProps = {
@@ -232,21 +249,8 @@ function PhotosphereViewer({
               variant="contained"
               color="primary"
               onClick={() => {
-                void AddPoints(10);
-              }}
-            >
-              Add Points!
-            </Button>
-          </Box>
-        )}
-        {isGamified && (
-          <Box sx={{ padding: "0 5px" }}>
-            <Button
-              sx={{ padding: "0", width: "4px", height: "40px" }}
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                void ResetPoints();
+                ResetPoints();
+                ResetVistedState();
               }}
             >
               Reset Points!
@@ -279,6 +283,8 @@ function PhotosphereViewer({
           mapStatic={mapStatic}
           lockViews={lockViews}
           addPoints={AddPoints}
+          visited={visited}
+          handleVisit={handleVisit}
         />
         {isSplitView && (
           <PhotospherePlaceholder
@@ -287,6 +293,8 @@ function PhotosphereViewer({
             mapStatic={mapStatic}
             lockViews={lockViews}
             addPoints={AddPoints}
+            visited={visited}
+            handleVisit={handleVisit}
           />
         )}
       </Stack>

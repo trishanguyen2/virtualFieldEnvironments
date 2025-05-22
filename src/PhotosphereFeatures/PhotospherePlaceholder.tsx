@@ -142,6 +142,8 @@ interface PhotospherePlaceholderProps {
   mapStatic: boolean;
   lockViews: boolean;
   addPoints: (amount: number) => Promise<void>;
+  visited: Partial<Record<string, Record<string, boolean>>>;
+  handleVisit: (photosphereId: string, hotspotId: string) => void;
 }
 
 function PhotospherePlaceholder({
@@ -150,6 +152,8 @@ function PhotospherePlaceholder({
   mapStatic,
   lockViews,
   addPoints,
+  visited,
+  handleVisit,
 }: PhotospherePlaceholderProps) {
   const {
     vfe,
@@ -180,15 +184,15 @@ function PhotospherePlaceholder({
   const ready = useRef(false);
   const defaultPan = useRef(vfe.photospheres[currentPS].src.path);
 
-  const initialPhotosphereHotspots: Record<string, Hotspot3D[]> = Object.keys(
-    vfe.photospheres,
-  ).reduce<Record<string, Hotspot3D[]>>((acc, psId) => {
-    acc[psId] = Object.values(vfe.photospheres[psId].hotspots);
-    return acc;
-  }, {});
+  // const initialPhotosphereHotspots: Record<string, Hotspot3D[]> = Object.keys(
+  //   vfe.photospheres,
+  // ).reduce<Record<string, Hotspot3D[]>>((acc, psId) => {
+  //   acc[psId] = Object.values(vfe.photospheres[psId].hotspots);
+  //   return acc;
+  // }, {});
 
-  const [visited, handleVisit] = useVisitedState(initialPhotosphereHotspots);
-  console.log("in viewer: ", visited);
+  // const [visited, handleVisit] = useVisitedState(initialPhotosphereHotspots);
+  // console.log("in viewer: ", visited);
 
   const visitedData = useRef(visited[currentPS]);
 
