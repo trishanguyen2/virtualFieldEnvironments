@@ -169,81 +169,6 @@ function PhotosphereViewer({
         }}
         gap={1}
       >
-        <Box sx={{ padding: "0 5px" }}>
-          <Button
-            sx={{ height: "35px" }}
-            variant="outlined"
-            onClick={() => {
-              setIsSplitView(!isSplitView);
-            }}
-          >
-            <Typography sx={{ fontSize: "14px" }}>Split View</Typography>
-          </Button>
-        </Box>
-        {isSplitView && (
-          <Box>
-            <Button
-              variant={lockViews ? "contained" : "outlined"}
-              sx={{
-                height: "35px",
-              }}
-              onClick={() => {
-                setLockViews(!lockViews);
-              }}
-            >
-              <Typography sx={{ fontSize: "14px" }}>
-                {lockViews ? "Unl" : "L"}ock Views
-              </Typography>
-            </Button>
-          </Box>
-        )}
-        <Box sx={{ padding: "0 5px" }}>
-          <PhotosphereSelector
-            size="small"
-            options={Object.keys(vfe.photospheres)}
-            value={primaryPhotosphere.id}
-            setValue={(id) => {
-              setPrimaryPhotosphere(vfe.photospheres[id]);
-              setSplitPhotosphere(vfe.photospheres[id]);
-              onChangePS(id);
-            }}
-          />
-        </Box>
-        {primaryPhotosphere.backgroundAudio && (
-          <AudioToggleButton src={primaryPhotosphere.backgroundAudio.path} />
-        )}
-        <FormControlLabel
-          control={
-            <StyledSwitch
-              defaultChecked
-              onChange={() => {
-                setMapStatic(!mapStatic);
-              }}
-            />
-          }
-          label="Map Rotation"
-          componentsProps={{
-            typography: {
-              sx: { fontSize: "14px", padding: 1, width: "60px" },
-            },
-          }}
-          sx={{ margin: 0 }}
-        />
-        {isGamified && (
-          <Box sx={{ padding: "0 5px" }}>
-            <Button
-              sx={{ padding: "0", width: "4px", height: "40px" }}
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                ResetPoints();
-                ResetVistedState();
-              }}
-            >
-              Reset Points!
-            </Button>
-          </Box>
-        )}
         <Stack
           direction="row"
           sx={{
@@ -296,6 +221,21 @@ function PhotosphereViewer({
             }}
             sx={{ margin: 0 }}
           />
+          {isGamified && (
+            <Box sx={{ padding: "0 5px" }}>
+              <Button
+                sx={{ padding: "0", width: "4px", height: "40px" }}
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  ResetPoints();
+                  ResetVistedState();
+                }}
+              >
+                Reset Points!
+              </Button>
+            </Box>
+          )}
         </Stack>
 
         <Stack
