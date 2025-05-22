@@ -25,7 +25,7 @@ function AudioToggleButton({ src }: AudioToggleButtonProps) {
   // Audio volume (from 0.0-1.0), initialized from sessionStorage
   const [volume, setVolume] = useState(() => {
     const stored = sessionStorage.getItem(VOLUME_KEY);
-    return stored ? parseFloat(stored) : 1;
+    return stored ? parseFloat(stored) : 0.5;
   });
 
   /* Set up the audio element when component mounts or src changes. 
