@@ -145,6 +145,7 @@ interface PhotospherePlaceholderProps {
   addPoints: (amount: number) => Promise<void>;
   visited: Partial<Record<string, Record<string, boolean>>>;
   handleVisit: (photosphereId: string, hotspotId: string) => void;
+  isEditor: boolean;
 }
 
 function PhotospherePlaceholder({
@@ -155,6 +156,7 @@ function PhotospherePlaceholder({
   addPoints,
   visited,
   handleVisit,
+  isEditor,
 }: PhotospherePlaceholderProps) {
   const { onUpdateHotspot, onViewerClick, photosphereOptions, states } =
     viewerProps;
@@ -291,7 +293,8 @@ function PhotospherePlaceholder({
         setHotspotArray(passMarkerList);
 
         // Points check has to live here as long as handleVisit is here.  Handle visit cant be passed down further easily, as it causes reload issues.
-        if (!isHotspotVisited) {
+        // Need some way to disable adding points if the editor is open.
+        if (!isHotspotVisited && !isEditor) {
           void addPoints(10);
         }
         handleVisit(currentState.id, marker.config.id);

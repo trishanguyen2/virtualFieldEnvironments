@@ -68,7 +68,7 @@ function PhotosphereEditor({
   const [showRemoveFeatures, setShowRemoveFeatures] = useState(false);
 
   const [gamifiedState, SwapGamifyState] = useGamificationState(isGamified);
-  
+
   const visitedState = JSON.parse(
     localStorage.getItem("visitedState") ?? "{}",
   ) as VisitedState;
@@ -275,20 +275,20 @@ function PhotosphereEditor({
           photosphereOptions={availablePhotosphereOptions}
         />
       );
-      if (showChangePhotosphere) {
-        return (
-          <ChangePhotosphere
-            ps={vfe.photospheres[currentPS]}
-            onCancel={resetStates}
-            onChangePhotosphere={handleChangePhotosphere}
-            defaultPhotosphereID={vfe.defaultPhotosphereID}
-            onChangeDefault={(newID) => {
-              onUpdateVFE({ ...vfe, defaultPhotosphereID: newID });
-            }}
-          />
-        );
-      }
-      
+    if (showChangePhotosphere) {
+      return (
+        <ChangePhotosphere
+          ps={vfe.photospheres[currentPS]}
+          onCancel={resetStates}
+          onChangePhotosphere={handleChangePhotosphere}
+          defaultPhotosphereID={vfe.defaultPhotosphereID}
+          onChangeDefault={(newID) => {
+            onUpdateVFE({ ...vfe, defaultPhotosphereID: newID });
+          }}
+        />
+      );
+    }
+
     if (showRemovePhotosphere)
       return (
         <RemovePhotosphere
@@ -661,6 +661,7 @@ function PhotosphereEditor({
             void handleUpdateHotspot(hotspotPath, update);
           }}
           isGamified={gamifiedState ?? false}
+          isEditor={true}
         />
         <ActiveComponent />
       </Box>

@@ -80,6 +80,7 @@ export interface PhotosphereViewerProps {
   ) => void;
   photosphereOptions?: string[];
   isGamified: boolean;
+  isEditor?: boolean;
 }
 
 export interface ViewerStates {
@@ -103,6 +104,7 @@ function PhotosphereViewer({
   onUpdateHotspot,
   photosphereOptions,
   isGamified,
+  isEditor = false,
 }: PhotosphereViewerProps) {
   const { vfe, currentPS, onChangePS } = useVFELoaderContext();
   const primaryPsRef = React.useRef<ViewerAPI | null>(null);
@@ -143,6 +145,10 @@ function PhotosphereViewer({
       setStates: [setPrimaryPhotosphere, setSplitPhotosphere],
     },
   };
+
+  console.log("IS EDITOR?", isEditor);
+  const currentUrl: string = window.location.href;
+  console.log(currentUrl);
 
   return (
     <>
@@ -351,6 +357,7 @@ function PhotosphereViewer({
           addPoints={AddPoints}
           visited={visited}
           handleVisit={handleVisit}
+          isEditor={isEditor}
         />
         {isSplitView && (
           <PhotospherePlaceholder
@@ -361,6 +368,7 @@ function PhotosphereViewer({
             addPoints={AddPoints}
             visited={visited}
             handleVisit={handleVisit}
+            isEditor={isEditor}
           />
         )}
       </Stack>
