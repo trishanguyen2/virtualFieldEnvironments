@@ -58,7 +58,7 @@ function PhotosphereTimelineSelect({
           const pass_time = dayjs(time);
           const difference = curr_time.diff(pass_time, "months");
           time_string =
-            pass_time.format("YYYY-DD-MM") + "(" + difference + "months ago)";
+            "(" + difference + "M ago)" + pass_time.format("YYYY-DD-MM");
         } else {
           time_string = time;
         }
