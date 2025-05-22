@@ -210,8 +210,11 @@ function PhotosphereEditor({
 
   function handleAddTimestep(newPhotosphere: Photosphere, date?: Dayjs) {
     if (!date) console.error("No date provided for the timestep");
-
-    newPhotosphere.parentPS = currentPS;
+    // add the timestep to the parent if one exists to not have nesting timstamps
+    const parentPS = vfe.photospheres[currentPS].parentPS
+      ? vfe.photospheres[currentPS].parentPS
+      : currentPS;
+    newPhotosphere.parentPS = parentPS;
     const updatedVFE: VFE = {
       ...vfe,
 
@@ -222,8 +225,8 @@ function PhotosphereEditor({
       },
     };
 
-    updatedVFE.photospheres[currentPS].timeline = {
-      ...updatedVFE.photospheres[currentPS].timeline,
+    updatedVFE.photospheres[parentPS].timeline = {
+      ...updatedVFE.photospheres[parentPS].timeline,
 
       [date ? date.format("YYYY-DD-MM") : dayjs().format("YYYY-DD-MM")]:
         newPhotosphere.id,
