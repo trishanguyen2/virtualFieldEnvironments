@@ -549,7 +549,7 @@ function HotspotEditor({
         </>
       )}
 
-      <Box flexGrow={1} />
+<Box flexGrow={1} />
       {edited && (
         <Button
           onClick={() => {
@@ -559,14 +559,39 @@ function HotspotEditor({
           Discard All Changes
         </Button>
       )}
-      <Stack direction="row" gap={1.5}>
+      <Stack direction="row" gap={1}>
         <Button
           variant="outlined"
           color="error"
-          sx={{ width: "50%" }}
+          sx={{ width: "100%" }}
           onClick={deleteHotspot}
         >
           Delete Hotspot
+        </Button>
+      </Stack>
+
+      <Stack direction="row" gap={1}>
+        <Button
+          disabled={
+            previewTooltip == "" ||
+            previewData === null ||
+            (setPreviewIcon && previewIcon === null)
+          }
+          variant="contained"
+          sx={{ width: "50%" }}
+          onClick={() => {
+            if (previewData !== null) {
+              sessionStorage.setItem("lastEditedHotspotFlag", "1");
+
+              updateHotspot(
+                previewTooltip,
+                previewData,
+                previewIcon ?? undefined,
+              );
+            }
+          }}
+        >
+          Save
         </Button>
 
         <Button
@@ -578,7 +603,9 @@ function HotspotEditor({
           variant="contained"
           sx={{ width: "50%" }}
           onClick={() => {
-            if (previewData !== null) {
+            if (previewData !== null) {          
+              sessionStorage.setItem("lastEditedHotspotFlag", "0");
+
               updateHotspot(
                 previewTooltip,
                 previewData,
@@ -587,7 +614,7 @@ function HotspotEditor({
             }
           }}
         >
-          Save
+          Save and Exit
         </Button>
       </Stack>
     </Stack>
