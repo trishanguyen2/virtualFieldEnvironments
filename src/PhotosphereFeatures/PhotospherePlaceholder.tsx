@@ -18,7 +18,6 @@ import {
 import { Box, alpha } from "@mui/material";
 import { common } from "@mui/material/colors";
 
-import { useVisitedState } from "../Hooks/HandleVisit";
 import { useVFELoaderContext } from "../Hooks/VFELoaderContext";
 import {
   Hotspot2D,
