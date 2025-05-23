@@ -337,10 +337,10 @@ function PhotospherePlaceholder({
 
     virtualTour.setNodes(nodes, currentPS);
     virtualTour.addEventListener("node-changed", ({ node }) => {
-      // want to travel both viewers
-      states.setStates.forEach((func) => {
-        func(vfe.photospheres[node.id]);
-      });
+      // // want to travel both viewers
+      // states.setStates.forEach((func) => {
+      //   func(vfe.photospheres[node.id]);
+      // });
       onChangePS(node.id);
       setHotspotArray([]); // clear popovers on scene change
     });

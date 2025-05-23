@@ -146,10 +146,6 @@ function PhotosphereViewer({
     },
   };
 
-  console.log("IS EDITOR?", isEditor);
-  const currentUrl: string = window.location.href;
-  console.log(currentUrl);
-
   return (
     <>
       <PhotosphereTutorialEditor /> {}

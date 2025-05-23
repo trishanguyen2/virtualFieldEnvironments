@@ -4,7 +4,7 @@ import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import ReactPlayer from "react-player";
 
-import { Add, ArrowBack, Close } from "@mui/icons-material";
+import { ArrowBack, Close } from "@mui/icons-material";
 import {
   Button,
   Dialog,
