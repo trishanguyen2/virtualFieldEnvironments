@@ -7,17 +7,27 @@ const pointsStore = localforage.createInstance({
 });
 
 const points = await pointsStore.getItem<number>("Points");
+const maxPoints = await pointsStore.getItem<number>("MaxPoints");
+const pointGain = await pointsStore.getItem<number>("PointGain");
 const gamifiedState = await pointsStore.getItem<boolean>("GamifiedState");
 
-export const getPoints = () => {
+function getPoints() {
   return points;
-};
+}
 
-export const getGamifiedState = () => {
+function getGamifiedState() {
   return gamifiedState;
-};
+}
 
-export function InitializePoints() {
+function getMaxPoints() {
+  return maxPoints;
+}
+
+function getPointGain() {
+  return pointGain;
+}
+
+function ResetPoints() {
   pointsStore
     .setItem("Points", 0)
     .then(() => {
@@ -29,7 +39,39 @@ export function InitializePoints() {
     });
 }
 
-export function InitializeState() {
+function InitializePoints() {
+  pointsStore
+    .setItem("Points", 0)
+    .then(() => {
+      window.dispatchEvent(new Event("storage"));
+      console.log("Points initialized successfully!");
+    })
+    .catch((error) => {
+      console.error("Error storing data:", error);
+    });
+
+  pointsStore
+    .setItem("MaxPoints", 100)
+    .then(() => {
+      window.dispatchEvent(new Event("storage"));
+      console.log("Points initialized successfully!");
+    })
+    .catch((error) => {
+      console.error("Error storing data:", error);
+    });
+
+  pointsStore
+    .setItem("PointsGain", 10)
+    .then(() => {
+      window.dispatchEvent(new Event("storage"));
+      console.log("Points initialized successfully!");
+    })
+    .catch((error) => {
+      console.error("Error storing data:", error);
+    });
+}
+
+function InitializeState() {
   pointsStore
     .setItem("GamifiedState", true)
     .then(() => {
@@ -43,18 +85,24 @@ export function InitializeState() {
 
 export function usePoints() {
   const [points, setPoints] = useState(getPoints());
+  const [maxPoints, setMaxPoints] = useState(100);
+  const [pointGain, setPointGain] = useState(10);
   // will need a set maxPoints function eventually that saves the max points to VFE
   // save data when changed in the editor
 
-  //Increment Points by Amount, must be whole number
-  async function AddPoints(amount: number) {
+  console.log("MAX POINTS", maxPoints);
+  console.log("POINT GAIN", pointGain);
+
+  async function AddPoints() {
     let pointsStorage = await pointsStore.getItem<number>("Points");
 
-    if (pointsStorage != null) {
-      pointsStorage = pointsStorage + amount;
+    if (pointsStorage != null && pointGain) {
+      pointsStorage = pointsStorage + pointGain;
       setPoints(pointsStorage);
     } else {
-      console.log("No Points!");
+      console.log("No Points!  Initialize!");
+      InitializePoints();
+      //Recursively call add points here to ensure adding happens?
       return;
     }
 
@@ -68,20 +116,82 @@ export function usePoints() {
         return;
       })
       .catch((error) => {
-        console.error("Error storing data:", error);
+        console.error("Error storing points data:", error);
       });
   }
 
   function ResetPoints() {
+    // ResetPoints();
     InitializePoints();
     setPoints(0);
   }
 
-  return [points, AddPoints, ResetPoints] as const;
+  async function SetMaxPoints(amount: number) {
+    const maxPointsStorage = await pointsStore.getItem<number>("MaxPoints");
+
+    if (maxPointsStorage != null) {
+      setMaxPoints(amount);
+    } else {
+      console.log("No Max Points!  Initialize!");
+      InitializePoints();
+      //Recursively call SetMaxPoints here to ensure setting happens?
+      return;
+    }
+
+    pointsStore
+      .setItem("MaxPoints", amount)
+      .then(() => {
+        console.log(
+          "Max points updated successfully! New max points are: " + amount,
+        );
+        window.dispatchEvent(new Event("storage"));
+        return;
+      })
+      .catch((error) => {
+        console.error("Error storing max points data:", error);
+      });
+  }
+
+  async function SetPointGain(amount: number) {
+    const pointGainStorage = await pointsStore.getItem<number>("PointGain");
+
+    if (pointGainStorage != null) {
+      setPointGain(amount);
+    } else {
+      console.log("No Point Gain Value!  Initialize!");
+      InitializePoints();
+      //Recursively call SetPointGain here to ensure setting PointGain value?
+      return;
+    }
+
+    pointsStore
+      .setItem("PointGain", amount)
+      .then(() => {
+        console.log(
+          "Point gain updated successfully! New point gain: " + amount,
+        );
+        window.dispatchEvent(new Event("storage"));
+        return;
+      })
+      .catch((error) => {
+        console.error("Error storing point gain data:", error);
+      });
+  }
+
+  return [
+    points,
+    AddPoints,
+    ResetPoints,
+    maxPoints,
+    SetMaxPoints,
+    SetPointGain,
+  ] as const;
 }
 
 export function useGamificationState(initialState?: boolean) {
-  const [gamifiedState, setGamifiedState] = useState(initialState ? initialState : getGamifiedState());
+  const [gamifiedState, setGamifiedState] = useState(
+    initialState ? initialState : getGamifiedState(),
+  );
 
   async function SwapGamifyState() {
     let stateStorage = await pointsStore.getItem<boolean>("GamifiedState");
