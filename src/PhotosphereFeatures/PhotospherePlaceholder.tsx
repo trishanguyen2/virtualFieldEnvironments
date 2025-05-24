@@ -180,16 +180,6 @@ function PhotospherePlaceholder({
   const ready = useRef(false);
   const defaultPan = useRef(vfe.photospheres[currentPS].src.path);
 
-  // const initialPhotosphereHotspots: Record<string, Hotspot3D[]> = Object.keys(
-  //   vfe.photospheres,
-  // ).reduce<Record<string, Hotspot3D[]>>((acc, psId) => {
-  //   acc[psId] = Object.values(vfe.photospheres[psId].hotspots);
-  //   return acc;
-  // }, {});
-
-  // const [visited, handleVisit] = useVisitedState(initialPhotosphereHotspots);
-  // console.log("in viewer: ", visited);
-
   const visitedData = useRef(visited[currentPS]);
 
   useEffect(() => {
@@ -261,46 +251,12 @@ function PhotospherePlaceholder({
       // setCurrentPhotosphere has to be used to get the current state value because
       // the value of currentPhotosphere does not get updated in an event listener
       setCurrentPhotosphere((currentState) => {
-<<<<<<< HEAD
-        let passMarker: Hotspot2D | Hotspot3D =
-          currentState.hotspots[marker.config.id];
-        const passMarkerList: (Hotspot2D | Hotspot3D)[] = [passMarker];
-
-        const lastEditedHotspotFlag = Number(
-          sessionStorage.getItem("lastEditedHotspotFlag"),
-        );
-        const lastEditedHotspot = JSON.parse(
-          sessionStorage.getItem("lastEditedHotspot") || "{}",
-        );
-
-        if (
-          lastEditedHotspotFlag == 1 &&
-          lastEditedHotspot != null &&
-          lastEditedHotspot.length > 1 &&
-          lastEditedHotspot[0] == marker.config.id
-        ) {
-          for (let i = 1; i < lastEditedHotspot.length; ++i) {
-            if (passMarker.data.tag == "Image") {
-              passMarkerList.push(
-                passMarker.data.hotspots[lastEditedHotspot[i]],
-              );
-              passMarker = passMarker.data.hotspots[lastEditedHotspot[i]];
-            }
-          }
-          sessionStorage.setItem("lastEditedHotspotFlag", "0");
-        }
-
-        setHotspotArray(passMarkerList);
-
         // Points check has to live here as long as handleVisit is here.  Handle visit cant be passed down further easily, as it causes reload issues.
-        // Need some way to disable adding points if the editor is open.
         if (!isHotspotVisited && !isEditor) {
           void addPoints(10);
         }
-=======
         const passMarker = currentState.hotspots[marker.config.id];
         setHotspotArray([passMarker]);
->>>>>>> cfcc78b900079efc8b709b41f3d07f938e6eab1f
         handleVisit(currentState.id, marker.config.id);
         return currentState;
       });
@@ -349,13 +305,12 @@ function PhotospherePlaceholder({
 
       // clear popovers on scene change
       // Upon saving a hotspot, the scene will refresh and automatically load back into what ever hotspot was saved last
-      if (Number(sessionStorage.getItem("lastEditedHotspotFlag")) == 1) { 
-        setHotspotArray( 
-          JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]") 
-        ); 
-      }
-      else { 
-        setHotspotArray([]); 
+      if (Number(sessionStorage.getItem("lastEditedHotspotFlag")) == 1) {
+        setHotspotArray(
+          JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]"),
+        );
+      } else {
+        setHotspotArray([]);
       }
 
       sessionStorage.setItem("listEditedHotspot", "[]"); // Clear the last hotspot so it doesn't keep loading into the same hotspot
