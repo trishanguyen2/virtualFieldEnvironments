@@ -69,7 +69,7 @@ function PhotosphereEditor({
   const [showRemoveFeatures, setShowRemoveFeatures] = useState(false);
 
   const [gamifiedState, SwapGamifyState] = useGamificationState(isGamified);
-  
+
   const visitedState = JSON.parse(
     localStorage.getItem("visitedState") ?? "{}",
   ) as VisitedState;
@@ -131,12 +131,15 @@ function PhotosphereEditor({
       },
     };
 
-    let hotspotList: (Hotspot2D | Hotspot3D)[] = [ vfe.photospheres[currentPS].hotspots[hotspotPath[0]] ];
+    const hotspotList: (Hotspot2D | Hotspot3D)[] = [
+      vfe.photospheres[currentPS].hotspots[hotspotPath[0]],
+    ];
     if (hotspotPath.length > 1) {
-      let hotspotItem: (Hotspot2D | Hotspot3D) = vfe.photospheres[currentPS].hotspots[hotspotPath[0]];
+      let hotspotItem: Hotspot2D | Hotspot3D =
+        vfe.photospheres[currentPS].hotspots[hotspotPath[0]];
 
       for (let i = 1; i < hotspotPath.length; ++i) {
-        if ('hotspots' in hotspotItem.data) {
+        if ("hotspots" in hotspotItem.data) {
           hotspotItem = hotspotItem.data.hotspots[hotspotPath[i]];
           hotspotList.push(hotspotItem);
         }
@@ -286,20 +289,20 @@ function PhotosphereEditor({
           photosphereOptions={availablePhotosphereOptions}
         />
       );
-      if (showChangePhotosphere) {
-        return (
-          <ChangePhotosphere
-            ps={vfe.photospheres[currentPS]}
-            onCancel={resetStates}
-            onChangePhotosphere={handleChangePhotosphere}
-            defaultPhotosphereID={vfe.defaultPhotosphereID}
-            onChangeDefault={(newID) => {
-              onUpdateVFE({ ...vfe, defaultPhotosphereID: newID });
-            }}
-          />
-        );
-      }
-      
+    if (showChangePhotosphere) {
+      return (
+        <ChangePhotosphere
+          ps={vfe.photospheres[currentPS]}
+          onCancel={resetStates}
+          onChangePhotosphere={handleChangePhotosphere}
+          defaultPhotosphereID={vfe.defaultPhotosphereID}
+          onChangeDefault={(newID) => {
+            onUpdateVFE({ ...vfe, defaultPhotosphereID: newID });
+          }}
+        />
+      );
+    }
+
     if (showRemovePhotosphere)
       return (
         <RemovePhotosphere
@@ -672,6 +675,7 @@ function PhotosphereEditor({
             void handleUpdateHotspot(hotspotPath, update);
           }}
           isGamified={gamifiedState ?? false}
+          isEditor={true}
         />
         <ActiveComponent />
       </Box>
