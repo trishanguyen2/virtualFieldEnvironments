@@ -261,6 +261,7 @@ function PhotospherePlaceholder({
       // setCurrentPhotosphere has to be used to get the current state value because
       // the value of currentPhotosphere does not get updated in an event listener
       setCurrentPhotosphere((currentState) => {
+<<<<<<< HEAD
         let passMarker: Hotspot2D | Hotspot3D =
           currentState.hotspots[marker.config.id];
         const passMarkerList: (Hotspot2D | Hotspot3D)[] = [passMarker];
@@ -296,6 +297,10 @@ function PhotospherePlaceholder({
         if (!isHotspotVisited && !isEditor) {
           void addPoints(10);
         }
+=======
+        const passMarker = currentState.hotspots[marker.config.id];
+        setHotspotArray([passMarker]);
+>>>>>>> cfcc78b900079efc8b709b41f3d07f938e6eab1f
         handleVisit(currentState.id, marker.config.id);
         return currentState;
       });
@@ -341,7 +346,20 @@ function PhotospherePlaceholder({
       //   func(vfe.photospheres[node.id]);
       // });
       onChangePS(node.id);
-      setHotspotArray([]); // clear popovers on scene change
+
+      // clear popovers on scene change
+      // Upon saving a hotspot, the scene will refresh and automatically load back into what ever hotspot was saved last
+      if (Number(sessionStorage.getItem("lastEditedHotspotFlag")) == 1) { 
+        setHotspotArray( 
+          JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]") 
+        ); 
+      }
+      else { 
+        setHotspotArray([]); 
+      }
+
+      sessionStorage.setItem("listEditedHotspot", "[]"); // Clear the last hotspot so it doesn't keep loading into the same hotspot
+      sessionStorage.removeItem("lastEditedHotspotFlag");
     });
     if (isPrimary) {
       const map = instance.getPlugin<MapPlugin>(MapPlugin);
