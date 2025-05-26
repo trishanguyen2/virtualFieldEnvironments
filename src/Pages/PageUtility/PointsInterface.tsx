@@ -41,17 +41,7 @@ function ResetPoints() {
     });
 }
 
-function InitializePoints() {
-  pointsStore
-    .setItem("Points", 0)
-    .then(() => {
-      window.dispatchEvent(new Event("storage"));
-      console.log("Points initialized successfully!");
-    })
-    .catch((error) => {
-      console.error("Error storing data:", error);
-    });
-
+function ResetMaxPoints() {
   pointsStore
     .setItem("MaxPoints", 100)
     .then(() => {
@@ -61,7 +51,9 @@ function InitializePoints() {
     .catch((error) => {
       console.error("Error storing data:", error);
     });
+}
 
+function ResetPointGain() {
   pointsStore
     .setItem("PointsGain", 10)
     .then(() => {
@@ -71,6 +63,12 @@ function InitializePoints() {
     .catch((error) => {
       console.error("Error storing data:", error);
     });
+}
+
+function InitializeAllPoints() {
+  ResetPoints();
+  ResetMaxPoints();
+  ResetPointGain();
 }
 
 function InitializeState() {
@@ -103,7 +101,7 @@ export function usePoints() {
       setPoints(pointsStorage);
     } else {
       console.log("No Points!  Initialize!");
-      InitializePoints();
+      InitializeAllPoints();
       //Recursively call add points here to ensure adding happens?
       return;
     }
@@ -124,7 +122,7 @@ export function usePoints() {
 
   function ResetPoints() {
     // ResetPoints();
-    InitializePoints();
+    InitializeAllPoints();
     setPoints(0);
   }
 
@@ -135,9 +133,8 @@ export function usePoints() {
       setMaxPoints(amount);
     } else {
       console.log("No Max Points!  Initialize!");
-      InitializePoints();
-      //Recursively call SetMaxPoints here to ensure setting happens?
-      return;
+      ResetMaxPoints();
+      setMaxPoints(amount);
     }
 
     pointsStore
@@ -161,9 +158,8 @@ export function usePoints() {
       setPointGain(amount);
     } else {
       console.log("No Point Gain Value!  Initialize!");
-      InitializePoints();
-      //Recursively call SetPointGain here to ensure setting PointGain value?
-      return;
+      ResetPointGain();
+      setPointGain(amount);
     }
 
     pointsStore
@@ -197,7 +193,7 @@ export function useGamificationState(initialState?: boolean) {
 
   async function SwapGamifyState() {
     let stateStorage = await pointsStore.getItem<boolean>("GamifiedState");
-    InitializePoints();
+    InitializeAllPoints();
 
     if (stateStorage != null) {
       stateStorage = !stateStorage;
