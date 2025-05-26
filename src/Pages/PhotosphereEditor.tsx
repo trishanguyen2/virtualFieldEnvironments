@@ -53,10 +53,18 @@ function radToDeg(num: number): number {
 
 interface PhotosphereEditorProps {
   isGamified: boolean;
+  maxPoints: number;
+  SetMaxPoints: (amount: number) => Promise<void>;
+  pointGain: number;
+  SetPointGain: (amount: number) => Promise<void>;
 }
 
 function PhotosphereEditor({
   isGamified,
+  maxPoints,
+  SetMaxPoints,
+  pointGain,
+  SetPointGain,
 }: PhotosphereEditorProps): JSX.Element {
   const { vfe, onUpdateVFE, currentPS, onChangePS } = useVFELoaderContext();
   const photosphereOptions = Object.keys(vfe.photospheres);
@@ -80,7 +88,6 @@ function PhotosphereEditor({
   const [showEditPointsValues, setShowEditPointsValues] = useState(false);
 
   const [gamifiedState, SwapGamifyState] = useGamificationState(isGamified);
-  const [, , , maxPoints, SetMaxPoints, pointGain, SetPointGain] = usePoints();
 
   const visitedState = JSON.parse(
     localStorage.getItem("visitedState") ?? "{}",

@@ -21,7 +21,13 @@ export interface ElementProps {
 }
 
 export interface PhotosphereLoaderProps {
-  ChildComponent: React.FC<{ isGamified: boolean }>;
+  ChildComponent: React.FC<{
+    isGamified: boolean;
+    maxPoints: number;
+    SetMaxPoints: (amount: number) => Promise<void>;
+    pointGain: number;
+    SetPointGain: (amount: number) => Promise<void>;
+  }>;
 }
 
 function VFELoader({ ChildComponent }: PhotosphereLoaderProps) {
@@ -96,7 +102,13 @@ function VFELoader({ ChildComponent }: PhotosphereLoaderProps) {
         },
       }}
     >
-      <ChildComponent isGamified={isGamified ?? false} />
+      <ChildComponent
+        isGamified={isGamified ?? false}
+        maxPoints={maxPoints}
+        SetMaxPoints={SetMaxPoints}
+        pointGain={pointGain}
+        SetPointGain={SetPointGain}
+      />
     </VFELoaderContext.Provider>
   );
 }
