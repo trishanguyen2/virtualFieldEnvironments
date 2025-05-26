@@ -441,7 +441,6 @@ function HotspotEditor({
       setEdited(true);
     }
   }
-  console.log("[HotspotEditor] previewColor:", previewColor);
 
   return (
     <Stack gap={2} width="300px" height="100%">
@@ -652,7 +651,6 @@ function HotspotEditor({
                 previewColor
               );
             }
-            console.log("[HotspotEditor] saving with color:", previewColor);
 
           }}
         >
@@ -678,7 +676,6 @@ function HotspotEditor({
                 previewColor
               );
             }
-            console.log("[HotspotEditor] saving with color:", previewColor);
 
           }}
         >

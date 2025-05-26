@@ -107,8 +107,6 @@ function convertHotspots(
         else if (hotspot.icon?.path === "MapTrifold") {
           IconComponent = MapTrifold;
         }
-        
-        console.log("[PhotosphereViewer] rendering hotspot with color:", hotspot.color);
 
       marker.html = ReactDOMServer.renderToString(
         <IconComponent

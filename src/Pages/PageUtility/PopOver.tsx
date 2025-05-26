@@ -281,7 +281,6 @@ function PopOver({
   }
 
   function updateHotspot(tooltip: string, data: HotspotData, icon?: Asset, color?: string) {
-    console.log("[PopOver] Calling onUpdateHotspot with color:", color);
     onUpdateHotspot?.(hotspotPath, { tooltip, data, icon, color});
   }
 
