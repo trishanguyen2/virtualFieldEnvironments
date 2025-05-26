@@ -542,12 +542,12 @@ function PhotosphereEditor({
                 onClick={async () => {
                   await SwapGamifyState();
                   //correcting for it always setting saved state to the opposite of what it should be for some reason.  Timing issue?
-                  vfe.gamificationToggle = !gamifiedState;
+                  vfe.isGamified = !gamifiedState;
                   console.log(
                     "The gamified state is: " +
                       !gamifiedState +
                       " and the vfe gamification state is: " +
-                      vfe.gamificationToggle,
+                      vfe.isGamified,
                   );
                   onUpdateVFE(vfe);
                 }}
@@ -666,9 +666,10 @@ function PhotosphereEditor({
               defaultValue={maxPoints}
               sx={{ margin: "10px 0" }}
               onChange={async (e) => {
-                const newValue = parseInt(e.target.value);
-                if (!isNaN(newValue)) {
-                  await SetMaxPoints(newValue);
+                const newMaxPointsValue = parseInt(e.target.value);
+                if (!isNaN(newMaxPointsValue)) {
+                  await SetMaxPoints(newMaxPointsValue);
+                  vfe.maxPoints = newMaxPointsValue;
                 }
               }}
               fullWidth
@@ -679,9 +680,10 @@ function PhotosphereEditor({
               defaultValue={pointGain}
               sx={{ margin: "10px 0" }}
               onChange={async (e) => {
-                const newValue = parseInt(e.target.value);
-                if (!isNaN(newValue)) {
-                  await SetPointGain(newValue);
+                const newPointGainValue = parseInt(e.target.value);
+                if (!isNaN(newPointGainValue)) {
+                  await SetPointGain(newPointGainValue);
+                  vfe.pointGain = newPointGainValue;
                 }
               }}
               fullWidth
