@@ -28,6 +28,8 @@ import {
 import PopOver from "../Pages/PageUtility/PopOver";
 import { ViewerProps } from "../Pages/PhotosphereViewer";
 import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
+import { MapPin , PushPinSimple, MapTrifold } from "phosphor-react";
+import ReactDOMServer from "react-dom/server";
 
 /** Convert sizes from numbers to strings ending in "px" */
 function sizeToStr(val: number): string {
@@ -95,8 +97,25 @@ function convertHotspots(
         color: alpha(common.white, 0.8),
         size: 80,
       });
-    } else {
+    } else if (hotspot.icon?.path?.startsWith("blob:") || hotspot.icon?.path?.match(/\.(png|jpe?g|svg)$/)) {
       marker.image = hotspot.icon.path;
+    } else {
+      let IconComponent = MapPin;
+        if (hotspot.icon?.path === "PushPinSimple") {
+          IconComponent = PushPinSimple;
+        } 
+        else if (hotspot.icon?.path === "MapTrifold") {
+          IconComponent = MapTrifold;
+        }
+
+      marker.html = ReactDOMServer.renderToString(
+        <IconComponent
+          size={32}
+          weight="duotone"
+          color={hotspot.color}
+          className="hotspot-icon"
+        />
+      );
     }
 
     markers.push(marker);

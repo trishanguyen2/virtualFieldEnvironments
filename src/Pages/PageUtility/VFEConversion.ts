@@ -151,6 +151,7 @@ export interface HotspotUpdate {
   tooltip?: string;
   data?: HotspotData;
   icon?: Asset;
+  color?: string;
 }
 
 export function updatePhotosphereHotspot(
@@ -193,6 +194,9 @@ function updateHotspot<H extends Hotspot3D | Hotspot2D>(
     }
     if (update.icon && "icon" in result) {
       result.icon = update.icon;
+    }
+    if (update.color) {
+      (result as any).color = update.color;
     }
     return result;
   }

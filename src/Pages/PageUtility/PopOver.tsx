@@ -1,5 +1,5 @@
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import ReactPlayer from "react-player";
@@ -228,6 +228,13 @@ function PopOver({
       ? setPreviewIcon
       : undefined;
 
+  const [previewColor, setPreviewColor] = useState(hotspot.color ?? "#1976d2");
+  useEffect(() => {
+    if ("color" in hotspot && typeof hotspot.color === "string") {
+      setPreviewColor(hotspot.color);
+    }
+  }, [hotspot]);  
+
   const availablePhotosphereOptions =
     hotspot.data.tag === "PhotosphereLink"
       ? [hotspot.data.photosphereID, ...photosphereOptions]
@@ -273,8 +280,8 @@ function PopOver({
     onUpdateHotspot?.(hotspotPath, null);
   }
 
-  function updateHotspot(tooltip: string, data: HotspotData, icon?: Asset) {
-    onUpdateHotspot?.(hotspotPath, { tooltip, data, icon });
+  function updateHotspot(tooltip: string, data: HotspotData, icon?: Asset, color?: string) {
+    onUpdateHotspot?.(hotspotPath, { tooltip, data, icon, color});
   }
 
   function openNestedHotspot(hotspot2D: Hotspot2D) {
@@ -306,7 +313,7 @@ function PopOver({
             {previewData && (
               <HotspotIcon
                 hotspotData={previewData}
-                color={"color" in hotspot ? hotspot.color : undefined}
+                color={previewColor}
                 icon={previewIcon ?? undefined}
               />
             )}
@@ -380,6 +387,8 @@ function PopOver({
                 updateHotspot={updateHotspot}
                 openNestedHotspot={openNestedHotspot}
                 photosphereOptions={availablePhotosphereOptions} // Pass down the new props
+                previewColor={previewColor}
+                setPreviewColor={setPreviewColor}
               />
             </Box>
           )}
