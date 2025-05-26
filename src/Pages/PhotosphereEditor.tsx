@@ -3,7 +3,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import AttachFileIcon from "@mui/icons-material/AttachFile";
-import { Box, Button, Stack } from "@mui/material";
+import {
+  Box,
+  Button,
+  Input,
+  InputLabel,
+  Stack,
+  TextField,
+} from "@mui/material";
 
 import { VisitedState } from "../Hooks/HandleVisit.tsx";
 import { useVFELoaderContext } from "../Hooks/VFELoaderContext.tsx";
@@ -27,7 +34,10 @@ import {
   photosphereLinkTooltip,
 } from "./PageUtility/DataStructures.ts";
 import { deleteStoredVFE, save } from "./PageUtility/FileOperations.ts";
-import { useGamificationState } from "./PageUtility/PointsInterface.tsx";
+import {
+  useGamificationState,
+  usePoints,
+} from "./PageUtility/PointsInterface.tsx";
 import {
   HotspotUpdate,
   convertRuntimeToStored,
@@ -67,8 +77,10 @@ function PhotosphereEditor({
   const [showAddFeatures, setShowAddFeatures] = useState(false);
   const [showChangeFeatures, setShowChangeFeatures] = useState(false);
   const [showRemoveFeatures, setShowRemoveFeatures] = useState(false);
+  const [showEditPointsValues, setShowEditPointsValues] = useState(false);
 
   const [gamifiedState, SwapGamifyState] = useGamificationState(isGamified);
+  const [, , , , SetMaxPoints, SetPointGain] = usePoints();
 
   const visitedState = JSON.parse(
     localStorage.getItem("visitedState") ?? "{}",
@@ -478,75 +490,84 @@ function PhotosphereEditor({
           padding: "10px",
         }}
       >
-        {!showAddFeatures && !showChangeFeatures && !showRemoveFeatures && (
-          <>
-            <Button
-              className="add-features-button"
-              sx={{ margin: "10px 0" }}
-              onClick={() => {
-                setShowAddFeatures(true);
-              }}
-              variant="contained"
-            >
-              Add Features
-            </Button>
-            <Button
-              className="edit-features-button"
-              sx={{
-                margin: "10px 0",
-              }}
-              onClick={() => {
-                setShowChangeFeatures(true);
-              }}
-              variant="contained"
-            >
-              Edit Features
-            </Button>
-            <Button
-              className="remove-features-button"
-              sx={{ margin: "10px 0" }}
-              onClick={() => {
-                setShowRemoveFeatures(true);
-              }}
-              variant="contained"
-            >
-              Remove Features
-            </Button>
-            <Button
-              className="export-button"
-              sx={{ margin: "10px 0" }}
-              onClick={() => {
-                void handleExport();
-              }}
-              variant="contained"
-            >
-              Export
-            </Button>
-            <Button
-              sx={{ margin: "10px 0" }}
-              onClick={async () => {
-                await SwapGamifyState();
-                //correcting for it always setting saved state to the opposite of what it should be for some reason.  Timing issue?
-                vfe.gamificationToggle = !gamifiedState;
-                console.log(
-                  "The gamified state is: " +
-                    !gamifiedState +
-                    " and the vfe gamification state is: " +
-                    vfe.gamificationToggle,
-                );
-                onUpdateVFE(vfe);
-              }}
-              variant="contained"
-            >
-              Gamify!
-            </Button>
-            {gamifiedState && (
-              <Button sx={{ margin: "10px 0" }} variant="contained">
-                Set Point Values
+        {!showAddFeatures &&
+          !showChangeFeatures &&
+          !showRemoveFeatures &&
+          !showEditPointsValues && (
+            <>
+              <Button
+                className="add-features-button"
+                sx={{ margin: "10px 0" }}
+                onClick={() => {
+                  setShowAddFeatures(true);
+                }}
+                variant="contained"
+              >
+                Add Features
               </Button>
-            )}
-          </>
-        )}
+              <Button
+                className="edit-features-button"
+                sx={{
+                  margin: "10px 0",
+                }}
+                onClick={() => {
+                  setShowChangeFeatures(true);
+                }}
+                variant="contained"
+              >
+                Edit Features
+              </Button>
+              <Button
+                className="remove-features-button"
+                sx={{ margin: "10px 0" }}
+                onClick={() => {
+                  setShowRemoveFeatures(true);
+                }}
+                variant="contained"
+              >
+                Remove Features
+              </Button>
+              <Button
+                className="export-button"
+                sx={{ margin: "10px 0" }}
+                onClick={() => {
+                  void handleExport();
+                }}
+                variant="contained"
+              >
+                Export
+              </Button>
+              <Button
+                sx={{ margin: "10px 0" }}
+                onClick={async () => {
+                  await SwapGamifyState();
+                  //correcting for it always setting saved state to the opposite of what it should be for some reason.  Timing issue?
+                  vfe.gamificationToggle = !gamifiedState;
+                  console.log(
+                    "The gamified state is: " +
+                      !gamifiedState +
+                      " and the vfe gamification state is: " +
+                      vfe.gamificationToggle,
+                  );
+                  onUpdateVFE(vfe);
+                }}
+                variant="contained"
+              >
+                Gamify!
+              </Button>
+              {gamifiedState && (
+                <Button
+                  sx={{ margin: "10px 0" }}
+                  onClick={() => {
+                    setShowEditPointsValues(true);
+                  }}
+                  variant="contained"
+                >
+                  Set Point Values
+                </Button>
+              )}
+            </>
+          )}
         {showAddFeatures && (
           <>
             <Button
@@ -637,6 +658,43 @@ function PhotosphereEditor({
           </>
         )}
 
+        {showEditPointsValues && (
+          <>
+            <TextField
+              label="Max Points"
+              type="number"
+              sx={{ margin: "10px 0" }}
+              onChange={async (e) => {
+                const newValue = parseInt(e.target.value);
+                if (!isNaN(newValue)) {
+                  await SetMaxPoints(newValue);
+                }
+              }}
+              fullWidth
+            />
+            <TextField
+              label="Points Per Hotspot Visit"
+              type="number"
+              sx={{ margin: "10px 0" }}
+              onChange={async (e) => {
+                const newValue = parseInt(e.target.value);
+                if (!isNaN(newValue)) {
+                  await SetPointGain(newValue);
+                }
+              }}
+              fullWidth
+            />
+            <Button
+              sx={{ margin: "10px 0" }}
+              onClick={() => {
+                setShowEditPointsValues(false);
+              }}
+              variant="outlined"
+            >
+              Back
+            </Button>
+          </>
+        )}
         {showChangeFeatures && (
           <>
             <Button

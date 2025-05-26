@@ -20,11 +20,13 @@ function getGamifiedState() {
 }
 
 function getMaxPoints() {
-  return maxPoints;
+  if (maxPoints) return maxPoints;
+  else return 100;
 }
 
 function getPointGain() {
-  return pointGain;
+  if (pointGain) return pointGain;
+  else return 10;
 }
 
 function ResetPoints() {
@@ -85,8 +87,8 @@ function InitializeState() {
 
 export function usePoints() {
   const [points, setPoints] = useState(getPoints());
-  const [maxPoints, setMaxPoints] = useState(100);
-  const [pointGain, setPointGain] = useState(10);
+  const [maxPoints, setMaxPoints] = useState(getMaxPoints());
+  const [pointGain, setPointGain] = useState(getPointGain());
   // will need a set maxPoints function eventually that saves the max points to VFE
   // save data when changed in the editor
 
