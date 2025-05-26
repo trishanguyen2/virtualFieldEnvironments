@@ -3,14 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import AttachFileIcon from "@mui/icons-material/AttachFile";
-import {
-  Box,
-  Button,
-  Input,
-  InputLabel,
-  Stack,
-  TextField,
-} from "@mui/material";
+import { Box, Button, Stack, TextField } from "@mui/material";
 
 import { VisitedState } from "../Hooks/HandleVisit.tsx";
 import { useVFELoaderContext } from "../Hooks/VFELoaderContext.tsx";
@@ -34,10 +27,7 @@ import {
   photosphereLinkTooltip,
 } from "./PageUtility/DataStructures.ts";
 import { deleteStoredVFE, save } from "./PageUtility/FileOperations.ts";
-import {
-  useGamificationState,
-  usePoints,
-} from "./PageUtility/PointsInterface.tsx";
+import { useGamificationState } from "./PageUtility/PointsInterface.tsx";
 import {
   HotspotUpdate,
   convertRuntimeToStored,
