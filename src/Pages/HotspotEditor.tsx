@@ -23,9 +23,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
   IconButton,
+  InputLabel,
   Link,
+  MenuItem,
   Popover,
+  Select,
   Stack,
   TextField,
   Tooltip,
@@ -366,6 +370,8 @@ export interface HotspotEditorProps {
   ) => void;
   openNestedHotspot: (toOpen: Hotspot2D) => void;
   photosphereOptions: string[];
+  previewColor: string;
+  setPreviewColor: (color: string) => void;
 }
 
 function HotspotEditor({
@@ -377,24 +383,25 @@ function HotspotEditor({
   setPreviewData,
   previewIcon,
   setPreviewIcon,
-
   resetHotspot,
   deleteHotspot,
   updateHotspot,
   openNestedHotspot,
   photosphereOptions,
+  previewColor, 
+  setPreviewColor,
 }: HotspotEditorProps) {
   const [isCustomIcon] = useState(false);
   const [customIconFile, setCustomIconFile] = useState<File | null>(null);
-  const [color] = useState("#1976d2");
+  const color = previewColor;
+  const setColor = setPreviewColor;
   const [hotspotsCollapsed, setHotspotsCollapsed] = useState(false);
-
   const [colorAnchor, setColorAnchor] = useState<HTMLElement | null>(null);
   const [colorHotspot, setColorHotspot] = useState<Hotspot2D | null>(null);
   const [locationHotspot, setLocationHotspot] = useState<Hotspot2D | null>(
     null,
   );
-
+  
   const nestedHotspotLength =
     previewData?.tag === "Image"
       ? Object.values(previewData.hotspots).length
@@ -434,6 +441,7 @@ function HotspotEditor({
       setEdited(true);
     }
   }
+  console.log("[HotspotEditor] previewColor:", previewColor);
 
   return (
     <Stack gap={2} width="300px" height="100%">
@@ -457,6 +465,44 @@ function HotspotEditor({
         setHotspotData={updateData}
         photosphereOptions={photosphereOptions}
       />
+      <FormControl fullWidth>
+        <InputLabel id="pin-type-label">Pin Type</InputLabel>
+        <Select
+          labelId="pin-type-label"
+          label="Pin Type"
+          value={previewIcon?.path || ""}
+          onChange={(e) => {
+            const path = e.target.value;
+            setPreviewIcon?.({
+              tag: "Runtime",
+              id: newID(),
+              path,
+            });
+            setEdited(true);
+          }}
+        >
+          <MenuItem value="/pin-blue.png">Blue Pin</MenuItem>
+          <MenuItem value="/pin-red.png">Red Pin</MenuItem>
+          <MenuItem value="MapPin">Map Pin</MenuItem>
+          <MenuItem value="PushPinSimple">Push Pin Simple</MenuItem>
+          <MenuItem value="MapTrifold">Map Trifold</MenuItem>
+        </Select>
+      </FormControl>
+
+    {previewIcon?.path !== "/pin-blue.png" && previewIcon?.path !== "/pin-red.png" && (
+      <TextField
+        label="Pin Color"
+        type="color"
+        value={color}
+        onChange={(e) => {
+          setColor(e.target.value);
+          setEdited(true);
+        }}
+        InputLabelProps={{ shrink: true }}
+        fullWidth
+      />
+    )}
+
 
     {isCustomIcon && (
       <MuiFileInput
@@ -599,15 +645,15 @@ function HotspotEditor({
             if (previewData !== null) {
               sessionStorage.setItem("lastEditedHotspotFlag", "1");
 
-              const shouldHaveColor = !isCustomIcon && previewIcon?.path !== "/pin-blue.png" && previewIcon?.path !== "/pin-red.png";
-
               updateHotspot(
                 previewTooltip,
                 previewData,
                 previewIcon ?? undefined,
-                shouldHaveColor ? color : undefined
+                previewColor
               );
             }
+            console.log("[HotspotEditor] saving with color:", previewColor);
+
           }}
         >
           Save
@@ -629,8 +675,11 @@ function HotspotEditor({
                 previewTooltip,
                 previewData,
                 previewIcon ?? undefined,
+                previewColor
               );
             }
+            console.log("[HotspotEditor] saving with color:", previewColor);
+
           }}
         >
           Save and Exit

@@ -128,7 +128,7 @@ function ContentInput({
       return (
         <TextField
           required
-          label="URL"
+          label="URL *"
           value={content}
           onChange={(e) => {
             onUpdate(e.target.value, question, answer);
@@ -162,7 +162,7 @@ function ContentInput({
         <>
           <TextField
             required
-            label="Question"
+            label="Question *"
             value={question}
             onChange={(e) => {
               onUpdate(content, e.target.value, answer);
@@ -170,7 +170,7 @@ function ContentInput({
           />
           <TextField
             required
-            label="Answer"
+            label="Answer *"
             value={answer}
             onChange={(e) => {
               onUpdate(content, question, e.target.value);
@@ -179,7 +179,7 @@ function ContentInput({
         </>
       );
     default:
-      return <Typography>Please select a valid content type</Typography>;
+      return null; 
   }
 }
 
@@ -335,7 +335,7 @@ export function HotspotDataEditor({
   return (
     <>
       <FormControl>
-        <InputLabel id="contentType">Content Type</InputLabel>
+        <InputLabel id="contentType">Content Type*</InputLabel>
         <Select
           labelId="contentType"
           value={contentType}
@@ -461,7 +461,7 @@ function AddHotspot({
       (hotspotData.tag !== "PhotosphereLink" && iconAsset === null)
     ) {
       await alertMUI(
-        "Please provide a tooltip, a valid content type, and an icon",
+        "Please provide a tooltip, a valid content type, and a pin",
       );
       return;
     }
@@ -537,7 +537,7 @@ function AddHotspot({
       )}
 
     <FormControl fullWidth>
-      <InputLabel id="pin-type-label">Pin Type</InputLabel>
+      <InputLabel id="pin-type-label">Pin Type*</InputLabel>
       <Select
         labelId="pin-type-label"
         label="Pin Type"
@@ -557,7 +557,7 @@ function AddHotspot({
           }
         }}
       >
-        <MenuItem value="">Select Icon</MenuItem>
+        <MenuItem value="">Select Pin Type</MenuItem>
         <MenuItem value="MapPin">
           <Stack direction="row" alignItems="center" gap={1}>
             <MapPin size={20} />

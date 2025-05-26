@@ -151,6 +151,7 @@ export interface HotspotUpdate {
   tooltip?: string;
   data?: HotspotData;
   icon?: Asset;
+  color?: string;
 }
 
 export function updatePhotosphereHotspot(
@@ -178,6 +179,8 @@ function updateHotspot<H extends Hotspot3D | Hotspot2D>(
   hotspotPath: string[],
   update: HotspotUpdate | null,
 ): H | null {
+  console.log("[VFEConversion] updateHotspot called with update:", update);
+
   // Found the hotspot that is being searched for.
   if (hotspotPath.length === 1 && hotspotPath[0] === hotspot.id) {
     if (update === null) {
@@ -194,6 +197,12 @@ function updateHotspot<H extends Hotspot3D | Hotspot2D>(
     if (update.icon && "icon" in result) {
       result.icon = update.icon;
     }
+    if (update.color) {
+      (result as any).color = update.color;
+      console.log("[VFEConversion] Updated hotspot color:", (result as any).color);
+    }
+    console.log("[VFEConversion] updated hotspot result:", result);
+
     return result;
   }
 
