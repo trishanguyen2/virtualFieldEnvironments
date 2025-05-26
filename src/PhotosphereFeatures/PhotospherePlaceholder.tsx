@@ -18,7 +18,6 @@ import {
 import { Box, alpha } from "@mui/material";
 import { common } from "@mui/material/colors";
 
-import { useVisitedState } from "../Hooks/HandleVisit";
 import { useVFELoaderContext } from "../Hooks/VFELoaderContext";
 import {
   Hotspot2D,
@@ -154,6 +153,10 @@ interface PhotospherePlaceholderProps {
   isPrimary: boolean;
   mapStatic: boolean;
   lockViews: boolean;
+  addPoints: (amount: number) => Promise<void>;
+  visited: Partial<Record<string, Record<string, boolean>>>;
+  handleVisit: (photosphereId: string, hotspotId: string) => void;
+  isEditor: boolean;
 }
 
 function PhotospherePlaceholder({
@@ -161,6 +164,10 @@ function PhotospherePlaceholder({
   isPrimary,
   mapStatic,
   lockViews,
+  addPoints,
+  visited,
+  handleVisit,
+  isEditor,
 }: PhotospherePlaceholderProps) {
   const { onUpdateHotspot, onViewerClick, photosphereOptions, states } =
     viewerProps;
@@ -185,15 +192,13 @@ function PhotospherePlaceholder({
   const ready = useRef(false);
   const defaultPan = useRef(vfe.photospheres[currentPS].src.path);
 
-  const initialPhotosphereHotspots: Record<string, Hotspot3D[]> = Object.keys(
-    vfe.photospheres,
-  ).reduce<Record<string, Hotspot3D[]>>((acc, psId) => {
-    acc[psId] = Object.values(vfe.photospheres[psId].hotspots);
-    return acc;
-  }, {});
+  const visitedData = useRef(visited[currentPS]);
 
-  const [visited, handleVisit] = useVisitedState(initialPhotosphereHotspots);
-  console.log("in viewer", visited);
+  useEffect(() => {
+    visitedData.current = visited[currentPS];
+  });
+
+  console.log("in visted data TOP: ", visitedData);
 
   const isViewerMode = onUpdateHotspot === undefined;
 
@@ -247,38 +252,23 @@ function PhotospherePlaceholder({
     markerTestPlugin.addEventListener("select-marker", ({ marker }) => {
       if (marker.config.id.includes("__tour-link")) return;
 
+      console.log("visitedData: ", visitedData);
+
+      // This works on reload but not re-render.  visitedData is only pulled when this function is created, and never again
+      const isHotspotVisited: boolean = visitedData.current
+        ? visitedData.current[marker.config.id]
+        : false;
+      console.log("isHotspotVisited: ", isHotspotVisited);
+
       // setCurrentPhotosphere has to be used to get the current state value because
       // the value of currentPhotosphere does not get updated in an event listener
       setCurrentPhotosphere((currentState) => {
-        let passMarker: Hotspot2D | Hotspot3D =
-          currentState.hotspots[marker.config.id];
-        let passMarkerList: (Hotspot2D | Hotspot3D)[] = [passMarker];
-
-        const lastEditedHotspotFlag = Number(
-          sessionStorage.getItem("lastEditedHotspotFlag"),
-        );
-        const lastEditedHotspot = JSON.parse(
-          sessionStorage.getItem("lastEditedHotspot") || "{}",
-        );
-
-        if (
-          lastEditedHotspotFlag == 1 &&
-          lastEditedHotspot != null &&
-          lastEditedHotspot.length > 1 &&
-          lastEditedHotspot[0] == marker.config.id
-        ) {
-          for (let i = 1; i < lastEditedHotspot.length; ++i) {
-            if (passMarker.data.tag == "Image") {
-              passMarkerList.push(
-                passMarker.data.hotspots[lastEditedHotspot[i]],
-              );
-              passMarker = passMarker.data.hotspots[lastEditedHotspot[i]];
-            }
-          }
-          sessionStorage.setItem("lastEditedHotspotFlag", "0");
+        // Points check has to live here as long as handleVisit is here.  Handle visit cant be passed down further easily, as it causes reload issues.
+        if (!isHotspotVisited && !isEditor) {
+          void addPoints(10);
         }
-
-        setHotspotArray(passMarkerList);
+        const passMarker = currentState.hotspots[marker.config.id];
+        setHotspotArray([passMarker]);
         handleVisit(currentState.id, marker.config.id);
         return currentState;
       });
@@ -319,14 +309,24 @@ function PhotospherePlaceholder({
 
     virtualTour.setNodes(nodes, currentPS);
     virtualTour.addEventListener("node-changed", ({ node }) => {
-      if (!vfe.photospheres[node.id].parentPS) {
-        // want to travel both viewers only if we traveled to a parent node
-        states.setStates.forEach((setStateFunc) =>
-          setStateFunc(vfe.photospheres[node.id]),
-        );
-      }
+      // // want to travel both viewers
+      // states.setStates.forEach((func) => {
+      //   func(vfe.photospheres[node.id]);
+      // });
       onChangePS(node.id);
-      setHotspotArray([]); // clear popovers on scene change
+
+      // clear popovers on scene change
+      // Upon saving a hotspot, the scene will refresh and automatically load back into what ever hotspot was saved last
+      if (Number(sessionStorage.getItem("lastEditedHotspotFlag")) == 1) {
+        setHotspotArray(
+          JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]"),
+        );
+      } else {
+        setHotspotArray([]);
+      }
+
+      sessionStorage.setItem("listEditedHotspot", "[]"); // Clear the last hotspot so it doesn't keep loading into the same hotspot
+      sessionStorage.removeItem("lastEditedHotspotFlag");
     });
     if (isPrimary) {
       const map = instance.getPlugin<MapPlugin>(MapPlugin);
@@ -381,7 +381,7 @@ function PhotospherePlaceholder({
           plugins={plugins}
           height={"100vh"}
           width={"100%"}
-          navbar={["autorotate", "zoom", "caption", "download", "fullscreen"]}
+          navbar={["zoom", "caption", "download", "fullscreen"]}
         />
       </Box>
     </>
