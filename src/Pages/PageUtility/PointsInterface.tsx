@@ -182,6 +182,7 @@ export function usePoints() {
     ResetPoints,
     maxPoints,
     SetMaxPoints,
+    pointGain,
     SetPointGain,
   ] as const;
 }
