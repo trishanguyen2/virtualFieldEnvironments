@@ -11,7 +11,7 @@ Ideal for use in K-12 or higher education, this tool supports digital learning, 
 ---
 
 ## Live Demo
-[Field Trip Demo] ([https://(https://field-trip.vercel.app/)](https://field-trip.vercel.app/))
+[Field Trip Demo] ([(https://field-trip.vercel.app/)](https://field-trip.vercel.app/))
 
 ---
 
