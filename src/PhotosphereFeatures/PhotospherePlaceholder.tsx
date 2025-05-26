@@ -28,7 +28,7 @@ import {
 import PopOver from "../Pages/PageUtility/PopOver";
 import { ViewerProps } from "../Pages/PhotosphereViewer";
 import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
-import { MapPin } from "phosphor-react";
+import { MapPin , PushPinSimple, MapTrifold } from "phosphor-react";
 import ReactDOMServer from "react-dom/server";
 
 /** Convert sizes from numbers to strings ending in "px" */
@@ -99,15 +99,21 @@ function convertHotspots(
       });
     } else if (hotspot.icon?.path?.startsWith("blob:") || hotspot.icon?.path?.match(/\.(png|jpe?g|svg)$/)) {
       marker.image = hotspot.icon.path;
-    } else { 
+    } else {
+      let IconComponent = MapPin;
+        if (hotspot.icon?.path === "PushPinSimple") {
+          IconComponent = PushPinSimple;
+        } 
+        else if (hotspot.icon?.path === "MapTrifold") {
+          IconComponent = MapTrifold;
+        }
       marker.html = ReactDOMServer.renderToString(
-        <MapPin
-        size={32}
-        weight="duotone"
-        color={hotspot.color}
-        className="hotspot-icon"
-    />,
-
+        <IconComponent
+          size={32}
+          weight="duotone"
+          color={hotspot.color}
+          className="hotspot-icon"
+        />
       );
     }
 
