@@ -540,6 +540,11 @@ function PhotosphereEditor({
             >
               Gamify!
             </Button>
+            {gamifiedState && (
+              <Button sx={{ margin: "10px 0" }} variant="contained">
+                Set Point Values
+              </Button>
+            )}
           </>
         )}
         {showAddFeatures && (
