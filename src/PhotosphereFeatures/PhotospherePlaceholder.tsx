@@ -5,7 +5,9 @@ import {
   VirtualTourLink,
   VirtualTourNode,
 } from "@photo-sphere-viewer/virtual-tour-plugin";
+import { MapPin, MapTrifold, PushPinSimple } from "phosphor-react";
 import { useEffect, useRef, useState } from "react";
+import ReactDOMServer from "react-dom/server";
 import {
   MapPlugin,
   MapPluginConfig,
@@ -18,6 +20,7 @@ import {
 import { Box, alpha } from "@mui/material";
 import { common } from "@mui/material/colors";
 
+import { useTimelineSelectedContext } from "../Hooks/TimelineSelected";
 import { useVFELoaderContext } from "../Hooks/VFELoaderContext";
 import {
   Hotspot2D,
@@ -28,8 +31,6 @@ import {
 import PopOver from "../Pages/PageUtility/PopOver";
 import { ViewerProps } from "../Pages/PhotosphereViewer";
 import { LinkArrowIconHTML } from "../UI/LinkArrowIcon";
-import { MapPin , PushPinSimple, MapTrifold } from "phosphor-react";
-import ReactDOMServer from "react-dom/server";
 
 /** Convert sizes from numbers to strings ending in "px" */
 function sizeToStr(val: number): string {
@@ -97,16 +98,18 @@ function convertHotspots(
         color: alpha(common.white, 0.8),
         size: 80,
       });
-    } else if (hotspot.icon?.path?.startsWith("blob:") || hotspot.icon?.path?.match(/\.(png|jpe?g|svg)$/)) {
+    } else if (
+      hotspot.icon?.path?.startsWith("blob:") ||
+      hotspot.icon?.path?.match(/\.(png|jpe?g|svg)$/)
+    ) {
       marker.image = hotspot.icon.path;
     } else {
       let IconComponent = MapPin;
-        if (hotspot.icon?.path === "PushPinSimple") {
-          IconComponent = PushPinSimple;
-        } 
-        else if (hotspot.icon?.path === "MapTrifold") {
-          IconComponent = MapTrifold;
-        }
+      if (hotspot.icon?.path === "PushPinSimple") {
+        IconComponent = PushPinSimple;
+      } else if (hotspot.icon?.path === "MapTrifold") {
+        IconComponent = MapTrifold;
+      }
 
       marker.html = ReactDOMServer.renderToString(
         <IconComponent
@@ -114,7 +117,7 @@ function convertHotspots(
           weight="duotone"
           color={hotspot.color}
           className="hotspot-icon"
-        />
+        />,
       );
     }
 
@@ -191,6 +194,9 @@ function PhotospherePlaceholder({
   const hotspotPath = hotspotArray.map((h) => h.id);
 
   const lockViewsRef = useRef(lockViews);
+
+  const { wasTimelineSelected: _, setWasTimelineSelected } =
+    useTimelineSelectedContext();
 
   useEffect(() => {
     lockViewsRef.current = lockViews;
@@ -288,7 +294,6 @@ function PhotospherePlaceholder({
     });
 
     instance.addEventListener("position-updated", ({ position }) => {
-      console.log(lockViewsRef.current);
       if (!lockViewsRef.current) return;
       const [otherRef] = states.references.filter((ref) => {
         if (ref != photosphereRef) return ref;
@@ -316,10 +321,14 @@ function PhotospherePlaceholder({
 
     virtualTour.setNodes(nodes, currentPS);
     virtualTour.addEventListener("node-changed", ({ node }) => {
-      // // want to travel both viewers
-      // states.setStates.forEach((func) => {
-      //   func(vfe.photospheres[node.id]);
-      // });
+      if (!vfe.photospheres[node.id].parentPS) {
+        states.setStates.forEach((setStateFunc) =>
+          setStateFunc(vfe.photospheres[node.id]),
+        );
+      } else {
+        // just reset it and don't update all nodes
+        setWasTimelineSelected(false);
+      }
       onChangePS(node.id);
 
       // clear popovers on scene change
