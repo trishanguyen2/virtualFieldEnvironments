@@ -1,4 +1,4 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useState} from "react";
 import { HexColorPicker } from "react-colorful";
 import "react-h5-audio-player/lib/styles.css";
 
@@ -23,9 +23,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
   IconButton,
+  InputLabel,
   Link,
+  MenuItem,
   Popover,
+  Select,
   Stack,
   TextField,
   Tooltip,
@@ -43,7 +47,8 @@ import {
   photosphereLinkTooltip,
 } from "./PageUtility/DataStructures";
 import { LinkArrowIcon } from "../UI/LinkArrowIcon";
-import { HotspotDataEditor, HotspotIconEditor } from "../buttons/AddHotspot";
+import { HotspotDataEditor} from "../buttons/AddHotspot";
+import { MuiFileInput } from "mui-file-input";
 
 export interface HotspotIconProps {
   hotspotData: HotspotData;
@@ -361,9 +366,12 @@ export interface HotspotEditorProps {
     newTooltip: string,
     newData: HotspotData,
     newIcon?: Asset,
+    newColor?: string,
   ) => void;
   openNestedHotspot: (toOpen: Hotspot2D) => void;
   photosphereOptions: string[];
+  previewColor: string;
+  setPreviewColor: (color: string) => void;
 }
 
 function HotspotEditor({
@@ -375,21 +383,25 @@ function HotspotEditor({
   setPreviewData,
   previewIcon,
   setPreviewIcon,
-
   resetHotspot,
   deleteHotspot,
   updateHotspot,
   openNestedHotspot,
   photosphereOptions,
+  previewColor, 
+  setPreviewColor,
 }: HotspotEditorProps) {
+  const [isCustomIcon] = useState(false);
+  const [customIconFile, setCustomIconFile] = useState<File | null>(null);
+  const color = previewColor;
+  const setColor = setPreviewColor;
   const [hotspotsCollapsed, setHotspotsCollapsed] = useState(false);
-
   const [colorAnchor, setColorAnchor] = useState<HTMLElement | null>(null);
   const [colorHotspot, setColorHotspot] = useState<Hotspot2D | null>(null);
   const [locationHotspot, setLocationHotspot] = useState<Hotspot2D | null>(
     null,
   );
-
+  
   const nestedHotspotLength =
     previewData?.tag === "Image"
       ? Object.values(previewData.hotspots).length
@@ -452,16 +464,65 @@ function HotspotEditor({
         setHotspotData={updateData}
         photosphereOptions={photosphereOptions}
       />
-
-      {setPreviewIcon && (
-        <HotspotIconEditor
-          iconAsset={previewIcon}
-          setIconAsset={(icon) => {
-            setPreviewIcon(icon);
+      <FormControl fullWidth>
+        <InputLabel id="pin-type-label">Pin Type</InputLabel>
+        <Select
+          labelId="pin-type-label"
+          label="Pin Type"
+          value={previewIcon?.path || ""}
+          onChange={(e) => {
+            const path = e.target.value;
+            setPreviewIcon?.({
+              tag: "Runtime",
+              id: newID(),
+              path,
+            });
             setEdited(true);
           }}
-        />
-      )}
+        >
+          <MenuItem value="/pin-blue.png">Blue Pin</MenuItem>
+          <MenuItem value="/pin-red.png">Red Pin</MenuItem>
+          <MenuItem value="MapPin">Map Pin</MenuItem>
+          <MenuItem value="PushPinSimple">Push Pin Simple</MenuItem>
+          <MenuItem value="MapTrifold">Map Trifold</MenuItem>
+        </Select>
+      </FormControl>
+
+    {previewIcon?.path !== "/pin-blue.png" && previewIcon?.path !== "/pin-red.png" && (
+      <TextField
+        label="Pin Color"
+        type="color"
+        value={color}
+        onChange={(e) => {
+          setColor(e.target.value);
+          setEdited(true);
+        }}
+        InputLabelProps={{ shrink: true }}
+        fullWidth
+      />
+    )}
+
+
+    {isCustomIcon && (
+      <MuiFileInput
+        label="Upload Custom Icon*"
+        value={customIconFile}
+        onChange={(file) => {
+          setCustomIconFile(file);
+          if (file) {
+            setPreviewIcon?.({
+              tag: "Runtime",
+              id: newID(),
+              path: URL.createObjectURL(file),
+            });
+            setEdited(true);
+          }
+        }}
+        inputProps={{ accept: "image/*" }}
+        fullWidth
+      />
+    )}
+
 
       {previewData?.tag === "Image" && (
         <>
@@ -549,7 +610,7 @@ function HotspotEditor({
         </>
       )}
 
-      <Box flexGrow={1} />
+<Box flexGrow={1} />
       {edited && (
         <Button
           onClick={() => {
@@ -559,14 +620,41 @@ function HotspotEditor({
           Discard All Changes
         </Button>
       )}
-      <Stack direction="row" gap={1.5}>
+      <Stack direction="row" gap={1}>
         <Button
           variant="outlined"
           color="error"
-          sx={{ width: "50%" }}
+          sx={{ width: "100%" }}
           onClick={deleteHotspot}
         >
           Delete Hotspot
+        </Button>
+      </Stack>
+
+      <Stack direction="row" gap={1}>
+        <Button
+          disabled={
+            previewTooltip == "" ||
+            previewData === null ||
+            (setPreviewIcon && previewIcon === null)
+          }
+          variant="contained"
+          sx={{ width: "50%" }}
+          onClick={() => {
+            if (previewData !== null) {
+              sessionStorage.setItem("lastEditedHotspotFlag", "1");
+
+              updateHotspot(
+                previewTooltip,
+                previewData,
+                previewIcon ?? undefined,
+                previewColor
+              );
+            }
+
+          }}
+        >
+          Save
         </Button>
 
         <Button
@@ -578,16 +666,20 @@ function HotspotEditor({
           variant="contained"
           sx={{ width: "50%" }}
           onClick={() => {
-            if (previewData !== null) {
+            if (previewData !== null) {          
+              sessionStorage.setItem("lastEditedHotspotFlag", "0");
+
               updateHotspot(
                 previewTooltip,
                 previewData,
                 previewIcon ?? undefined,
+                previewColor
               );
             }
+
           }}
         >
-          Save
+          Save and Exit
         </Button>
       </Stack>
     </Stack>

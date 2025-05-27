@@ -13,9 +13,10 @@ import {
   styled,
 } from "@mui/material";
 
+import { useVisitedState } from "../Hooks/HandleVisit.tsx";
 import { TimelineSelectedProvider } from "../Hooks/TimelineSelected.tsx";
 import { useVFELoaderContext } from "../Hooks/VFELoaderContext.tsx";
-import { Photosphere } from "../Pages/PageUtility/DataStructures";
+import { Hotspot3D, Photosphere } from "../Pages/PageUtility/DataStructures";
 import { usePoints } from "../Pages/PageUtility/PointsInterface.tsx";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspotSidebar.tsx";
@@ -82,6 +83,7 @@ export interface PhotosphereViewerProps {
   ) => void;
   photosphereOptions?: string[];
   isGamified: boolean;
+  isEditor?: boolean;
 }
 
 export interface ViewerStates {
@@ -105,6 +107,7 @@ function PhotosphereViewer({
   onUpdateHotspot,
   photosphereOptions,
   isGamified,
+  isEditor = false,
 }: PhotosphereViewerProps) {
   const { vfe, currentPS, onChangePS } = useVFELoaderContext();
   const primaryPsRef = React.useRef<ViewerAPI | null>(null);
@@ -120,7 +123,19 @@ function PhotosphereViewer({
   const [isSplitView, setIsSplitView] = useState(false);
   const [lockViews, setLockViews] = useState(true);
 
-  const [points, AddPoints] = usePoints();
+  const [points, AddPoints, ResetPoints] = usePoints();
+
+  const initialPhotosphereHotspots: Record<string, Hotspot3D[]> = Object.keys(
+    vfe.photospheres,
+  ).reduce<Record<string, Hotspot3D[]>>((acc, psId) => {
+    acc[psId] = Object.values(vfe.photospheres[psId].hotspots);
+    return acc;
+  }, {});
+
+  const [visited, handleVisit, ResetVistedState] = useVisitedState(
+    initialPhotosphereHotspots,
+  );
+  console.log("in viewer: ", visited);
 
   const maxPoints = 100;
 
@@ -157,6 +172,7 @@ function PhotosphereViewer({
             borderRadius: "4px",
             boxShadow: "0 0 4px grey",
             zIndex: 100,
+
             justifyContent: "space-between",
             alignItems: "center",
           }}
@@ -228,10 +244,11 @@ function PhotosphereViewer({
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    void AddPoints(10);
+                    ResetPoints();
+                    ResetVistedState();
                   }}
                 >
-                  Add Points!
+                  Reset Points!
                 </Button>
               </Box>
             )}
@@ -348,6 +365,7 @@ function PhotosphereViewer({
             </Stack>
           </Collapse>
         </Stack>
+
         <Stack
           direction="row"
           sx={{
@@ -372,6 +390,10 @@ function PhotosphereViewer({
             isPrimary={true}
             mapStatic={!mapRotationEnabled}
             lockViews={lockViews}
+            addPoints={AddPoints}
+            visited={visited}
+            handleVisit={handleVisit}
+            isEditor={isEditor}
           />
           {isSplitView && (
             <PhotospherePlaceholder
@@ -379,6 +401,10 @@ function PhotosphereViewer({
               isPrimary={false}
               mapStatic={!mapRotationEnabled}
               lockViews={lockViews}
+              addPoints={AddPoints}
+              visited={visited}
+              handleVisit={handleVisit}
+              isEditor={isEditor}
             />
           )}
         </Stack>
