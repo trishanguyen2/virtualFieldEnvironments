@@ -95,6 +95,7 @@ function AudioToggleButton({ src }: AudioToggleButtonProps) {
     <Stack direction="row" alignItems="center" spacing={1}>
       {!isPlaying ? (
         <Button
+          className="audio-button"
           variant="outlined"
           size="small"
           onClick={handlePlay}

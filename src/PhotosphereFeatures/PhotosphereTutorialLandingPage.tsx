@@ -39,6 +39,12 @@ export default function PhotosphereTutorial({
       placement: "bottom",
       disableBeacon: true,
     },
+    {
+      target: ".demo-vfe-button",
+      content: "Demo a created VFE.",
+      placement: "bottom",
+      disableBeacon: true,
+    },
   ];
 
   function isFinishedOrSkipped(status: Status): status is "finished" | "skipped" {

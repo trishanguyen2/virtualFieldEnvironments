@@ -45,6 +45,7 @@ function Header({ onCreateVFE, onLoadTestVFE }: HeaderProps) {
           {/* Buttons */}
           <Stack direction="row" spacing={1} alignItems="center">
             <Button
+              className="create-vfe-button"
               variant="outlined"
               onClick={onCreateVFE}
               endIcon={<LibraryAddSharp />}
@@ -59,6 +60,7 @@ function Header({ onCreateVFE, onLoadTestVFE }: HeaderProps) {
               Create
             </Button>
             <Button
+              className="demo-vfe-button"
               variant="contained"
               color="secondary"
               onClick={onLoadTestVFE}
