@@ -148,7 +148,7 @@ function PhotosphereEditor({
         }
       }
     }
-    sessionStorage.setItem("listEditedHotspot", JSON.stringify(hotspotList));
+    sessionStorage.setItem("listEditedHotspot", JSON.stringify(hotspotPath));
 
     onUpdateVFE(updatedVFE);
     setUpdateTrigger((prev) => prev + 1);
