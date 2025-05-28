@@ -304,6 +304,7 @@ function PhotosphereViewer({
                   variant={isSplitView ? "contained" : "outlined"}
                   onClick={() => {
                     setIsSplitView(!isSplitView);
+                    onChangePS(primaryPhotosphere.id);
                   }}
                 >
                   <Typography sx={{ fontSize: "14px" }}>Split View</Typography>
