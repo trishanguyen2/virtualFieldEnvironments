@@ -5,7 +5,7 @@ import {
   LibraryAddSharp,
   TerrainSharp,
 } from "@mui/icons-material";
-import { AppBar, Button, IconButton, Stack, Typography } from "@mui/material";
+import { AppBar, Button, IconButton, Stack, Typography, Toolbar} from "@mui/material";
 
 export interface HeaderProps {
   onCreateVFE: () => void;
@@ -16,51 +16,66 @@ function Header({ onCreateVFE, onLoadTestVFE }: HeaderProps) {
   const navigate = useNavigate();
 
   return (
-    <AppBar sx={{ position: "sticky", inset: "top" }}>
-      <Stack direction="row" sx={{ justifyContent: "space-between" }}>
-        <Stack direction="row">
-          <IconButton
-            onClick={() => {
-              navigate("/");
-            }}
-          >
-            <TerrainSharp
-              sx={{ color: "primary.contrastText", fontSize: "50px" }}
-            />
-          </IconButton>
-          <Typography variant="h1" sx={{ fontSize: "50px", margin: "auto" }}>
-            Virtual Field Guides
-          </Typography>
-        </Stack>
-        <Stack direction="row" gap={1}>
-          <Stack sx={{ justifyContent: "space-around" }}>
+    <AppBar position="sticky" sx={{ px: 2, py: 1 }}>
+      <Toolbar disableGutters>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          width="100%"
+        >
+          {/* Logo and title */}
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <IconButton onClick={() => navigate("/")}>
+              <TerrainSharp
+                sx={{ color: "primary.contrastText", fontSize: 40 }}
+              />
+            </IconButton>
+            <Typography
+              variant="h5"
+              sx={{
+                color: "primary.contrastText",
+                fontWeight: 600,
+              }}
+            >
+              Field Trip
+            </Typography>
+          </Stack>
+
+          {/* Buttons */}
+          <Stack direction="row" spacing={1} alignItems="center">
             <Button
-              className="create-vfe-button"
+              variant="outlined"
               onClick={onCreateVFE}
-              endIcon={
-                <LibraryAddSharp sx={{ color: "primary.contrastText" }} />
-              }
+              endIcon={<LibraryAddSharp />}
+              sx={{
+                color: "primary.contrastText",
+                borderColor: "primary.contrastText",
+                "&:hover": {
+                  borderColor: "white",
+                },
+              }}
             >
-              <Typography sx={{ color: "primary.contrastText" }}>
-                Create
-              </Typography>
+              Create
             </Button>
-          </Stack>
-          <Stack sx={{ justifyContent: "space-around", paddingRight: "10px" }}>
             <Button
-              sx={{ backgroundColor: "primary.dark" }}
+              variant="contained"
+              color="secondary"
               onClick={onLoadTestVFE}
-              endIcon={
-                <ExitToAppSharp sx={{ color: "primary.contrastText" }} />
-              }
+              endIcon={<ExitToAppSharp />}
+              sx={{
+                backgroundColor: "primary.contrastText",
+                color: "primary.main",
+                "&:hover": {
+                  backgroundColor: "white",
+                },
+              }}
             >
-              <Typography sx={{ color: "primary.contrastText" }}>
-                Demo
-              </Typography>
+              Demo
             </Button>
           </Stack>
         </Stack>
-      </Stack>
+      </Toolbar>
     </AppBar>
   );
 }
