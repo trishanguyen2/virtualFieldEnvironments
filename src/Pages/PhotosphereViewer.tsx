@@ -13,11 +13,16 @@ import {
 } from "@mui/material";
 
 import { useVFELoaderContext } from "../Hooks/VFELoaderContext.tsx";
-import { Photosphere } from "../Pages/PageUtility/DataStructures";
+import {
+  Hotspot2D,
+  Hotspot3D,
+  Photosphere,
+} from "../Pages/PageUtility/DataStructures";
 import { usePoints } from "../Pages/PageUtility/PointsInterface.tsx";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspotSidebar.tsx";
 import PhotospherePlaceholder from "../PhotosphereFeatures/PhotospherePlaceholder";
+import { degToStr } from "../PhotosphereFeatures/PhotospherePlaceholder";
 import PhotosphereSelector from "../PhotosphereFeatures/PhotosphereSelector";
 import PhotosphereTimelineSelect from "../PhotosphereFeatures/PhotosphereTimelineSelect.tsx";
 import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialCreate.tsx";
@@ -112,6 +117,25 @@ function PhotosphereViewer({
     vfe.photospheres[currentPS],
   );
   const [mapRotationEnabled, setMapRotationEnabled] = useState(false);
+  const [hotspotArray, setHotspotArray] = useState<(Hotspot3D | Hotspot2D)[]>(
+    [],
+  );
+
+  const centerHotspot = (hotspotArray: (Hotspot3D | Hotspot2D)[]) => {
+    if (hotspotArray.length > 0) {
+      const firstHotspot3D = hotspotArray.find(
+        (h): h is Hotspot3D => "direction" in h && "elevation" in h,
+      );
+      if (!firstHotspot3D) return;
+
+      primaryPsRef.current?.rotate({
+        //yaw: firstHotspot3D.direction,
+        //pitch: firstHotspot3D.elevation,
+        yaw: degToStr(firstHotspot3D.direction),
+        pitch: degToStr(firstHotspot3D.elevation),
+      });
+    }
+  };
 
   const [isSplitView, setIsSplitView] = useState(false);
   const [lockViews, setLockViews] = useState(true);
@@ -334,6 +358,8 @@ function PhotosphereViewer({
           isPrimary={true}
           mapStatic={!mapRotationEnabled}
           lockViews={lockViews}
+          hotspotArray={hotspotArray}
+          setHotspotArray={setHotspotArray}
         />
         {isSplitView && (
           <PhotospherePlaceholder
@@ -341,6 +367,8 @@ function PhotosphereViewer({
             isPrimary={false}
             mapStatic={!mapRotationEnabled}
             lockViews={lockViews}
+            hotspotArray={hotspotArray}
+            setHotspotArray={setHotspotArray}
           />
         )}
       </Stack>
@@ -384,11 +412,14 @@ function PhotosphereViewer({
         <PhotosphereHotspotSideBar
           vfe={vfe}
           currentPS={primaryPhotosphere.id}
+          hotspotArray={hotspotArray}
+          setHotspotArray={setHotspotArray}
           setValue={(id) => {
             setPrimaryPhotosphere(vfe.photospheres[id]);
             setSplitPhotosphere(vfe.photospheres[id]);
             onChangePS(id);
           }}
+          centerHotspot={centerHotspot}
         />
       </Box>
     </>

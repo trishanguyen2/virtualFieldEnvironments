@@ -16,18 +16,29 @@ import {
   ListItemText,
 } from "@mui/material";
 
-import { Hotspot2D, Hotspot3D, VFE } from "../Pages/PageUtility/DataStructures";
+import {
+  Hotspot2D,
+  Hotspot3D,
+  Photosphere,
+  VFE,
+} from "../Pages/PageUtility/DataStructures";
 
 export interface PhotosphereHotspotSideBarProps {
   vfe: VFE;
   currentPS: string;
+  hotspotArray: (Hotspot3D | Hotspot2D)[];
   setValue: (value: string) => void;
+  setHotspotArray: (arr: (Hotspot3D | Hotspot2D)[]) => void;
+  centerHotspot: (hotspotArray: (Hotspot3D | Hotspot2D)[]) => void;
 }
 
 function PhotosphereHotspotSideBar({
   vfe,
   currentPS,
+  hotspotArray,
   setValue,
+  setHotspotArray,
+  centerHotspot,
 }: PhotosphereHotspotSideBarProps) {
   const [expandDrawer, setExpandDrawer] = React.useState(false);
   const [expandList, setExpandList] = React.useState<{
@@ -54,74 +65,28 @@ function PhotosphereHotspotSideBar({
     };
   }
 
-  function handleClick(photosphere: string) {
+  function handlePSListClick(photosphere: string) {
     currentPS === photosphere ? null : setValue(photosphere);
   }
 
-  const nestedHotspotList = (hotspot: Hotspot2D) =>
-    hotspot.data.tag === "Image" ? (
-      <>
-        <ListItemButton key={hotspot.id} onClick={() => toggleList(hotspot.id)}>
-          <ListItemText primary={hotspot.tooltip} />
-          {Object.keys(hotspot.data.hotspots).length > 0 ? (
-            <>{expandList[hotspot.id] ? <ExpandLess /> : <ExpandMore />}</>
-          ) : null}
-        </ListItemButton>
-        <>
-          {Object.keys(hotspot.data.hotspots).length > 0 ? (
-            <Collapse in={expandList[hotspot.id]} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                {Array.from(Object.values(hotspot.data.hotspots)).map(
-                  (nestedHotspot) => (
-                    <>{nestedHotspotList(nestedHotspot)}</>
-                  ),
-                )}
-              </List>
-            </Collapse>
-          ) : null}
-        </>
-      </>
-    ) : (
-      <>
-        <ListItemButton key={hotspot.id}>
-          <ListItemText primary={hotspot.tooltip} />
-        </ListItemButton>
-      </>
-    );
+  function handleHSListClick(hotspot: Hotspot3D, photosphereId: string) {
+    if (currentPS !== photosphereId) setValue(photosphereId);
+    setHotspotArray([hotspot]);
+    centerHotspot(hotspotArray);
+  }
 
-  const hotspotList = (hotspot: Hotspot3D) =>
-    hotspot.data.tag === "PhotosphereLink" ? null : hotspot.data.tag ===
-      "Image" ? (
-      <>
-        <ListItemButton key={hotspot.id} onClick={() => toggleList(hotspot.id)}>
-          <ListItemText primary={hotspot.tooltip} />
-          {Object.keys(hotspot.data.hotspots).length > 0 ? (
-            <>{expandList[hotspot.id] ? <ExpandLess /> : <ExpandMore />}</>
-          ) : null}
-        </ListItemButton>
-        <>
-          {Object.keys(hotspot.data.hotspots).length > 0 ? (
-            <Collapse in={expandList[hotspot.id]} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                {Array.from(Object.values(hotspot.data.hotspots)).map(
-                  (nestedHotspot) => (
-                    <>{nestedHotspotList(nestedHotspot)}</>
-                  ),
-                )}
-              </List>
-            </Collapse>
-          ) : null}
-        </>
-      </>
-    ) : (
-      <>
-        <ListItemButton key={hotspot.id}>
-          <ListItemText primary={hotspot.tooltip} />
-        </ListItemButton>
-      </>
+  function hasHotspots(
+    data: any,
+  ): data is { hotspots: Record<string, Hotspot2D> } {
+    return (
+      data &&
+      typeof data === "object" &&
+      "hotspots" in data &&
+      typeof data.hotspots === "object"
     );
+  }
 
-  const drawer = (vfe: VFE) => (
+  const photosphereList = (vfe: VFE) => (
     <Box sx={{ width: 250 }} role="presentation">
       <List>
         <ListItem component="div" disablePadding>
@@ -142,7 +107,7 @@ function PhotosphereHotspotSideBar({
       <List>
         {Array.from(Object.values(vfe.photospheres)).map((photosphere) => (
           <React.Fragment key={photosphere.id}>
-            <ListItemButton onClick={() => handleClick(photosphere.id)}>
+            <ListItemButton onClick={() => handlePSListClick(photosphere.id)}>
               <ListItemText primary={photosphere.id} />
               <IconButton onClick={() => toggleList(photosphere.id)}>
                 {expandList[photosphere.id] ? (
@@ -159,7 +124,7 @@ function PhotosphereHotspotSideBar({
             >
               <List component="div" disablePadding>
                 {Array.from(Object.values(photosphere.hotspots))?.map(
-                  (hotspot) => hotspotList(hotspot),
+                  (hotspot) => hotspotList(hotspot, [], photosphere),
                 )}
               </List>
             </Collapse>
@@ -168,6 +133,101 @@ function PhotosphereHotspotSideBar({
       </List>
     </Box>
   );
+
+  const hotspotList = (
+    hotspot: Hotspot3D,
+    path: (Hotspot3D | Hotspot2D)[] = [],
+    photosphere: Photosphere,
+  ) =>
+    hotspot.data.tag === "PhotosphereLink" ? null : hasHotspots(
+        hotspot.data,
+      ) ? (
+      <>
+        <ListItemButton
+          key={hotspot.id}
+          onClick={() => {
+            toggleList(hotspot.id);
+            handleHSListClick(hotspot, photosphere.id);
+            setHotspotArray([...path, hotspot]);
+            centerHotspot([...path, hotspot]);
+          }}
+        >
+          <ListItemText primary={hotspot.tooltip} />
+          {Object.keys(hotspot.data.hotspots).length > 0 ? (
+            <>{expandList[hotspot.id] ? <ExpandLess /> : <ExpandMore />}</>
+          ) : null}
+        </ListItemButton>
+        <>
+          {Object.keys(hotspot.data.hotspots).length > 0 ? (
+            <Collapse in={expandList[hotspot.id]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {Array.from(Object.values(hotspot.data.hotspots)).map(
+                  (nestedHotspot) => (
+                    <>{nestedHotspotList(nestedHotspot, [], photosphere)}</>
+                  ),
+                )}
+              </List>
+            </Collapse>
+          ) : null}
+        </>
+      </>
+    ) : (
+      <>
+        <ListItemButton
+          key={hotspot.id}
+          onClick={() => {
+            toggleList(hotspot.id);
+            handleHSListClick(hotspot, photosphere.id);
+            setHotspotArray([...path, hotspot]);
+            centerHotspot([...path, hotspot]);
+          }}
+        >
+          <ListItemText primary={hotspot.tooltip} />
+        </ListItemButton>
+      </>
+    );
+
+  const nestedHotspotList = (
+    hotspot: Hotspot2D,
+    path: (Hotspot3D | Hotspot2D)[] = [],
+    photosphere: Photosphere,
+  ) =>
+    hasHotspots(hotspot.data) ? (
+      <>
+        <ListItemButton
+          key={hotspot.id}
+          onClick={() => {
+            toggleList(hotspot.id);
+            setHotspotArray([...path, hotspot]);
+            centerHotspot([...path, hotspot]);
+          }}
+        >
+          <ListItemText primary={hotspot.tooltip} />
+          {Object.keys(hotspot.data.hotspots).length > 0 ? (
+            <>{expandList[hotspot.id] ? <ExpandLess /> : <ExpandMore />}</>
+          ) : null}
+        </ListItemButton>
+        <>
+          {Object.keys(hotspot.data.hotspots).length > 0 ? (
+            <Collapse in={expandList[hotspot.id]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {Array.from(Object.values(hotspot.data.hotspots)).map(
+                  (nestedHotspot) => (
+                    <>{nestedHotspotList(nestedHotspot, [], photosphere)}</>
+                  ),
+                )}
+              </List>
+            </Collapse>
+          ) : null}
+        </>
+      </>
+    ) : (
+      <>
+        <ListItemButton key={hotspot.id}>
+          <ListItemText primary={hotspot.tooltip} />
+        </ListItemButton>
+      </>
+    );
 
   return (
     <>
@@ -182,7 +242,7 @@ function PhotosphereHotspotSideBar({
         <LocationOnIcon id="sidebar-toggle-button-icon" sx={{ fontSize: 35 }} />
       </IconButton>
       <Drawer anchor="right" open={expandDrawer} onClose={toggleDrawer(false)}>
-        {drawer(vfe)}
+        {photosphereList(vfe)}
       </Drawer>
     </>
   );

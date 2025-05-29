@@ -5,7 +5,7 @@ import {
   VirtualTourLink,
   VirtualTourNode,
 } from "@photo-sphere-viewer/virtual-tour-plugin";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   MapPlugin,
   MapPluginConfig,
@@ -36,7 +36,7 @@ function sizeToStr(val: number): string {
 }
 
 /** Convert elevation/direction degrees from numbers to strings ending in "deg" */
-function degToStr(val: number): string {
+export function degToStr(val: number): string {
   return String(val) + "deg";
 }
 
@@ -142,6 +142,8 @@ interface PhotospherePlaceholderProps {
   isPrimary: boolean;
   mapStatic: boolean;
   lockViews: boolean;
+  hotspotArray: (Hotspot3D | Hotspot2D)[];
+  setHotspotArray: (arr: (Hotspot3D | Hotspot2D)[]) => void;
 }
 
 function PhotospherePlaceholder({
@@ -149,6 +151,8 @@ function PhotospherePlaceholder({
   isPrimary,
   mapStatic,
   lockViews,
+  hotspotArray,
+  setHotspotArray,
 }: PhotospherePlaceholderProps) {
   const { onUpdateHotspot, onViewerClick, photosphereOptions, states } =
     viewerProps;
@@ -159,9 +163,6 @@ function PhotospherePlaceholder({
   const currentPhotosphere = states.states[statesIdx];
   const setCurrentPhotosphere = states.setStates[statesIdx];
 
-  const [hotspotArray, setHotspotArray] = useState<(Hotspot3D | Hotspot2D)[]>(
-    [],
-  );
   const hotspotPath = hotspotArray.map((h) => h.id);
 
   const lockViewsRef = useRef(lockViews);
