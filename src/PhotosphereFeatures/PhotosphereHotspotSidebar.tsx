@@ -143,40 +143,56 @@ function PhotosphereHotspotSideBar({
         hotspot.data,
       ) ? (
       <>
-        <ListItemButton
+        <ListItem
           key={hotspot.id}
-          onClick={() => {
-            toggleList(hotspot.id);
-            handleHSListClick(hotspot, photosphere.id);
-            setHotspotArray([...path, hotspot]);
-            centerHotspot([...path, hotspot]);
-          }}
+          secondaryAction={
+            Object.keys(hotspot.data.hotspots).length > 0 && (
+              <IconButton
+                edge="end"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleList(hotspot.id);
+                }}
+                size="small"
+              >
+                {expandList[hotspot.id] ? <ExpandLess /> : <ExpandMore />}
+              </IconButton>
+            )
+          }
+          disablePadding
         >
-          <ListItemText primary={hotspot.tooltip} />
-          {Object.keys(hotspot.data.hotspots).length > 0 ? (
-            <>{expandList[hotspot.id] ? <ExpandLess /> : <ExpandMore />}</>
-          ) : null}
-        </ListItemButton>
-        <>
-          {Object.keys(hotspot.data.hotspots).length > 0 ? (
-            <Collapse in={expandList[hotspot.id]} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                {Array.from(Object.values(hotspot.data.hotspots)).map(
-                  (nestedHotspot) => (
-                    <>{nestedHotspotList(nestedHotspot, [], photosphere)}</>
-                  ),
-                )}
-              </List>
-            </Collapse>
-          ) : null}
-        </>
+          <ListItemButton
+            onClick={() => {
+              handleHSListClick(hotspot, photosphere.id);
+              setHotspotArray([...path, hotspot]);
+              centerHotspot([...path, hotspot]);
+            }}
+          >
+            <ListItemText primary={hotspot.tooltip} />
+          </ListItemButton>
+        </ListItem>
+        {Object.keys(hotspot.data.hotspots).length > 0 && (
+          <Collapse in={expandList[hotspot.id]} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {Array.from(Object.values(hotspot.data.hotspots)).map(
+                (nestedHotspot) => (
+                  <React.Fragment key={nestedHotspot.id}>
+                    {nestedHotspotList(
+                      nestedHotspot,
+                      [...path, hotspot],
+                      photosphere,
+                    )}
+                  </React.Fragment>
+                ),
+              )}
+            </List>
+          </Collapse>
+        )}
       </>
     ) : (
-      <>
+      <ListItem key={hotspot.id} disablePadding>
         <ListItemButton
-          key={hotspot.id}
           onClick={() => {
-            toggleList(hotspot.id);
             handleHSListClick(hotspot, photosphere.id);
             setHotspotArray([...path, hotspot]);
             centerHotspot([...path, hotspot]);
@@ -184,7 +200,7 @@ function PhotosphereHotspotSideBar({
         >
           <ListItemText primary={hotspot.tooltip} />
         </ListItemButton>
-      </>
+      </ListItem>
     );
 
   const nestedHotspotList = (
@@ -194,39 +210,62 @@ function PhotosphereHotspotSideBar({
   ) =>
     hasHotspots(hotspot.data) ? (
       <>
-        <ListItemButton
+        <ListItem
           key={hotspot.id}
+          secondaryAction={
+            Object.keys(hotspot.data.hotspots).length > 0 && (
+              <IconButton
+                edge="end"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleList(hotspot.id);
+                }}
+                size="small"
+              >
+                {expandList[hotspot.id] ? <ExpandLess /> : <ExpandMore />}
+              </IconButton>
+            )
+          }
+          disablePadding
+        >
+          <ListItemButton
+            onClick={() => {
+              setHotspotArray([...path, hotspot]);
+              centerHotspot([...path, hotspot]);
+            }}
+          >
+            <ListItemText primary={hotspot.tooltip} />
+          </ListItemButton>
+        </ListItem>
+        {Object.keys(hotspot.data.hotspots).length > 0 && (
+          <Collapse in={expandList[hotspot.id]} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {Array.from(Object.values(hotspot.data.hotspots)).map(
+                (nestedHotspot) => (
+                  <React.Fragment key={nestedHotspot.id}>
+                    {nestedHotspotList(
+                      nestedHotspot,
+                      [...path, hotspot],
+                      photosphere,
+                    )}
+                  </React.Fragment>
+                ),
+              )}
+            </List>
+          </Collapse>
+        )}
+      </>
+    ) : (
+      <ListItem key={hotspot.id} disablePadding>
+        <ListItemButton
           onClick={() => {
-            toggleList(hotspot.id);
             setHotspotArray([...path, hotspot]);
             centerHotspot([...path, hotspot]);
           }}
         >
           <ListItemText primary={hotspot.tooltip} />
-          {Object.keys(hotspot.data.hotspots).length > 0 ? (
-            <>{expandList[hotspot.id] ? <ExpandLess /> : <ExpandMore />}</>
-          ) : null}
         </ListItemButton>
-        <>
-          {Object.keys(hotspot.data.hotspots).length > 0 ? (
-            <Collapse in={expandList[hotspot.id]} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                {Array.from(Object.values(hotspot.data.hotspots)).map(
-                  (nestedHotspot) => (
-                    <>{nestedHotspotList(nestedHotspot, [], photosphere)}</>
-                  ),
-                )}
-              </List>
-            </Collapse>
-          ) : null}
-        </>
-      </>
-    ) : (
-      <>
-        <ListItemButton key={hotspot.id}>
-          <ListItemText primary={hotspot.tooltip} />
-        </ListItemButton>
-      </>
+      </ListItem>
     );
 
   return (
