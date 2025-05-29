@@ -20,6 +20,7 @@ import {
 import { Box, alpha } from "@mui/material";
 import { common } from "@mui/material/colors";
 
+import { useTimelineSelectedContext } from "../Hooks/TimelineSelected";
 import { useVFELoaderContext } from "../Hooks/VFELoaderContext";
 import {
   Hotspot2D,
@@ -194,6 +195,9 @@ function PhotospherePlaceholder({
 
   const lockViewsRef = useRef(lockViews);
 
+  const { wasTimelineSelected: _, setWasTimelineSelected } =
+    useTimelineSelectedContext();
+
   useEffect(() => {
     lockViewsRef.current = lockViews;
   }, [lockViews]);
@@ -290,7 +294,6 @@ function PhotospherePlaceholder({
     });
 
     instance.addEventListener("position-updated", ({ position }) => {
-      console.log(lockViewsRef.current);
       if (!lockViewsRef.current) return;
       const [otherRef] = states.references.filter((ref) => {
         if (ref != photosphereRef) return ref;
@@ -318,18 +321,31 @@ function PhotospherePlaceholder({
 
     virtualTour.setNodes(nodes, currentPS);
     virtualTour.addEventListener("node-changed", ({ node }) => {
-      // // want to travel both viewers
-      // states.setStates.forEach((func) => {
-      //   func(vfe.photospheres[node.id]);
-      // });
+      if (!vfe.photospheres[node.id].parentPS) {
+        states.setStates.forEach((setStateFunc) =>
+          setStateFunc(vfe.photospheres[node.id]),
+        );
+      } else {
+        // just reset it and don't update all nodes
+        setWasTimelineSelected(false);
+      }
       onChangePS(node.id);
 
       // clear popovers on scene change
       // Upon saving a hotspot, the scene will refresh and automatically load back into what ever hotspot was saved last
       if (Number(sessionStorage.getItem("lastEditedHotspotFlag")) == 1) {
-        setHotspotArray(
-          JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]"),
-        );
+        if (JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]").length > 0) {
+          let hotspotItem: (Hotspot2D | Hotspot3D) = vfe.photospheres[currentPS].hotspots[ JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]")[0] ];
+          let hotspotList: (Hotspot2D | Hotspot3D)[] = [ hotspotItem ];
+
+          for (let i = 1; i < JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]").length; ++i) {
+            if ('hotspots' in hotspotItem.data) {
+                hotspotItem = hotspotItem.data.hotspots[ JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]")[i] ];
+              hotspotList.push(hotspotItem);
+            }
+          }
+          setHotspotArray(hotspotList);
+        }
       } else {
         setHotspotArray([]);
       }
