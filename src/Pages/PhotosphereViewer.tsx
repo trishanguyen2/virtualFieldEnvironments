@@ -197,7 +197,9 @@ function PhotosphereViewer({
             <ExpandMore
               expand={showSplitViewFeatures}
               title="Show Split View Features"
-              onClick={() => setShowSplitViewFeatures(!showSplitViewFeatures)}
+              onClick={() => {
+                setShowSplitViewFeatures(!showSplitViewFeatures);
+              }}
             ></ExpandMore>
             <Box sx={{ padding: "0 5px" }}>
               <PhotosphereSelector
