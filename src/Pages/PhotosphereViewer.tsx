@@ -122,6 +122,7 @@ function PhotosphereViewer({
   const [splitPhotosphere, setSplitPhotosphere] = React.useState<Photosphere>(
     vfe.photospheres[currentPS],
   );
+  const [showSplitViewFeatures, setShowSplitViewFeatures] = useState(false);
   const [mapRotationEnabled, setMapRotationEnabled] = useState(false);
   const [hotspotArray, setHotspotArray] = useState<(Hotspot3D | Hotspot2D)[]>(
     [],
@@ -388,57 +389,15 @@ function PhotosphereViewer({
             </Stack>
           </Collapse>
         </Stack>
-      </Stack>
-      <Stack
-        direction="row"
-        sx={{
-          top: "16px",
-          left: 0,
-          right: 0,
-          width: "100%",
-          minWidth: "150px",
-          height: "100%",
-          padding: "4px",
-          margin: "auto",
-          backgroundColor: "white",
-          borderRadius: "4px",
-          boxShadow: "0 0 4px grey",
-          zIndex: 100,
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <PhotospherePlaceholder
-          viewerProps={viewerProps}
-          isPrimary={true}
-          mapStatic={!mapRotationEnabled}
-          lockViews={lockViews}
-          hotspotArray={hotspotArray}
-          setHotspotArray={setHotspotArray}
-        />
-        {isSplitView && (
-          <PhotospherePlaceholder
-            viewerProps={viewerProps}
-            isPrimary={false}
-            mapStatic={!mapRotationEnabled}
-            lockViews={lockViews}
-            hotspotArray={hotspotArray}
-            setHotspotArray={setHotspotArray}
-          />
-        )}
-      </Stack>
-      {isGamified && (
         <Stack
           direction="row"
           sx={{
-            position: "absolute",
-            bottom: "44px",
+            top: "16px",
             left: 0,
             right: 0,
-            maxWidth: "100%",
-            width: "fit-content",
+            width: "100%",
             minWidth: "150px",
-            height: "25px",
+            height: "100%",
             padding: "4px",
             margin: "auto",
             backgroundColor: "white",
@@ -448,35 +407,86 @@ function PhotosphereViewer({
             justifyContent: "space-between",
             alignItems: "center",
           }}
-          gap={1}
         >
-          <progress value={points ?? 0} max={maxPoints} />{" "}
+          <PhotospherePlaceholder
+            viewerProps={viewerProps}
+            isPrimary={true}
+            mapStatic={!mapRotationEnabled}
+            lockViews={lockViews}
+            hotspotArray={hotspotArray}
+            setHotspotArray={setHotspotArray}
+            visited={visited}
+            handleVisit={handleVisit}
+            addPoints={AddPoints}
+            isEditor={isEditor}
+          />
+          {isSplitView && (
+            <PhotospherePlaceholder
+              viewerProps={viewerProps}
+              isPrimary={false}
+              mapStatic={!mapRotationEnabled}
+              lockViews={lockViews}
+              hotspotArray={hotspotArray}
+              setHotspotArray={setHotspotArray}
+              visited={visited}
+              handleVisit={handleVisit}
+              addPoints={AddPoints}
+              isEditor={isEditor}
+            />
+          )}
         </Stack>
-      )}
-      <Box
-        sx={{
-          position: "fixed",
-          top: "16px",
-          right: "16px",
-          backgroundColor: "white",
-          borderRadius: "50%",
-          boxShadow: "0 0 4px grey",
-          zIndex: 110, // Ensure it appears above other elements
-        }}
-      >
-        <PhotosphereHotspotSideBar
-          vfe={vfe}
-          currentPS={primaryPhotosphere.id}
-          hotspotArray={hotspotArray}
-          setHotspotArray={setHotspotArray}
-          setValue={(id) => {
-            setPrimaryPhotosphere(vfe.photospheres[id]);
-            setSplitPhotosphere(vfe.photospheres[id]);
-            onChangePS(id);
+        {isGamified && (
+          <Stack
+            direction="row"
+            sx={{
+              position: "absolute",
+              bottom: "44px",
+              left: 0,
+              right: 0,
+              maxWidth: "100%",
+              width: "fit-content",
+              minWidth: "150px",
+              height: "25px",
+              padding: "4px",
+              margin: "auto",
+              backgroundColor: "white",
+              borderRadius: "4px",
+              boxShadow: "0 0 4px grey",
+              zIndex: 100,
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+            gap={1}
+          >
+            <progress value={points ?? 0} max={maxPoints} />{" "}
+          </Stack>
+        )}
+        <Box
+          sx={{
+            position: "fixed",
+            top: "16px",
+            right: "16px",
+            backgroundColor: "white",
+            borderRadius: "50%",
+            boxShadow: "0 0 4px grey",
+            zIndex: 110, // Ensure it appears above other elements
           }}
-          centerHotspot={centerHotspot}
-        />
-      </Box>
+        >
+          <PhotosphereHotspotSideBar
+            vfe={vfe}
+            currentPS={primaryPhotosphere.id}
+            hotspotArray={hotspotArray}
+            setHotspotArray={setHotspotArray}
+            setValue={(id) => {
+              setPrimaryPhotosphere(vfe.photospheres[id]);
+              setSplitPhotosphere(vfe.photospheres[id]);
+              onChangePS(id);
+            }}
+            centerHotspot={centerHotspot}
+          />
+        </Box>
+      </TimelineSelectedProvider>
+      {/* Closing fragment tag added below to fix JSX error */}
     </>
   );
 }
