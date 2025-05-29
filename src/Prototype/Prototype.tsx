@@ -12,7 +12,7 @@ function Prototype() {
     async function load() {
       const vfe = vfeData as VFE;
       await localforage.setItem(vfe.name, vfe);
-      navigate(`/viewer/${vfe.name}/${vfe.defaultPhotosphereID}`, {
+      navigate(`/viewer/${vfe.name}/${vfe.defaultPhotosphereID}?demo=true`, {
         replace: true,
       });
     }

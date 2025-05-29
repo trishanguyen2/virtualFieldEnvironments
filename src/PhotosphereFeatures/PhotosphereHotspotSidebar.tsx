@@ -172,6 +172,7 @@ function PhotosphereHotspotSideBar({
   return (
     <>
       <IconButton
+        className='hotspot-sidebar'
         id="sidebar-toggle-button"
         color="primary"
         sx={{
