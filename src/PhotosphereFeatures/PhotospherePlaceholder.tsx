@@ -280,6 +280,10 @@ function PhotospherePlaceholder({
         if (!isHotspotVisited && !isEditor) {
           void addPoints(10);
         }
+
+        // Incase the photosphere changes after saving, this is so the program doesn't try to get a hotspot from the wrong photosphere
+        sessionStorage.setItem("EditedHotspotPhotoSphere", currentState.id);
+        
         const passMarker = currentState.hotspots[marker.config.id];
         setHotspotArray([passMarker]);
         handleVisit(currentState.id, marker.config.id);
@@ -334,8 +338,10 @@ function PhotospherePlaceholder({
       // clear popovers on scene change
       // Upon saving a hotspot, the scene will refresh and automatically load back into what ever hotspot was saved last
       if (Number(sessionStorage.getItem("lastEditedHotspotFlag")) == 1) {
-        if (JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]").length > 0) {
-          let hotspotItem: (Hotspot2D | Hotspot3D) = vfe.photospheres[currentPS].hotspots[ JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]")[0] ];
+        let photosphereItem = (sessionStorage.getItem("EditedHotspotPhotoSphere") || "");
+
+        if (JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]").length > 0 && photosphereItem != "") {
+          let hotspotItem: (Hotspot2D | Hotspot3D) = vfe.photospheres[photosphereItem].hotspots[ JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]")[0] ];
           let hotspotList: (Hotspot2D | Hotspot3D)[] = [ hotspotItem ];
 
           for (let i = 1; i < JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]").length; ++i) {
