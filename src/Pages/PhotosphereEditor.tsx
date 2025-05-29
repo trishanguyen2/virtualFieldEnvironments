@@ -18,7 +18,6 @@ import ChangePhotosphere from "../buttons/ChangePhotosphere.tsx";
 import EditNavMap from "../buttons/EditNavMap.tsx";
 import RemovePhotosphere from "../buttons/RemovePhotosphere.tsx";
 import {
-  Hotspot2D,
   Hotspot3D,
   NavMap,
   Photosphere,
@@ -122,7 +121,7 @@ function PhotosphereEditor({
 
     if (hotspotPath.length > 0 && sessionStorage.getItem("EditedHotspotPhotoSphere") != null) {
       const updatedPhotosphere = updatePhotosphereHotspot(
-        vfe.photospheres[sessionStorage.getItem("EditedHotspotPhotoSphere")],
+          vfe.photospheres[sessionStorage.getItem("EditedHotspotPhotoSphere") || currentPS],
         hotspotPath,
         update,
       );
@@ -137,6 +136,7 @@ function PhotosphereEditor({
 
       sessionStorage.setItem("listEditedHotspot", JSON.stringify(hotspotPath));
 
+      onChangePS(sessionStorage.getItem("EditedHotspotPhotoSphere") || currentPS);
       onUpdateVFE(updatedVFE);
       setUpdateTrigger((prev) => prev + 1);
     }
