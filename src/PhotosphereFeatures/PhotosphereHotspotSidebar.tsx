@@ -46,8 +46,6 @@ function PhotosphereHotspotSideBar({
     [parentId: string]: string | null;
   }>({ root: null });
   const [expandedImage, setExpandedImage] = React.useState<string | null>(null);
-  const [hovered, setHovered] = React.useState(false);
-  const buttonLabel = "Hotspot Sidebar";
 
   const toggleList = (parentId: string, listId: string) => {
     setExpandList((prev) => ({
