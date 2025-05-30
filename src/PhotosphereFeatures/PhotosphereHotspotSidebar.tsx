@@ -3,6 +3,7 @@ import * as React from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import ImageIcon from "@mui/icons-material/Image";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import {
   Box,
@@ -42,12 +43,16 @@ function PhotosphereHotspotSideBar({
 }: PhotosphereHotspotSideBarProps) {
   const [expandDrawer, setExpandDrawer] = React.useState(false);
   const [expandList, setExpandList] = React.useState<{
-    [key: string]: boolean;
-  }>({});
-  const toggleList = (listId: string) => {
+    [parentId: string]: string | null;
+  }>({ root: null });
+  const [expandedImage, setExpandedImage] = React.useState<string | null>(null);
+  const [hovered, setHovered] = React.useState(false);
+  const buttonLabel = "Hotspot Sidebar";
+
+  const toggleList = (parentId: string, listId: string) => {
     setExpandList((prev) => ({
       ...prev,
-      [listId]: !prev[listId],
+      [parentId]: prev[parentId] === listId ? null : listId,
     }));
   };
 
@@ -89,42 +94,84 @@ function PhotosphereHotspotSideBar({
   const photosphereList = (vfe: VFE) => (
     <Box sx={{ width: 250 }} role="presentation">
       <List>
-        <ListItem component="div" disablePadding>
-          <IconButton id="sidebar-closer-button" onClick={toggleDrawer(false)}>
-            <CloseRoundedIcon color="primary" id="sidebar-close-button-icon" />
-          </IconButton>
-          <Divider orientation="vertical" variant="middle" flexItem />
-          <ListItemText
-            sx={{
-              alignContent: "center",
-            }}
+        <ListItem
+          component="div"
+          disablePadding
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Box sx={{ flex: "0 0 auto", px: 1 }}>
+            <IconButton
+              id="sidebar-closer-button"
+              onClick={toggleDrawer(false)}
+            >
+              <CloseRoundedIcon
+                color="primary"
+                id="sidebar-close-button-icon"
+              />
+            </IconButton>
+          </Box>
+          <Divider orientation="vertical" flexItem />
+          <Box
+            sx={{ flex: 1, display: "flex", justifyContent: "center", px: 1 }}
           >
-            Hotspot Sidebar
-          </ListItemText>
+            <ListItemText
+              primary="Hotspot Sidebar"
+              sx={{
+                textAlign: "center",
+                m: 0,
+                "& .MuiListItemText-primary": {
+                  fontWeight: "bold",
+                  fontSize: "1.1rem",
+                  color: "primary.main",
+                },
+              }}
+            />
+          </Box>
         </ListItem>
       </List>
       <Divider />
       <List>
-        {Array.from(Object.values(vfe.photospheres)).map((photosphere) => (
+        {Object.values(vfe.photospheres).map((photosphere, idx, arr) => (
           <React.Fragment key={photosphere.id}>
-            <ListItemButton onClick={() => handlePSListClick(photosphere.id)}>
-              <ListItemText primary={photosphere.id} />
-              <IconButton onClick={() => toggleList(photosphere.id)}>
-                {expandList[photosphere.id] ? (
+            <ListItem
+              disablePadding
+              sx={{ backgroundColor: getBackgroundColor(0) }}
+            >
+              <ListItemButton onClick={() => handlePSListClick(photosphere.id)}>
+                <ListItemText
+                  primary={
+                    <span style={{ display: "flex", alignItems: "center" }}>
+                      {photosphere.id}
+                    </span>
+                  }
+                />
+              </ListItemButton>
+              <IconButton onClick={() => toggleList("root", photosphere.id)}>
+                {expandList["root"] === photosphere.id ? (
                   <ExpandLess color="primary" />
                 ) : (
                   <ExpandMore color="primary" />
                 )}
               </IconButton>
-            </ListItemButton>
+            </ListItem>
+            {idx < arr.length - 1 && <Divider />}
             <Collapse
-              in={expandList[photosphere.id]}
+              in={expandList["root"] === photosphere.id}
               timeout="auto"
               unmountOnExit
             >
               <List component="div" disablePadding>
-                {Array.from(Object.values(photosphere.hotspots))?.map(
-                  (hotspot) => hotspotList(hotspot, [], photosphere),
+                {Object.values(photosphere.hotspots).map(
+                  (hotspot, hIdx, hArr) => (
+                    <React.Fragment key={hotspot.id}>
+                      {hotspotList(hotspot, [], photosphere, 1, photosphere.id)}
+                      {hIdx < hArr.length - 1 && <Divider />}
+                    </React.Fragment>
+                  ),
                 )}
               </List>
             </Collapse>
@@ -134,32 +181,69 @@ function PhotosphereHotspotSideBar({
     </Box>
   );
 
+  function getBackgroundColor(depth: number) {
+    const shade = Math.max(255 - depth * 18, 26);
+    return `rgb(${shade},${shade},${shade})`;
+  }
+
+  function getImageData(hotspot: Hotspot3D | Hotspot2D) {
+    if (hotspot.data?.tag === "Image" && hotspot.data?.src) {
+      return hotspot.data.src.path;
+    }
+    return null;
+  }
+
   const hotspotList = (
     hotspot: Hotspot3D,
     path: (Hotspot3D | Hotspot2D)[] = [],
     photosphere: Photosphere,
-  ) =>
-    hotspot.data.tag === "PhotosphereLink" ? null : hasHotspots(
+    depth = 1,
+    parentId: string,
+  ) => {
+    const imagePath = getImageData(hotspot);
+
+    return hotspot.data.tag === "PhotosphereLink" ? null : hasHotspots(
         hotspot.data,
       ) ? (
       <>
         <ListItem
           key={hotspot.id}
-          secondaryAction={
-            Object.keys(hotspot.data.hotspots).length > 0 && (
-              <IconButton
-                edge="end"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleList(hotspot.id);
-                }}
-                size="small"
-              >
-                {expandList[hotspot.id] ? <ExpandLess /> : <ExpandMore />}
-              </IconButton>
-            )
-          }
           disablePadding
+          sx={{ backgroundColor: getBackgroundColor(depth) }}
+          secondaryAction={
+            <>
+              {imagePath && (
+                <IconButton
+                  edge="end"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setExpandedImage(
+                      expandedImage === hotspot.id ? null : hotspot.id,
+                    );
+                  }}
+                  size="small"
+                >
+                  <ImageIcon />
+                </IconButton>
+              )}
+              {Object.keys(hotspot.data.hotspots).length > 0 && (
+                <IconButton
+                  edge="end"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleList(parentId, hotspot.id);
+                  }}
+                  size="small"
+                >
+                  {expandList[parentId] === hotspot.id ? (
+                    <ExpandLess />
+                  ) : (
+                    <ExpandMore />
+                  )}
+                </IconButton>
+              )}
+            </>
+          }
         >
           <ListItemButton
             onClick={() => {
@@ -167,22 +251,55 @@ function PhotosphereHotspotSideBar({
               setHotspotArray([...path, hotspot]);
               centerHotspot([...path, hotspot]);
             }}
+            sx={{ backgroundColor: getBackgroundColor(depth) }}
           >
-            <ListItemText primary={hotspot.tooltip} />
+            {/* Thumbnail removed from here */}
+            <ListItemText
+              primary={
+                <span style={{ display: "flex", alignItems: "center" }}>
+                  {hotspot.tooltip}
+                </span>
+              }
+              sx={{
+                flex: 1,
+                minWidth: 0,
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+              }}
+            />
           </ListItemButton>
         </ListItem>
+        {imagePath && expandedImage === hotspot.id && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              backgroundColor: getBackgroundColor(depth + 1),
+              py: 1,
+            }}
+          >
+            <img
+              src={imagePath}
+              alt="expanded-thumbnail"
+              style={{ maxWidth: "90%", maxHeight: 150, borderRadius: 8 }}
+            />
+          </Box>
+        )}
         {Object.keys(hotspot.data.hotspots).length > 0 && (
-          <Collapse in={expandList[hotspot.id]} timeout="auto" unmountOnExit>
+          <Collapse
+            in={expandList[parentId] === hotspot.id}
+            timeout="auto"
+            unmountOnExit
+          >
             <List component="div" disablePadding>
-              {Array.from(Object.values(hotspot.data.hotspots)).map(
-                (nestedHotspot) => (
-                  <React.Fragment key={nestedHotspot.id}>
-                    {nestedHotspotList(
-                      nestedHotspot,
-                      [...path, hotspot],
-                      photosphere,
-                    )}
-                  </React.Fragment>
+              {Object.values(hotspot.data.hotspots).map((nestedHotspot) =>
+                nestedHotspotList(
+                  nestedHotspot,
+                  [...path, hotspot],
+                  photosphere,
+                  depth + 1,
+                  hotspot.id,
                 ),
               )}
             </List>
@@ -190,65 +307,177 @@ function PhotosphereHotspotSideBar({
         )}
       </>
     ) : (
-      <ListItem key={hotspot.id} disablePadding>
-        <ListItemButton
-          onClick={() => {
-            handleHSListClick(hotspot, photosphere.id);
-            setHotspotArray([...path, hotspot]);
-            centerHotspot([...path, hotspot]);
-          }}
+      <>
+        <ListItem
+          key={hotspot.id}
+          disablePadding
+          sx={{ backgroundColor: getBackgroundColor(depth) }}
+          secondaryAction={
+            imagePath && (
+              <IconButton
+                edge="end"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setExpandedImage(
+                    expandedImage === hotspot.id ? null : hotspot.id,
+                  );
+                }}
+                size="small"
+              >
+                <ImageIcon />
+              </IconButton>
+            )
+          }
         >
-          <ListItemText primary={hotspot.tooltip} />
-        </ListItemButton>
-      </ListItem>
+          <ListItemButton
+            onClick={() => {
+              handleHSListClick(hotspot, photosphere.id);
+              setHotspotArray([...path, hotspot]);
+              centerHotspot([...path, hotspot]);
+            }}
+            sx={{ backgroundColor: getBackgroundColor(depth) }}
+          >
+            {/* Thumbnail removed from here */}
+            <ListItemText
+              primary={
+                <span style={{ display: "flex", alignItems: "center" }}>
+                  {hotspot.tooltip}
+                </span>
+              }
+              sx={{
+                flex: 1,
+                minWidth: 0,
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
+        {imagePath && expandedImage === hotspot.id && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              backgroundColor: getBackgroundColor(depth + 1),
+              py: 1,
+            }}
+          >
+            <img
+              src={imagePath}
+              alt="expanded-thumbnail"
+              style={{ maxWidth: "90%", maxHeight: 150, borderRadius: 8 }}
+            />
+          </Box>
+        )}
+      </>
     );
+  };
 
   const nestedHotspotList = (
     hotspot: Hotspot2D,
     path: (Hotspot3D | Hotspot2D)[] = [],
     photosphere: Photosphere,
-  ) =>
-    hasHotspots(hotspot.data) ? (
+    depth = 2,
+    parentId: string,
+  ) => {
+    const imagePath = getImageData(hotspot);
+
+    return hasHotspots(hotspot.data) ? (
       <>
         <ListItem
           key={hotspot.id}
-          secondaryAction={
-            Object.keys(hotspot.data.hotspots).length > 0 && (
-              <IconButton
-                edge="end"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleList(hotspot.id);
-                }}
-                size="small"
-              >
-                {expandList[hotspot.id] ? <ExpandLess /> : <ExpandMore />}
-              </IconButton>
-            )
-          }
           disablePadding
+          sx={{ backgroundColor: getBackgroundColor(depth) }}
+          secondaryAction={
+            <>
+              {imagePath && (
+                <IconButton
+                  edge="end"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setExpandedImage(
+                      expandedImage === hotspot.id ? null : hotspot.id,
+                    );
+                  }}
+                  size="small"
+                >
+                  <ImageIcon />
+                </IconButton>
+              )}
+              {Object.keys(hotspot.data.hotspots).length > 0 && (
+                <IconButton
+                  edge="end"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleList(parentId, hotspot.id);
+                  }}
+                  size="small"
+                >
+                  {expandList[parentId] === hotspot.id ? (
+                    <ExpandLess />
+                  ) : (
+                    <ExpandMore />
+                  )}
+                </IconButton>
+              )}
+            </>
+          }
         >
           <ListItemButton
             onClick={() => {
               setHotspotArray([...path, hotspot]);
               centerHotspot([...path, hotspot]);
             }}
+            sx={{ backgroundColor: getBackgroundColor(depth) }}
           >
-            <ListItemText primary={hotspot.tooltip} />
+            {/* Thumbnail removed from here */}
+            <ListItemText
+              primary={
+                <span style={{ display: "flex", alignItems: "center" }}>
+                  {hotspot.tooltip}
+                </span>
+              }
+              sx={{
+                flex: 1,
+                minWidth: 0,
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+              }}
+            />
           </ListItemButton>
         </ListItem>
+        {imagePath && expandedImage === hotspot.id && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              backgroundColor: getBackgroundColor(depth + 1),
+              py: 1,
+            }}
+          >
+            <img
+              src={imagePath}
+              alt="expanded-thumbnail"
+              style={{ maxWidth: "90%", maxHeight: 150, borderRadius: 8 }}
+            />
+          </Box>
+        )}
         {Object.keys(hotspot.data.hotspots).length > 0 && (
-          <Collapse in={expandList[hotspot.id]} timeout="auto" unmountOnExit>
+          <Collapse
+            in={expandList[parentId] === hotspot.id}
+            timeout="auto"
+            unmountOnExit
+          >
             <List component="div" disablePadding>
-              {Array.from(Object.values(hotspot.data.hotspots)).map(
-                (nestedHotspot) => (
-                  <React.Fragment key={nestedHotspot.id}>
-                    {nestedHotspotList(
-                      nestedHotspot,
-                      [...path, hotspot],
-                      photosphere,
-                    )}
-                  </React.Fragment>
+              {Object.values(hotspot.data.hotspots).map((nestedHotspot) =>
+                nestedHotspotList(
+                  nestedHotspot,
+                  [...path, hotspot],
+                  photosphere,
+                  depth + 1,
+                  hotspot.id,
                 ),
               )}
             </List>
@@ -256,30 +485,111 @@ function PhotosphereHotspotSideBar({
         )}
       </>
     ) : (
-      <ListItem key={hotspot.id} disablePadding>
-        <ListItemButton
-          onClick={() => {
-            setHotspotArray([...path, hotspot]);
-            centerHotspot([...path, hotspot]);
-          }}
+      <>
+        <ListItem
+          key={hotspot.id}
+          disablePadding
+          sx={{ backgroundColor: getBackgroundColor(depth) }}
+          secondaryAction={
+            imagePath && (
+              <IconButton
+                edge="end"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setExpandedImage(
+                    expandedImage === hotspot.id ? null : hotspot.id,
+                  );
+                }}
+                size="small"
+              >
+                <ImageIcon />
+              </IconButton>
+            )
+          }
         >
-          <ListItemText primary={hotspot.tooltip} />
-        </ListItemButton>
-      </ListItem>
+          <ListItemButton
+            onClick={() => {
+              setHotspotArray([...path, hotspot]);
+              centerHotspot([...path, hotspot]);
+            }}
+            sx={{ backgroundColor: getBackgroundColor(depth) }}
+          >
+            {/* Thumbnail removed from here */}
+            <ListItemText
+              primary={
+                <span style={{ display: "flex", alignItems: "center" }}>
+                  {hotspot.tooltip}
+                </span>
+              }
+              sx={{
+                flex: 1,
+                minWidth: 0,
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
+        {imagePath && expandedImage === hotspot.id && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              backgroundColor: getBackgroundColor(depth + 1),
+              py: 1,
+            }}
+          >
+            <img
+              src={imagePath}
+              alt="expanded-thumbnail"
+              style={{ maxWidth: "90%", maxHeight: 150, borderRadius: 8 }}
+            />
+          </Box>
+        )}
+      </>
     );
+  };
 
   return (
     <>
-      <IconButton
-        id="sidebar-toggle-button"
-        color="primary"
+      <Box
         sx={{
-          alignContent: "center",
+          display: "inline-flex",
+          alignItems: "center",
+          borderRadius: "999px",
+          backgroundColor: "background.paper",
+          boxShadow: 1,
+          cursor: "pointer",
+          px: 2,
+          py: 0.5,
+          height: 40,
+          minWidth: 0,
+          fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
         }}
         onClick={toggleDrawer(true)}
       >
-        <LocationOnIcon id="sidebar-toggle-button-icon" sx={{ fontSize: 35 }} />
-      </IconButton>
+        <LocationOnIcon
+          id="sidebar-toggle-button-icon"
+          sx={{
+            fontSize: 32,
+            color: "primary.main",
+            mr: 1,
+          }}
+        />
+        <Box
+          sx={{
+            fontWeight: 500,
+            fontSize: "1rem",
+            color: "primary.main",
+            whiteSpace: "nowrap",
+            userSelect: "none",
+            fontFamily: "inherit",
+          }}
+        >
+          Hotspot Sidebar
+        </Box>
+      </Box>
       <Drawer anchor="right" open={expandDrawer} onClose={toggleDrawer(false)}>
         {photosphereList(vfe)}
       </Drawer>
