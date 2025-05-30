@@ -76,7 +76,6 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
             ? { tag: "Runtime", id: newID(), path: audio }
             : undefined,
           timeline: {},
-          color: pinColor,
         },
       },
       map: navMap,
