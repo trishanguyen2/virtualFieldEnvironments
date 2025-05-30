@@ -582,74 +582,6 @@ function PhotosphereEditor({
           padding: "10px",
         }}
       >
-        {!showAddFeatures && !showChangeFeatures && !showRemoveFeatures && (
-          <>
-            <Button
-              className="add-features-button"
-              sx={{ margin: "10px 0" }}
-              onClick={() => {
-                setShowAddFeatures(true);
-                setActiveSubmenuAddSteps(addFeaturesSteps);
-              }}
-              variant="contained"
-            >
-              Add Features
-            </Button>
-            <Button
-              className="edit-features-button"
-              sx={{
-                margin: "10px 0",
-              }}
-              onClick={() => {
-                setShowChangeFeatures(true);
-                setActiveSubmenuEditSteps(editFeaturesSteps);
-              }}
-              variant="contained"
-            >
-              Edit Features
-            </Button>
-            <Button
-              className="remove-features-button"
-              sx={{ margin: "10px 0" }}
-              onClick={() => {
-                setShowRemoveFeatures(true);
-                setActiveSubmenuRemoveSteps(removeFeaturesSteps);
-              }}
-              variant="contained"
-            >
-              Remove Features
-            </Button>
-            <Button
-              className="export-button"
-              sx={{ margin: "10px 0" }}
-              onClick={() => {
-                void handleExport();
-              }}
-              variant="contained"
-            >
-              Export
-            </Button>
-            <Button
-              className="gamify-button"
-              sx={{ margin: "10px 0" }}
-              onClick={async () => {
-                await SwapGamifyState();
-                //correcting for it always setting saved state to the opposite of what it should be for some reason.  Timing issue?
-                vfe.gamificationToggle = !gamifiedState;
-                console.log(
-                  "The gamified state is: " +
-                    !gamifiedState +
-                    " and the vfe gamification state is: " +
-                    vfe.gamificationToggle,
-                );
-                onUpdateVFE(vfe);
-              }}
-              variant="contained"
-            >
-              Gamify!
-            </Button>
-          </>
-        )}
         {!showAddFeatures &&
           !showChangeFeatures &&
           !showRemoveFeatures &&
@@ -660,6 +592,7 @@ function PhotosphereEditor({
                 sx={{ margin: "10px 0" }}
                 onClick={() => {
                   setShowAddFeatures(true);
+                  setActiveSubmenuAddSteps(addFeaturesSteps);
                 }}
                 variant="contained"
               >
@@ -672,6 +605,7 @@ function PhotosphereEditor({
                 }}
                 onClick={() => {
                   setShowChangeFeatures(true);
+                  setActiveSubmenuEditSteps(editFeaturesSteps);
                 }}
                 variant="contained"
               >
@@ -682,6 +616,7 @@ function PhotosphereEditor({
                 sx={{ margin: "10px 0" }}
                 onClick={() => {
                   setShowRemoveFeatures(true);
+                  setActiveSubmenuRemoveSteps(removeFeaturesSteps);
                 }}
                 variant="contained"
               >
@@ -698,16 +633,17 @@ function PhotosphereEditor({
                 Export
               </Button>
               <Button
+                className="gamify-button"
                 sx={{ margin: "10px 0" }}
                 onClick={async () => {
                   await SwapGamifyState();
                   //correcting for it always setting saved state to the opposite of what it should be for some reason.  Timing issue?
-                  vfe.isGamified = !gamifiedState;
+                  vfe.gamificationToggle = !gamifiedState;
                   console.log(
                     "The gamified state is: " +
                       !gamifiedState +
                       " and the vfe gamification state is: " +
-                      vfe.isGamified,
+                      vfe.gamificationToggle,
                   );
                   onUpdateVFE(vfe);
                 }}
