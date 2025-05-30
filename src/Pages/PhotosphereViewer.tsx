@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ViewerAPI } from "react-photo-sphere-viewer";
+import { useLocation } from "react-router-dom";
 
 import {
   Box,
@@ -22,8 +23,10 @@ import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspotSidebar.tsx";
 import PhotospherePlaceholder from "../PhotosphereFeatures/PhotospherePlaceholder";
 import PhotosphereSelector from "../PhotosphereFeatures/PhotosphereSelector";
-import PhotosphereTimelineSelect from "../PhotosphereFeatures/PhotosphereTimelineSelect.tsx";
-import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialCreate.tsx";
+import PhotosphereTimelineSelect from "../PhotosphereFeatures/PhotosphereTimelineSelect";
+import PhotosphereTutorialDemo from "../PhotosphereFeatures/PhotosphereTutorialDemo";
+import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialEditor";
+import PhotosphereTutorialExpandMenu from "../PhotosphereFeatures/PhotosphereTutorialExpandMenu";
 import { ExpandMore } from "../UI/ExpandMore.tsx";
 import AudioToggleButton from "../buttons/AudioToggleButton";
 
@@ -150,9 +153,24 @@ function PhotosphereViewer({
     },
   };
 
+  const location = useLocation();
+  const isDemo = new URLSearchParams(location.search).get("demo") === "true";
+  const [runTutorial, setRunTutorial] = useState(false);
+  const [stepIndex, setStepIndex] = useState(0);
+  const [runExpandTutorial, setRunExpandTutorial] = useState(false);
+
   return (
     <>
-      <PhotosphereTutorialEditor /> {}
+      <PhotosphereTutorialEditor
+        runTutorial={runTutorial}
+        stepIndex={stepIndex}
+        setRunTutorial={setRunTutorial}
+        setStepIndex={setStepIndex}
+      />
+      <PhotosphereTutorialExpandMenu
+        run={runExpandTutorial}
+        onFinish={() => setRunExpandTutorial(false)}
+      />
       <TimelineSelectedProvider>
         <Stack
           direction="column"
@@ -190,7 +208,7 @@ function PhotosphereViewer({
               backgroundColor: "white",
               borderRadius: "4px",
               justifyContent: "space-between",
-              alignItems: "center",
+              alignItems: "left",
             }}
             gap={1}
           >
@@ -198,7 +216,13 @@ function PhotosphereViewer({
               expand={showSplitViewFeatures}
               title="Show Split View Features"
               onClick={() => {
-                setShowSplitViewFeatures(!showSplitViewFeatures);
+                const willExpand = !showSplitViewFeatures;
+                setShowSplitViewFeatures(willExpand);
+                const hasShownTutorial =
+                  localStorage.getItem("expandMenuTutorialShown") === "false";
+                if (willExpand && !hasShownTutorial) {
+                  setRunExpandTutorial(true);
+                }
               }}
             ></ExpandMore>
             <Box sx={{ padding: "0 5px" }}>
@@ -223,6 +247,7 @@ function PhotosphereViewer({
               />
             )}
             <FormControlLabel
+              className="map-rotation"
               control={
                 <StyledSwitch
                   checked={mapRotationEnabled}
@@ -281,6 +306,7 @@ function PhotosphereViewer({
               gap={1}
             >
               <Stack
+                className="expand-change-time"
                 direction="column"
                 sx={{
                   border: "1px solid gray",
@@ -302,6 +328,7 @@ function PhotosphereViewer({
               </Stack>
               <Box sx={{ padding: "0 5px" }}>
                 <Button
+                  className="expand-split-view-button"
                   sx={{ height: "45px" }}
                   variant={isSplitView ? "contained" : "outlined"}
                   onClick={() => {
@@ -458,6 +485,7 @@ function PhotosphereViewer({
           />
         </Box>
       </TimelineSelectedProvider>
+      {isDemo && <PhotosphereTutorialDemo />}
     </>
   );
 }

@@ -13,6 +13,7 @@ interface Props {
   stepIndex: number;
   setRunTutorial: React.Dispatch<React.SetStateAction<boolean>>;
   setStepIndex: React.Dispatch<React.SetStateAction<number>>;
+  submenuSteps?: Step[];
 }
 
 export default function PhotosphereTutorialEditor({
@@ -47,14 +48,38 @@ export default function PhotosphereTutorialEditor({
       disableBeacon: true,
     },
     {
-      target: ".scene-header",
-      content: "Added scenes are listed here",
-      placement: "bottom",
+      target: ".gamify-button",
+      content: "Save the created VFE to your computer",
+      placement: "right",
       disableBeacon: true,
     },
     {
       target: ".split-view-button",
-      content: "click here to view a second scene along with the current one",
+      content: "Toggle VFE audio settings.",
+      placement: "bottom",
+      disableBeacon: true,
+    },
+    {
+      target: ".scene-header",
+      content: "Select a scene from the map rotation.",
+      placement: "bottom",
+      disableBeacon: true,
+    },
+    {
+      target: ".audio-button",
+      content: "Toggle VFE audio settings.",
+      placement: "bottom",
+      disableBeacon: true,
+    },
+    {
+      target: ".map-rotation",
+      content: "Lock and unlock the map rotation.",
+      placement: "bottom",
+      disableBeacon: true,
+    },
+    {
+      target: ".hotspot-sidebar",
+      content: "Click to view the list of available hotspots.",
       placement: "bottom",
       disableBeacon: true,
     },
@@ -65,13 +90,11 @@ export default function PhotosphereTutorialEditor({
   }
 
   useEffect(() => {
-    const shouldResume = localStorage.getItem("resumeTutorialEditor") === "true";
+    const shouldResume = localStorage.getItem("resumeTutorial") === "true";
     if (shouldResume) {
       setRunTutorial(true);
       setStepIndex(0);
-      localStorage.removeItem("resumeTutorialEditor");
-      localStorage.removeItem("resumeTutorialCreate")
-
+      localStorage.removeItem("resumeTutorial");
     }
   }, []);
 
