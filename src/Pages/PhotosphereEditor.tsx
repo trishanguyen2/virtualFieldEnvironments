@@ -638,12 +638,12 @@ function PhotosphereEditor({
                 onClick={async () => {
                   await SwapGamifyState();
                   //correcting for it always setting saved state to the opposite of what it should be for some reason.  Timing issue?
-                  vfe.gamificationToggle = !gamifiedState;
+                  vfe.isGamified = !gamifiedState;
                   console.log(
                     "The gamified state is: " +
                       !gamifiedState +
                       " and the vfe gamification state is: " +
-                      vfe.gamificationToggle,
+                      vfe.isGamified,
                   );
                   onUpdateVFE(vfe);
                 }}
