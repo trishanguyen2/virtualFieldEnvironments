@@ -208,7 +208,7 @@ function PhotosphereViewer({
               backgroundColor: "white",
               borderRadius: "4px",
               justifyContent: "space-between",
-              alignItems: "left",
+              alignItems: "center",
             }}
             gap={1}
           >
