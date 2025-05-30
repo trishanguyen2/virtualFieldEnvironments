@@ -136,6 +136,7 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
       <Stack sx={{ width: 450, margin: "auto", paddingTop: 10 }} gap={3}>
         <Typography variant="h4">Create a New VFE</Typography>
         <Button
+          className="vfe-add-scene"
           variant="outlined"
           onClick={async () => {
             if (!photosphereName || !panoImage) {
