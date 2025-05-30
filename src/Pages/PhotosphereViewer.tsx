@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useLocation } from 'react-router-dom';
 import { ViewerAPI } from "react-photo-sphere-viewer";
+import { useLocation } from "react-router-dom";
 
 import {
   Box,
@@ -24,8 +24,8 @@ import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspot
 import PhotospherePlaceholder from "../PhotosphereFeatures/PhotospherePlaceholder";
 import PhotosphereSelector from "../PhotosphereFeatures/PhotosphereSelector";
 import PhotosphereTimelineSelect from "../PhotosphereFeatures/PhotosphereTimelineSelect";
-import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialEditor";
 import PhotosphereTutorialDemo from "../PhotosphereFeatures/PhotosphereTutorialDemo";
+import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialEditor";
 import PhotosphereTutorialExpandMenu from "../PhotosphereFeatures/PhotosphereTutorialExpandMenu";
 import { ExpandMore } from "../UI/ExpandMore.tsx";
 import AudioToggleButton from "../buttons/AudioToggleButton";
@@ -126,7 +126,7 @@ function PhotosphereViewer({
   const [isSplitView, setIsSplitView] = useState(false);
   const [lockViews, setLockViews] = useState(true);
 
-  const [points, AddPoints, ResetPoints] = usePoints();
+  const [points, AddPoints, ResetPoints, maxPoints] = usePoints();
 
   const initialPhotosphereHotspots: Record<string, Hotspot3D[]> = Object.keys(
     vfe.photospheres,
@@ -140,7 +140,7 @@ function PhotosphereViewer({
   );
   console.log("in viewer: ", visited);
 
-  const maxPoints = 100;
+  // const maxPoints = 100;
 
   const viewerProps: ViewerProps = {
     onViewerClick,
@@ -158,7 +158,6 @@ function PhotosphereViewer({
   const [runTutorial, setRunTutorial] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [runExpandTutorial, setRunExpandTutorial] = useState(false);
-
 
   return (
     <>
@@ -209,7 +208,7 @@ function PhotosphereViewer({
               backgroundColor: "white",
               borderRadius: "4px",
               justifyContent: "space-between",
-              alignItems: "left",
+              alignItems: "center",
             }}
             gap={1}
           >
@@ -219,7 +218,8 @@ function PhotosphereViewer({
               onClick={() => {
                 const willExpand = !showSplitViewFeatures;
                 setShowSplitViewFeatures(willExpand);
-                const hasShownTutorial = localStorage.getItem("expandMenuTutorialShown") === "false";
+                const hasShownTutorial =
+                  localStorage.getItem("expandMenuTutorialShown") === "false";
                 if (willExpand && !hasShownTutorial) {
                   setRunExpandTutorial(true);
                 }
@@ -319,8 +319,7 @@ function PhotosphereViewer({
                   p: 1,
                 }}
               >
-                <Typography 
-                variant="caption"> Change Time </Typography>
+                <Typography variant="caption"> Change Time </Typography>
                 <PhotosphereTimelineSelect
                   onSelect={(ps: string) => {
                     setPrimaryPhotosphere(vfe.photospheres[ps]);

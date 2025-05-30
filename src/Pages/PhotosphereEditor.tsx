@@ -1,15 +1,24 @@
 import dayjs, { Dayjs } from "dayjs";
 import { MuiFileInput } from "mui-file-input";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import type { Step } from "react-joyride";
+import { useNavigate } from "react-router-dom";
 
 import AttachFileIcon from "@mui/icons-material/AttachFile";
-import { Box, Button, Stack } from "@mui/material";
+import { Box, Button, Stack, TextField } from "@mui/material";
 
 import { VisitedState } from "../Hooks/HandleVisit.tsx";
 import { useVFELoaderContext } from "../Hooks/VFELoaderContext.tsx";
 import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialEditor";
+import PhotosphereTutorialSubmenuAdd, {
+  addFeaturesSteps,
+} from "../PhotosphereFeatures/PhotosphereTutorialSubmenuAdd.tsx";
+import PhotosphereTutorialSubmenuEdit, {
+  editFeaturesSteps,
+} from "../PhotosphereFeatures/PhotosphereTutorialSubmenuEdit";
+import PhotosphereTutorialSubmenuRemove, {
+  removeFeaturesSteps,
+} from "../PhotosphereFeatures/PhotosphereTutorialSubmenuRemove";
 import { alertMUI, confirmMUI } from "../UI/StyledDialogWrapper.tsx";
 import AddAudio from "../buttons/AddAudio.tsx";
 import AddHotspot from "../buttons/AddHotspot.tsx";
@@ -37,10 +46,6 @@ import {
   updatePhotosphereHotspot,
 } from "./PageUtility/VFEConversion.ts";
 import PhotosphereViewer from "./PhotosphereViewer.tsx";
-import PhotosphereTutorialSubmenuAdd, { addFeaturesSteps } from "../PhotosphereFeatures/PhotosphereTutorialSubmenuAdd.tsx";
-import PhotosphereTutorialSubmenuEdit, { editFeaturesSteps } from "../PhotosphereFeatures/PhotosphereTutorialSubmenuEdit";
-import PhotosphereTutorialSubmenuRemove, { removeFeaturesSteps } from "../PhotosphereFeatures/PhotosphereTutorialSubmenuRemove";
-
 
 /** Convert from radians to degrees */
 function radToDeg(num: number): number {
@@ -49,10 +54,18 @@ function radToDeg(num: number): number {
 
 interface PhotosphereEditorProps {
   isGamified: boolean;
+  maxPoints: number;
+  SetMaxPoints: (amount: number) => Promise<void>;
+  pointGain: number;
+  SetPointGain: (amount: number) => Promise<void>;
 }
 
 function PhotosphereEditor({
   isGamified,
+  maxPoints,
+  SetMaxPoints,
+  pointGain,
+  SetPointGain,
 }: PhotosphereEditorProps): JSX.Element {
   const { vfe, onUpdateVFE, currentPS, onChangePS } = useVFELoaderContext();
   const photosphereOptions = Object.keys(vfe.photospheres);
@@ -73,6 +86,7 @@ function PhotosphereEditor({
   const [showAddFeatures, setShowAddFeatures] = useState(false);
   const [showChangeFeatures, setShowChangeFeatures] = useState(false);
   const [showRemoveFeatures, setShowRemoveFeatures] = useState(false);
+  const [showEditPointsValues, setShowEditPointsValues] = useState(false);
 
   const [gamifiedState, SwapGamifyState] = useGamificationState(isGamified);
 
@@ -511,15 +525,22 @@ function PhotosphereEditor({
 
   const [runSubmenuAddTutorial, setRunSubmenuAddTutorial] = useState(false);
   const [submenuAddStepIndex, setSubmenuAddStepIndex] = useState(0);
-  const [activeSubmenuAddSteps, setActiveSubmenuAddSteps] = useState<Step[]>([]);
+  const [activeSubmenuAddSteps, setActiveSubmenuAddSteps] = useState<Step[]>(
+    [],
+  );
 
   const [runSubmenuEditTutorial, setRunSubmenuEditTutorial] = useState(false);
   const [submenuEditStepIndex, setSubmenuEditStepIndex] = useState(0);
-  const [activeSubmenuEditSteps, setActiveSubmenuEditSteps] = useState<Step[]>([]);
+  const [activeSubmenuEditSteps, setActiveSubmenuEditSteps] = useState<Step[]>(
+    [],
+  );
 
-  const [runSubmenuRemoveTutorial, setRunSubmenuRemoveTutorial] = useState(false);
+  const [runSubmenuRemoveTutorial, setRunSubmenuRemoveTutorial] =
+    useState(false);
   const [submenuRemoveStepIndex, setSubmenuRemoveStepIndex] = useState(0);
-  const [activeSubmenuRemoveSteps, setActiveSubmenuRemoveSteps] = useState<Step[]>([]);
+  const [activeSubmenuRemoveSteps, setActiveSubmenuRemoveSteps] = useState<
+    Step[]
+  >([]);
 
   return (
     <Box sx={{ height: "100vh" }}>
@@ -561,74 +582,88 @@ function PhotosphereEditor({
           padding: "10px",
         }}
       >
-        {!showAddFeatures && !showChangeFeatures && !showRemoveFeatures && (
-          <>
-            <Button
-              className="add-features-button"
-              sx={{ margin: "10px 0" }}
-              onClick={() => {
-                setShowAddFeatures(true);
-                setActiveSubmenuAddSteps(addFeaturesSteps);
-              }}
-              variant="contained"
-            >
-              Add Features
-            </Button>
-            <Button
-              className="edit-features-button"
-              sx={{
-                margin: "10px 0",
-              }}
-              onClick={() => {
-                setShowChangeFeatures(true);
-                setActiveSubmenuEditSteps(editFeaturesSteps);
-              }}
-              variant="contained"
-            >
-              Edit Features
-            </Button>
-            <Button
-              className="remove-features-button"
-              sx={{ margin: "10px 0" }}
-              onClick={() => {
-                setShowRemoveFeatures(true);
-                setActiveSubmenuRemoveSteps(removeFeaturesSteps);
-              }}
-              variant="contained"
-            >
-              Remove Features
-            </Button>
-            <Button
-              className="export-button"
-              sx={{ margin: "10px 0" }}
-              onClick={() => {
-                void handleExport();
-              }}
-              variant="contained"
-            >
-              Export
-            </Button>
-            <Button
-              className="gamify-button"
-              sx={{ margin: "10px 0" }}
-              onClick={async () => {
-                await SwapGamifyState();
-                //correcting for it always setting saved state to the opposite of what it should be for some reason.  Timing issue?
-                vfe.gamificationToggle = !gamifiedState;
-                console.log(
-                  "The gamified state is: " +
-                    !gamifiedState +
-                    " and the vfe gamification state is: " +
-                    vfe.gamificationToggle,
-                );
-                onUpdateVFE(vfe);
-              }}
-              variant="contained"
-            >
-              Gamify!
-            </Button>
-          </>
-        )}
+        {!showAddFeatures &&
+          !showChangeFeatures &&
+          !showRemoveFeatures &&
+          !showEditPointsValues && (
+            <>
+              <Button
+                className="add-features-button"
+                sx={{ margin: "10px 0" }}
+                onClick={() => {
+                  setShowAddFeatures(true);
+                  setActiveSubmenuAddSteps(addFeaturesSteps);
+                }}
+                variant="contained"
+              >
+                Add Features
+              </Button>
+              <Button
+                className="edit-features-button"
+                sx={{
+                  margin: "10px 0",
+                }}
+                onClick={() => {
+                  setShowChangeFeatures(true);
+                  setActiveSubmenuEditSteps(editFeaturesSteps);
+                }}
+                variant="contained"
+              >
+                Edit Features
+              </Button>
+              <Button
+                className="remove-features-button"
+                sx={{ margin: "10px 0" }}
+                onClick={() => {
+                  setShowRemoveFeatures(true);
+                  setActiveSubmenuRemoveSteps(removeFeaturesSteps);
+                }}
+                variant="contained"
+              >
+                Remove Features
+              </Button>
+              <Button
+                className="export-button"
+                sx={{ margin: "10px 0" }}
+                onClick={() => {
+                  void handleExport();
+                }}
+                variant="contained"
+              >
+                Export
+              </Button>
+              <Button
+                className="gamify-button"
+                sx={{ margin: "10px 0" }}
+                onClick={async () => {
+                  await SwapGamifyState();
+                  //correcting for it always setting saved state to the opposite of what it should be for some reason.  Timing issue?
+                  vfe.isGamified = !gamifiedState;
+                  console.log(
+                    "The gamified state is: " +
+                      !gamifiedState +
+                      " and the vfe gamification state is: " +
+                      vfe.isGamified,
+                  );
+                  onUpdateVFE(vfe);
+                }}
+                variant="contained"
+              >
+                Gamify!
+              </Button>
+              {gamifiedState && (
+                <Button
+                  sx={{ margin: "10px 0" }}
+                  onClick={() => {
+                    setShowEditPointsValues(true);
+                  }}
+                  variant="contained"
+                >
+                  Set Point Values
+                </Button>
+              )}
+            </>
+          )}
         {showAddFeatures && (
           <>
             <Button
@@ -644,7 +679,7 @@ function PhotosphereEditor({
               Add New Photosphere
             </Button>
             <Button
-              className='add-navmap-button'
+              className="add-navmap-button"
               sx={{ margin: "10px 0" }}
               onClick={() => {
                 resetStates();
@@ -738,10 +773,51 @@ function PhotosphereEditor({
           </>
         )}
 
+        {showEditPointsValues && (
+          <>
+            <TextField
+              label="Max Points"
+              type="number"
+              defaultValue={maxPoints}
+              sx={{ margin: "10px 0" }}
+              onChange={async (e) => {
+                const newMaxPointsValue = parseInt(e.target.value);
+                if (!isNaN(newMaxPointsValue)) {
+                  await SetMaxPoints(newMaxPointsValue);
+                  vfe.maxPoints = newMaxPointsValue;
+                }
+              }}
+              fullWidth
+            />
+            <TextField
+              label="Points Per Hotspot Visit"
+              type="number"
+              defaultValue={pointGain}
+              sx={{ margin: "10px 0" }}
+              onChange={async (e) => {
+                const newPointGainValue = parseInt(e.target.value);
+                if (!isNaN(newPointGainValue)) {
+                  await SetPointGain(newPointGainValue);
+                  vfe.pointGain = newPointGainValue;
+                }
+              }}
+              fullWidth
+            />
+            <Button
+              sx={{ margin: "10px 0" }}
+              onClick={() => {
+                setShowEditPointsValues(false);
+              }}
+              variant="outlined"
+            >
+              Back
+            </Button>
+          </>
+        )}
         {showChangeFeatures && (
           <>
             <Button
-              className='edit-photosphere-buttonEdit'
+              className="edit-photosphere-buttonEdit"
               sx={{ margin: "10px 0" }}
               onClick={() => {
                 resetStates();
@@ -752,7 +828,7 @@ function PhotosphereEditor({
               Edit Photosphere
             </Button>
             <Button
-              className='edit-nav-map-button'
+              className="edit-nav-map-button"
               sx={{ margin: "10px 0" }}
               onClick={() => {
                 resetStates();
