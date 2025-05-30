@@ -52,7 +52,6 @@ function CreateVFEForm({ onCreateVFE, header, onClose }: CreateVFEFormProps) {
     x: number;
     y: number;
   } | null>(null);
-  const [pinColor, setPinColor] = useState("1976d2");
 
   // Error Handling: Ensure the data is not empty
 
