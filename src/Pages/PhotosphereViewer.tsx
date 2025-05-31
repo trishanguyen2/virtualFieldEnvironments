@@ -150,7 +150,7 @@ function PhotosphereViewer({
   const [isSplitView, setIsSplitView] = useState(false);
   const [lockViews, setLockViews] = useState(true);
 
-  const [points, AddPoints, ResetPoints] = usePoints();
+  const [points, AddPoints, ResetPoints, maxPoints] = usePoints();
 
   const initialPhotosphereHotspots: Record<string, Hotspot3D[]> = Object.keys(
     vfe.photospheres,
@@ -164,7 +164,7 @@ function PhotosphereViewer({
   );
   console.log("in viewer: ", visited);
 
-  const maxPoints = 100;
+  // const maxPoints = 100;
 
   const viewerProps: ViewerProps = {
     onViewerClick,
@@ -232,7 +232,7 @@ function PhotosphereViewer({
               backgroundColor: "white",
               borderRadius: "4px",
               justifyContent: "space-between",
-              alignItems: "left",
+              alignItems: "center",
             }}
             gap={1}
           >
