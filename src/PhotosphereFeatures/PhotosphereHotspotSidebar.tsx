@@ -4,7 +4,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import ImageIcon from "@mui/icons-material/Image";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
+import MapIcon from "@mui/icons-material/Map";
 import {
   Box,
   Collapse,
@@ -117,7 +117,7 @@ function PhotosphereHotspotSideBar({
             sx={{ flex: 1, display: "flex", justifyContent: "center", px: 1 }}
           >
             <ListItemText
-              primary="Hotspot Sidebar"
+              primary="Hotspots"
               sx={{
                 textAlign: "center",
                 m: 0,
@@ -567,7 +567,7 @@ function PhotosphereHotspotSideBar({
         }}
         onClick={toggleDrawer(true)}
       >
-        <LocationOnIcon
+        <MapIcon
           id="sidebar-toggle-button-icon"
           sx={{
             fontSize: 32,
@@ -585,7 +585,7 @@ function PhotosphereHotspotSideBar({
             fontFamily: "inherit",
           }}
         >
-          Hotspot Sidebar
+          Hotspots
         </Box>
       </Box>
       <Drawer anchor="right" open={expandDrawer} onClose={toggleDrawer(false)}>
