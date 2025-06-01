@@ -28,7 +28,6 @@ import ChangePhotosphere from "../buttons/ChangePhotosphere.tsx";
 import EditNavMap from "../buttons/EditNavMap.tsx";
 import RemovePhotosphere from "../buttons/RemovePhotosphere.tsx";
 import {
-  Hotspot2D,
   Hotspot3D,
   NavMap,
   Photosphere,
@@ -139,38 +138,27 @@ function PhotosphereEditor({
       if (!confirmed) return;
     }
 
-    const updatedPhotosphere = updatePhotosphereHotspot(
-      vfe.photospheres[currentPS],
-      hotspotPath,
-      update,
-    );
+    if (hotspotPath.length > 0 && sessionStorage.getItem("EditedHotspotPhotoSphere") != null) {
+      const updatedPhotosphere = updatePhotosphereHotspot(
+          vfe.photospheres[sessionStorage.getItem("EditedHotspotPhotoSphere") || currentPS],
+        hotspotPath,
+        update,
+      );
 
-    const updatedVFE = {
-      ...vfe,
-      photospheres: {
-        ...vfe.photospheres,
-        [currentPS]: updatedPhotosphere,
-      },
-    };
+      const updatedVFE = {
+        ...vfe,
+        photospheres: {
+          ...vfe.photospheres,
+          [sessionStorage.getItem("EditedHotspotPhotoSphere") || currentPS]: updatedPhotosphere,
+        },
+      };
 
-    const hotspotList: (Hotspot2D | Hotspot3D)[] = [
-      vfe.photospheres[currentPS].hotspots[hotspotPath[0]],
-    ];
-    if (hotspotPath.length > 1) {
-      let hotspotItem: Hotspot2D | Hotspot3D =
-        vfe.photospheres[currentPS].hotspots[hotspotPath[0]];
+      sessionStorage.setItem("listEditedHotspot", JSON.stringify(hotspotPath));
 
-      for (let i = 1; i < hotspotPath.length; ++i) {
-        if ("hotspots" in hotspotItem.data) {
-          hotspotItem = hotspotItem.data.hotspots[hotspotPath[i]];
-          hotspotList.push(hotspotItem);
-        }
-      }
+      onChangePS(sessionStorage.getItem("EditedHotspotPhotoSphere") || currentPS);
+      onUpdateVFE(updatedVFE);
+      setUpdateTrigger((prev) => prev + 1);
     }
-    sessionStorage.setItem("listEditedHotspot", JSON.stringify(hotspotPath));
-
-    onUpdateVFE(updatedVFE);
-    setUpdateTrigger((prev) => prev + 1);
   }
 
   async function handleRemovePhotosphere(photosphereId: string) {
