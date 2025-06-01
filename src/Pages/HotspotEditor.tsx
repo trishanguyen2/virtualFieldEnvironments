@@ -545,21 +545,25 @@ function HotspotEditor({
               image={previewData.src.path}
               hotspot={locationHotspot}
               onSave={(updatedHotspot) => {
-                updateNestedHotspot(updatedHotspot);
                 if (
+                  previewData?.tag === "Image" &&
                   updatedHotspot != null && 
                   'id' in updatedHotspot &&
                   previewData != null &&
                   'hotspots' in previewData
                 ) {
+                  
                   if (updatedHotspot.id in previewData.hotspots) {
                     previewData.hotspots[updatedHotspot.id].x = updatedHotspot.x
                     previewData.hotspots[updatedHotspot.id].y = updatedHotspot.y
                   }
+                  else {
+                    previewData.hotspots = { ...previewData.hotspots, [updatedHotspot.id]: updatedHotspot }
+                  }
 
-                  sessionStorage.setItem("lastEditedHotspotFlag", "1"); // Set to return to hotspot menu after pge refresh
-                  setEdited(false); // Reset edited state after saving
-
+                  sessionStorage.setItem("lastEditedHotspotFlag", "1");  // Set to return to hotspot menu after pge refresh
+                  setEdited(false);  // Reset edited state after saving
+                  
                   updateHotspot(
                     previewTooltip,
                     previewData,
