@@ -249,12 +249,19 @@ function PhotosphereViewer({
                 }
               }}
             >
-              <Typography
-                variant="body2"
-                sx={{ color: "black", fontSize: "14px" }}
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                sx={{
+                  fontSize: "14px",
+                  textTransform: "none",
+                  borderRadius: "8px",
+                  boxShadow: 1,
+                }}
               >
-                Split View Features ?{" "}
-              </Typography>
+                Split View Features{" "}
+              </Button>
             </ExpandMore>
             <Box sx={{ padding: "0 5px" }}>
               <PhotosphereSelector
