@@ -6,7 +6,7 @@ import {
   VirtualTourNode,
 } from "@photo-sphere-viewer/virtual-tour-plugin";
 import { MapPin, MapTrifold, PushPinSimple } from "phosphor-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import ReactDOMServer from "react-dom/server";
 import {
   MapPlugin,
@@ -38,7 +38,7 @@ function sizeToStr(val: number): string {
 }
 
 /** Convert elevation/direction degrees from numbers to strings ending in "deg" */
-function degToStr(val: number): string {
+export function degToStr(val: number): string {
   return String(val) + "deg";
 }
 
@@ -163,6 +163,8 @@ interface PhotospherePlaceholderProps {
   isPrimary: boolean;
   mapStatic: boolean;
   lockViews: boolean;
+  hotspotArray: (Hotspot3D | Hotspot2D)[];
+  setHotspotArray: (arr: (Hotspot3D | Hotspot2D)[]) => void;
   addPoints: (amount: number) => Promise<void>;
   visited: Partial<Record<string, Record<string, boolean>>>;
   handleVisit: (photosphereId: string, hotspotId: string) => void;
@@ -174,6 +176,8 @@ function PhotospherePlaceholder({
   isPrimary,
   mapStatic,
   lockViews,
+  hotspotArray,
+  setHotspotArray,
   addPoints,
   visited,
   handleVisit,
@@ -188,9 +192,6 @@ function PhotospherePlaceholder({
   const currentPhotosphere = states.states[statesIdx];
   const setCurrentPhotosphere = states.setStates[statesIdx];
 
-  const [hotspotArray, setHotspotArray] = useState<(Hotspot3D | Hotspot2D)[]>(
-    [],
-  );
   const hotspotPath = hotspotArray.map((h) => h.id);
 
   const lockViewsRef = useRef(lockViews);
@@ -340,13 +341,34 @@ function PhotospherePlaceholder({
       if (Number(sessionStorage.getItem("lastEditedHotspotFlag")) == 1) {
         let photosphereItem = (sessionStorage.getItem("EditedHotspotPhotoSphere") || "");
 
-        if (JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]").length > 0 && photosphereItem != "") {
-          let hotspotItem: (Hotspot2D | Hotspot3D) = vfe.photospheres[photosphereItem].hotspots[ JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]")[0] ];
-          let hotspotList: (Hotspot2D | Hotspot3D)[] = [ hotspotItem ];
+        if (
+          JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]")
+            .length > 0 && photosphereItem != ""
+        ) {
+          let hotspotItem: Hotspot2D | Hotspot3D =
+            vfe.photospheres[photosphereItem].hotspots[
+              JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]")[0]
+            ];
+          let hotspotList: (Hotspot2D | Hotspot3D)[] = [hotspotItem];
 
-          for (let i = 1; i < JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]").length; ++i) {
-            if ('hotspots' in hotspotItem.data) {
-                hotspotItem = hotspotItem.data.hotspots[ JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]")[i] ];
+          for (
+            let i = 1;
+            i <
+            JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]")
+              .length;
+            ++i
+          ) {
+            if (
+                hotspotItem != null &&
+                'data' in hotspotItem &&
+                'hotspots' in hotspotItem.data
+            ) {
+              hotspotItem =
+                hotspotItem.data.hotspots[
+                  JSON.parse(
+                    sessionStorage.getItem("listEditedHotspot") || "[]",
+                  )[i]
+                ];
               hotspotList.push(hotspotItem);
             }
           }

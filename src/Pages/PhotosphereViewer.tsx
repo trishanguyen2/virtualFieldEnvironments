@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ViewerAPI } from "react-photo-sphere-viewer";
+import { useLocation } from "react-router-dom";
 
 import {
   Box,
@@ -16,14 +17,21 @@ import {
 import { useVisitedState } from "../Hooks/HandleVisit.tsx";
 import { TimelineSelectedProvider } from "../Hooks/TimelineSelected.tsx";
 import { useVFELoaderContext } from "../Hooks/VFELoaderContext.tsx";
-import { Hotspot3D, Photosphere } from "../Pages/PageUtility/DataStructures";
+import {
+  Hotspot2D,
+  Hotspot3D,
+  Photosphere,
+} from "../Pages/PageUtility/DataStructures";
 import { usePoints } from "../Pages/PageUtility/PointsInterface.tsx";
 import { HotspotUpdate } from "../Pages/PageUtility/VFEConversion";
 import PhotosphereHotspotSideBar from "../PhotosphereFeatures/PhotosphereHotspotSidebar.tsx";
 import PhotospherePlaceholder from "../PhotosphereFeatures/PhotospherePlaceholder";
+import { degToStr } from "../PhotosphereFeatures/PhotospherePlaceholder";
 import PhotosphereSelector from "../PhotosphereFeatures/PhotosphereSelector";
-import PhotosphereTimelineSelect from "../PhotosphereFeatures/PhotosphereTimelineSelect.tsx";
-import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialCreate.tsx";
+import PhotosphereTimelineSelect from "../PhotosphereFeatures/PhotosphereTimelineSelect";
+import PhotosphereTutorialDemo from "../PhotosphereFeatures/PhotosphereTutorialDemo";
+import PhotosphereTutorialEditor from "../PhotosphereFeatures/PhotosphereTutorialEditor";
+import PhotosphereTutorialExpandMenu from "../PhotosphereFeatures/PhotosphereTutorialExpandMenu";
 import { ExpandMore } from "../UI/ExpandMore.tsx";
 import AudioToggleButton from "../buttons/AudioToggleButton";
 
@@ -117,13 +125,32 @@ function PhotosphereViewer({
   const [splitPhotosphere, setSplitPhotosphere] = React.useState<Photosphere>(
     vfe.photospheres[currentPS],
   );
-  const [mapRotationEnabled, setMapRotationEnabled] = useState(false);
   const [showSplitViewFeatures, setShowSplitViewFeatures] = useState(false);
+  const [mapRotationEnabled, setMapRotationEnabled] = useState(false);
+  const [hotspotArray, setHotspotArray] = useState<(Hotspot3D | Hotspot2D)[]>(
+    [],
+  );
+
+  const centerHotspot = (hotspotArray: (Hotspot3D | Hotspot2D)[]) => {
+    if (hotspotArray.length > 0) {
+      const firstHotspot3D = hotspotArray.find(
+        (h): h is Hotspot3D => "direction" in h && "elevation" in h,
+      );
+      if (!firstHotspot3D) return;
+
+      primaryPsRef.current?.rotate({
+        //yaw: firstHotspot3D.direction,
+        //pitch: firstHotspot3D.elevation,
+        yaw: degToStr(firstHotspot3D.direction),
+        pitch: degToStr(firstHotspot3D.elevation),
+      });
+    }
+  };
 
   const [isSplitView, setIsSplitView] = useState(false);
   const [lockViews, setLockViews] = useState(true);
 
-  const [points, AddPoints, ResetPoints] = usePoints();
+  const [points, AddPoints, ResetPoints, maxPoints] = usePoints();
 
   const initialPhotosphereHotspots: Record<string, Hotspot3D[]> = Object.keys(
     vfe.photospheres,
@@ -137,7 +164,7 @@ function PhotosphereViewer({
   );
   console.log("in viewer: ", visited);
 
-  const maxPoints = 100;
+  // const maxPoints = 100;
 
   const viewerProps: ViewerProps = {
     onViewerClick,
@@ -150,9 +177,24 @@ function PhotosphereViewer({
     },
   };
 
+  const location = useLocation();
+  const isDemo = new URLSearchParams(location.search).get("demo") === "true";
+  const [runTutorial, setRunTutorial] = useState(false);
+  const [stepIndex, setStepIndex] = useState(0);
+  const [runExpandTutorial, setRunExpandTutorial] = useState(false);
+
   return (
     <>
-      <PhotosphereTutorialEditor /> {}
+      <PhotosphereTutorialEditor
+        runTutorial={runTutorial}
+        stepIndex={stepIndex}
+        setRunTutorial={setRunTutorial}
+        setStepIndex={setStepIndex}
+      />
+      <PhotosphereTutorialExpandMenu
+        run={runExpandTutorial}
+        onFinish={() => setRunExpandTutorial(false)}
+      />
       <TimelineSelectedProvider>
         <Stack
           direction="column"
@@ -197,7 +239,15 @@ function PhotosphereViewer({
             <ExpandMore
               expand={showSplitViewFeatures}
               title="Show Split View Features"
-              onClick={() => setShowSplitViewFeatures(!showSplitViewFeatures)}
+              onClick={() => {
+                const willExpand = !showSplitViewFeatures;
+                setShowSplitViewFeatures(willExpand);
+                const hasShownTutorial =
+                  localStorage.getItem("expandMenuTutorialShown") === "false";
+                if (willExpand && !hasShownTutorial) {
+                  setRunExpandTutorial(true);
+                }
+              }}
             ></ExpandMore>
             <Box sx={{ padding: "0 5px" }}>
               <PhotosphereSelector
@@ -221,6 +271,7 @@ function PhotosphereViewer({
               />
             )}
             <FormControlLabel
+              className="map-rotation"
               control={
                 <StyledSwitch
                   checked={mapRotationEnabled}
@@ -279,6 +330,7 @@ function PhotosphereViewer({
               gap={1}
             >
               <Stack
+                className="expand-change-time"
                 direction="column"
                 sx={{
                   border: "1px solid gray",
@@ -300,6 +352,7 @@ function PhotosphereViewer({
               </Stack>
               <Box sx={{ padding: "0 5px" }}>
                 <Button
+                  className="expand-split-view-button"
                   sx={{ height: "45px" }}
                   variant={isSplitView ? "contained" : "outlined"}
                   onClick={() => {
@@ -366,7 +419,6 @@ function PhotosphereViewer({
             </Stack>
           </Collapse>
         </Stack>
-
         <Stack
           direction="row"
           sx={{
@@ -391,9 +443,11 @@ function PhotosphereViewer({
             isPrimary={true}
             mapStatic={!mapRotationEnabled}
             lockViews={lockViews}
-            addPoints={AddPoints}
+            hotspotArray={hotspotArray}
+            setHotspotArray={setHotspotArray}
             visited={visited}
             handleVisit={handleVisit}
+            addPoints={AddPoints}
             isEditor={isEditor}
           />
           {isSplitView && (
@@ -402,9 +456,11 @@ function PhotosphereViewer({
               isPrimary={false}
               mapStatic={!mapRotationEnabled}
               lockViews={lockViews}
-              addPoints={AddPoints}
+              hotspotArray={hotspotArray}
+              setHotspotArray={setHotspotArray}
               visited={visited}
               handleVisit={handleVisit}
+              addPoints={AddPoints}
               isEditor={isEditor}
             />
           )}
@@ -449,14 +505,18 @@ function PhotosphereViewer({
           <PhotosphereHotspotSideBar
             vfe={vfe}
             currentPS={primaryPhotosphere.id}
+            hotspotArray={hotspotArray}
+            setHotspotArray={setHotspotArray}
             setValue={(id) => {
               setPrimaryPhotosphere(vfe.photospheres[id]);
               setSplitPhotosphere(vfe.photospheres[id]);
               onChangePS(id);
             }}
+            centerHotspot={centerHotspot}
           />
         </Box>
       </TimelineSelectedProvider>
+      {isDemo && <PhotosphereTutorialDemo />}
     </>
   );
 }

@@ -59,6 +59,10 @@ function LandingPage({
             onClick={() => {
               setRunTutorial(true);
               setStepIndex(0);
+              localStorage.setItem("resumeSubmenuAddTutorial", "true");
+              localStorage.setItem("resumeSubmenuEditTutorial", "true");
+              localStorage.setItem("resumeSubmenuRemoveTutorial", "true");
+              localStorage.setItem("expandMenuTutorialShown", "true");
             }}
             sx={{ mb: 2 }}
           >
