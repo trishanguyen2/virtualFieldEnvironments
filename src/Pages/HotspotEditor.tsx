@@ -561,7 +561,7 @@ function HotspotEditor({
                     previewData.hotspots = { ...previewData.hotspots, [updatedHotspot.id]: updatedHotspot }
                   }
 
-                  sessionStorage.setItem("lastEditedHotspotFlag", "1");  // Set to return to hotspot menu after pge refresh
+                  sessionStorage.setItem("lastEditedHotspotFlag", "1");  // Set to return to hotspot menu after page refresh
                   setEdited(false);  // Reset edited state after saving
                   
                   updateHotspot(
