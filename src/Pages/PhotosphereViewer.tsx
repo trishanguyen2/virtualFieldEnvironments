@@ -238,7 +238,7 @@ function PhotosphereViewer({
           >
             <ExpandMore
               expand={showSplitViewFeatures}
-              title="Show Split View Features"
+              tooltip="Show Split View Features"
               onClick={() => {
                 const willExpand = !showSplitViewFeatures;
                 setShowSplitViewFeatures(willExpand);
@@ -248,7 +248,21 @@ function PhotosphereViewer({
                   setRunExpandTutorial(true);
                 }
               }}
-            ></ExpandMore>
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                sx={{
+                  fontSize: "14px",
+                  textTransform: "none",
+                  borderRadius: "8px",
+                  boxShadow: 1,
+                }}
+              >
+                Split View Features{" "}
+              </Button>
+            </ExpandMore>
             <Box sx={{ padding: "0 5px" }}>
               <PhotosphereSelector
                 size="small"

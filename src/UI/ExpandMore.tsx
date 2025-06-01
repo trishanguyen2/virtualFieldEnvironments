@@ -3,15 +3,15 @@ import { IconButton, IconButtonProps, Tooltip, styled } from "@mui/material";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
-  title: string;
+  tooltip: string;
 }
 
 export const ExpandMore = styled(
-  ({ expand, title, ...other }: ExpandMoreProps) => {
+  ({ expand, tooltip, children, ...other }: ExpandMoreProps) => {
     return (
-      <Tooltip title={title}>
+      <Tooltip title={tooltip}>
         <IconButton {...other}>
-          <ExpandMoreIcon />
+          {expand ? <ExpandMoreIcon /> : children}
         </IconButton>
       </Tooltip>
     );
