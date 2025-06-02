@@ -98,6 +98,9 @@ export function usePoints() {
 
     if (pointsStorage != null && pointGain) {
       pointsStorage = pointsStorage + pointGain;
+      if (pointsStorage > maxPoints) {
+        pointsStorage = maxPoints;
+      }
       setPoints(pointsStorage);
     } else {
       console.log("No Points!  Initialize!");
