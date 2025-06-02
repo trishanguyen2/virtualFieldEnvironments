@@ -138,7 +138,7 @@ function PhotosphereEditor({
       if (!confirmed) return;
     }
 
-    if (hotspotPath.length > 0 && sessionStorage.getItem("EditedHotspotPhotoSphere") != null) {
+    if (hotspotPath.length > 0) {
       const updatedPhotosphere = updatePhotosphereHotspot(
           vfe.photospheres[sessionStorage.getItem("EditedHotspotPhotoSphere") || currentPS],
         hotspotPath,
@@ -252,8 +252,6 @@ function PhotosphereEditor({
       [date ? date.format("YYYY-DD-MM") : dayjs().format("YYYY-DD-MM")]:
         newPhotosphere.id,
     };
-
-    console.log(updatedVFE.photospheres[currentPS]);
 
     onUpdateVFE(updatedVFE);
     onChangePS(newPhotosphere.id);

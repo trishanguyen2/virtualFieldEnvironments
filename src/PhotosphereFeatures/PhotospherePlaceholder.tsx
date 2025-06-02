@@ -282,7 +282,7 @@ function PhotospherePlaceholder({
           void addPoints(10);
         }
 
-        // Incase the photosphere changes after saving, this is so the program doesn't try to get a hotspot from the wrong photosphere
+        // When the photosphere is in split view, this is so the program doesn't try to get a hotspot from the wrong photosphere after saving
         sessionStorage.setItem("EditedHotspotPhotoSphere", currentState.id);
         
         const passMarker = currentState.hotspots[marker.config.id];
@@ -339,18 +339,15 @@ function PhotospherePlaceholder({
       // clear popovers on scene change
       // Upon saving a hotspot, the scene will refresh and automatically load back into what ever hotspot was saved last
       if (Number(sessionStorage.getItem("lastEditedHotspotFlag")) == 1) {
-        let photosphereItem = (sessionStorage.getItem("EditedHotspotPhotoSphere") || "");
-
-        if (
-          JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]")
-            .length > 0 && photosphereItem != ""
-        ) {
+        let photosphereItem = (sessionStorage.getItem("EditedHotspotPhotoSphere") || "") || currentPS;
+        
+        if ( JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]").length > 0 ) {
           let hotspotItem: Hotspot2D | Hotspot3D =
             vfe.photospheres[photosphereItem].hotspots[
               JSON.parse(sessionStorage.getItem("listEditedHotspot") || "[]")[0]
             ];
           let hotspotList: (Hotspot2D | Hotspot3D)[] = [hotspotItem];
-
+          
           for (
             let i = 1;
             i <
@@ -378,8 +375,10 @@ function PhotospherePlaceholder({
         setHotspotArray([]);
       }
 
-      sessionStorage.setItem("listEditedHotspot", "[]"); // Clear the last hotspot so it doesn't keep loading into the same hotspot
+      // Clear these items so they don't affect the hotspot auto-loader
+      sessionStorage.setItem("listEditedHotspot", "[]"); 
       sessionStorage.removeItem("lastEditedHotspotFlag");
+      sessionStorage.removeItem("EditedHotspotPhotoSphere");
     });
     if (isPrimary) {
       const map = instance.getPlugin<MapPlugin>(MapPlugin);
@@ -409,6 +408,7 @@ function PhotospherePlaceholder({
           }}
           closeAll={() => {
             setHotspotArray([]);
+            sessionStorage.removeItem("EditedHotspotPhotoSphere");
           }}
           onUpdateHotspot={onUpdateHotspot}
           changeScene={(id) => {
