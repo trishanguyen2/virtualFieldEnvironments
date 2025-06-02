@@ -23,9 +23,10 @@ import { convertStoredToRuntime } from "./VFEConversion";
 type NavMapRecord = Partial<Record<string, string>>;
 interface VFEListProps {
   className?: string;
+  reloadTrigger?: number;
 }
 
-function VFEList({ className }: VFEListProps) {
+function VFEList({ className, reloadTrigger}: VFEListProps) {
   const [names, setNames] = useState<string[]>([]);
   const [navMaps, setNavMaps] = useState<NavMapRecord>({});
 
@@ -48,7 +49,7 @@ function VFEList({ className }: VFEListProps) {
     }
 
     void load();
-  }, []);
+  }, [reloadTrigger]); 
 
   async function deleteVFE(toDelete: string) {
     const confirmed = await confirmMUI(`Delete ${toDelete}?`, {

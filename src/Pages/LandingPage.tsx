@@ -19,12 +19,14 @@ interface LandingPageProps {
   onLoadTestVFE: () => void;
   onCreateVFE: () => void;
   onLoadVFE: (file: File, openInViewer: boolean) => void;
+  reloadTrigger: number;
 }
 
 function LandingPage({
   onLoadTestVFE,
   onCreateVFE,
   onLoadVFE,
+  reloadTrigger,
 }: LandingPageProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
@@ -90,6 +92,7 @@ function LandingPage({
         />
         <VFEList 
           className="vfe-list-area"
+          reloadTrigger={reloadTrigger}
         />
       </Stack>
 

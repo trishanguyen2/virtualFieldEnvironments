@@ -4,6 +4,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import CreateVFEForm from "../Pages/CreateVFE.tsx";
 import LandingPage from "../Pages/LandingPage.tsx";
 import Prototype from "../Prototype/Prototype.tsx";
+import prototypeVFE from "../Prototype/data.json";
 import { VFE } from "./PageUtility/DataStructures.ts";
 import { load } from "./PageUtility/FileOperations.ts";
 import {
@@ -13,14 +14,29 @@ import {
 import VFELoader from "./PageUtility/VFELoader.tsx";
 import PhotosphereEditor from "./PhotosphereEditor.tsx";
 import PhotosphereViewer from "./PhotosphereViewer.tsx";
+import { useEffect, useState } from "react";
 
 // Main component acts as a main entry point for the application
 // Should decide what we are doing, going to LandingPage/Rendering VFE
 function AppRoot() {
   const navigate = useNavigate();
+  const [reloadVFEList, setReloadVFEList] = useState(0);
+
+  useEffect(() => {
+    async function preloadPrototype() {
+      const exists = await localforage.getItem(prototypeVFE.name);
+      if (!exists) {
+        await localforage.setItem(prototypeVFE.name, prototypeVFE as VFE);
+        setReloadVFEList(prev => prev + 1);
+      }
+    }
+  
+    void preloadPrototype();
+  }, []);
 
   //Create a function to set useState true
   function handleLoadTestVFE() {
+    setReloadVFEList((prev) => prev + 1);
     navigate("/prototype");
   }
 
@@ -57,6 +73,7 @@ function AppRoot() {
             onLoadVFE={(file, openInViewer) => {
               void handleLoadVFE(file, openInViewer);
             }}
+            reloadTrigger={reloadVFEList}
           />
         }
       />
