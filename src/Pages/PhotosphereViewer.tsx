@@ -502,6 +502,9 @@ function PhotosphereViewer({
             }}
             gap={1}
           >
+            <Typography variant="caption">
+              {points ?? 0} / {maxPoints}
+            </Typography>
             <progress value={points ?? 0} max={maxPoints} />{" "}
           </Stack>
         )}
