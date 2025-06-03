@@ -237,6 +237,7 @@ function PhotosphereViewer({
             gap={1}
           >
             <ExpandMore
+              className="split-view-button"
               expand={showSplitViewFeatures}
               tooltip="Show Split View Features"
               onClick={() => {

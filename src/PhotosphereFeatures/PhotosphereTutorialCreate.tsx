@@ -14,12 +14,6 @@ export default function PhotosphereTutorialCreate() {
 
   const steps: Step[] = [
     {
-      target: ".vfe-add-scene",
-      content: "Required: After adding a panarama image, you must add a scene.",
-      placement: "bottom",
-      disableBeacon: true,
-    },
-    {
       target: ".vfe-display-name-input",
       content: "Required: This is the name of the VFE",
       placement: "bottom",
@@ -73,7 +67,6 @@ export default function PhotosphereTutorialCreate() {
       continuous
       debug
       showSkipButton
-      showProgress
       disableOverlayClose
       styles={{ 
         options: { 
@@ -89,6 +82,7 @@ export default function PhotosphereTutorialCreate() {
         }
       }}
       locale={{
+        next: "Next",
         last: "Done",
       }}
       callback={(data: CallBackProps) => {

@@ -14,6 +14,12 @@ export default function PhotosphereTutorialDemo() {
 
   const steps: Step[] = [
     {
+      target: ".split-view-button",
+      content: "Toggle split view to compare two panoramas side by side.",
+      placement: "bottom",
+      disableBeacon: true,
+    },
+    {
       target: ".scene-header",
       content: "Select a scene from the map rotation.",
       placement: "bottom",
@@ -28,12 +34,6 @@ export default function PhotosphereTutorialDemo() {
     {
       target: ".map-rotation",
       content: "Lock and unlock the map rotation.",
-      placement: "bottom",
-      disableBeacon: true,
-    },
-    {
-      target: ".split-view-button",
-      content: "Toggle split view to compare two panoramas side by side.",
       placement: "bottom",
       disableBeacon: true,
     },
@@ -62,7 +62,6 @@ export default function PhotosphereTutorialDemo() {
       continuous
       debug
       showSkipButton
-      showProgress
       disableOverlayClose
       styles={{
         options: {
@@ -77,7 +76,10 @@ export default function PhotosphereTutorialDemo() {
           display: "none",
         },
       }}
-      locale={{ last: "Done" }}
+      locale={{ 
+        next: "Next",
+        last: "Done" 
+      }}
       callback={(data: CallBackProps) => {
         const { status, action, index, type } = data;
         if (isFinishedOrSkipped(status)) {

@@ -552,6 +552,7 @@ function PhotosphereHotspotSideBar({
   return (
     <>
       <Box
+        className="hotspot-sidebar"
         sx={{
           display: "inline-flex",
           alignItems: "center",
