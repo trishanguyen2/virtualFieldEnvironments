@@ -361,6 +361,7 @@ function PhotosphereViewer({
                 <PhotosphereTimelineSelect
                   onSelect={(ps: string) => {
                     setPrimaryPhotosphere(vfe.photospheres[ps]);
+                    onChangePS(ps);
                   }}
                 />
               </Stack>
@@ -425,6 +426,7 @@ function PhotosphereViewer({
                     <PhotosphereTimelineSelect
                       onSelect={(ps: string) => {
                         setSplitPhotosphere(vfe.photospheres[ps]);
+                        onChangePS(ps);
                       }}
                     />
                   </Stack>

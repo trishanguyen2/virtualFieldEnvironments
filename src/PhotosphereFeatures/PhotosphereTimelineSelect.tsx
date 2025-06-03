@@ -31,7 +31,8 @@ function PhotosphereTimelineSelect({
     } else if (wasTimelineSelected) {
       // make sure not to change both scenes when
       // going back to parent PS
-      onSelect(currentSelected);
+      //onSelect(currentSelected);
+      // temporarily disable to test fix for other bug
     }
   }, [currentPS]);
 
