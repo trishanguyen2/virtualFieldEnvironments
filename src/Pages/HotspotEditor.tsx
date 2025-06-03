@@ -42,6 +42,7 @@ import Box from "@mui/material/Box";
 import {
   Asset,
   Hotspot2D,
+  Hotspot3D,
   HotspotData,
   newID,
   photosphereLinkTooltip,
@@ -49,6 +50,8 @@ import {
 import { LinkArrowIcon } from "../UI/LinkArrowIcon";
 import { HotspotDataEditor} from "../buttons/AddHotspot";
 import { MuiFileInput } from "mui-file-input";
+
+import { useVFELoaderContext } from "../Hooks/VFELoaderContext";
 
 export interface HotspotIconProps {
   hotspotData: HotspotData;
@@ -353,6 +356,7 @@ function HotspotCard({
 export interface HotspotEditorProps {
   edited: boolean;
   setEdited: (edited: boolean) => void;
+  hotspotPath: string[] | null;
   previewTooltip: string;
   setPreviewTooltip: (tooltip: string) => void;
   previewData: HotspotData | null;
@@ -368,6 +372,12 @@ export interface HotspotEditorProps {
     newIcon?: Asset,
     newColor?: string,
   ) => void;
+  updatePrevHotspot: (
+    newTooltip: string,
+    newData: HotspotData,
+    newIcon?: Asset,
+    newColor?: string,
+  ) => void;
   openNestedHotspot: (toOpen: Hotspot2D) => void;
   photosphereOptions: string[];
   previewColor: string;
@@ -377,6 +387,7 @@ export interface HotspotEditorProps {
 function HotspotEditor({
   edited,
   setEdited,
+  hotspotPath,
   previewTooltip,
   setPreviewTooltip,
   previewData,
@@ -386,6 +397,7 @@ function HotspotEditor({
   resetHotspot,
   deleteHotspot,
   updateHotspot,
+  updatePrevHotspot,
   openNestedHotspot,
   photosphereOptions,
   previewColor, 
@@ -401,6 +413,7 @@ function HotspotEditor({
   const [locationHotspot, setLocationHotspot] = useState<Hotspot2D | null>(
     null,
   );
+  const { vfe, currentPS } = useVFELoaderContext();
   
   const nestedHotspotLength =
     previewData?.tag === "Image"
@@ -464,42 +477,78 @@ function HotspotEditor({
         setHotspotData={updateData}
         photosphereOptions={photosphereOptions}
       />
-      <FormControl fullWidth>
-        <InputLabel id="pin-type-label">Pin Type</InputLabel>
-        <Select
-          labelId="pin-type-label"
-          label="Pin Type"
-          value={previewIcon?.path || ""}
-          onChange={(e) => {
-            const path = e.target.value;
-            setPreviewIcon?.({
-              tag: "Runtime",
-              id: newID(),
-              path,
-            });
-            setEdited(true);
-          }}
-        >
-          <MenuItem value="/pin-blue.png">Blue Pin</MenuItem>
-          <MenuItem value="/pin-red.png">Red Pin</MenuItem>
-          <MenuItem value="MapPin">Map Pin</MenuItem>
-          <MenuItem value="PushPinSimple">Push Pin Simple</MenuItem>
-          <MenuItem value="MapTrifold">Map Trifold</MenuItem>
-        </Select>
-      </FormControl>
+      {previewIcon && (
+        <FormControl fullWidth>
+          <InputLabel id="pin-type-label">Pin Type</InputLabel>
+          <Select
+            labelId="pin-type-label"
+            label="Pin Type"
+            value={previewIcon?.path || ""}
+            onChange={(e) => {
+              const path = e.target.value;
+              setPreviewIcon?.({
+                tag: "Runtime",
+                id: newID(),
+                path,
+              });
+              setEdited(true);
+            }}
+          >
+            <MenuItem value="/pin-blue.png">Blue Pin</MenuItem>
+            <MenuItem value="/pin-red.png">Red Pin</MenuItem>
+            <MenuItem value="MapPin">Map Pin</MenuItem>
+            <MenuItem value="PushPinSimple">Push Pin Simple</MenuItem>
+            <MenuItem value="MapTrifold">Map Trifold</MenuItem>
+          </Select>
+        </FormControl>
+      )}
 
     {previewIcon?.path !== "/pin-blue.png" && previewIcon?.path !== "/pin-red.png" && (
-      <TextField
-        label="Pin Color"
-        type="color"
-        value={color}
-        onChange={(e) => {
-          setColor(e.target.value);
-          setEdited(true);
-        }}
-        InputLabelProps={{ shrink: true }}
-        fullWidth
-      />
+      <Stack direction="row" gap={1}>
+        <TextField
+          label="Pin Color"
+          type="color"
+          value={color}
+          sx={{ width: "50%" }}
+          onChange={(e) => {
+            setColor(e.target.value);
+            setEdited(true);
+          }}
+          InputLabelProps={{ shrink: true }}
+          fullWidth
+        />
+
+        <Button
+          variant="outlined"
+          color="inherit"
+          sx={{ width: "50%" }}
+          onClick={() => {
+            const hotspotList: string[] | null = hotspotPath || [];
+            const photosphereItem = (sessionStorage.getItem("EditedHotspotPhotoSphere") || currentPS);
+            
+            let hotspotItem: Hotspot2D | Hotspot3D = vfe.photospheres[photosphereItem].hotspots[hotspotList[0]];
+            let hotspotPrev: Hotspot2D | Hotspot3D = hotspotItem;
+            
+            for (let i = 1; i < hotspotList.length; ++i) {
+              if (
+                hotspotItem != null &&
+                'hotspots' in hotspotItem.data
+              ) {
+                hotspotPrev = hotspotItem;
+                hotspotItem = hotspotItem.data.hotspots[hotspotList[i]];
+              }
+            }
+            if (hotspotPrev && hotspotPrev.data.tag == "Image") {
+              sessionStorage.setItem("parentHotspot", JSON.stringify(hotspotPrev));
+            }
+            if (hotspotItem && 'x' in hotspotItem && 'y' in hotspotItem) {
+              setLocationHotspot(hotspotItem);
+            }
+          }}
+        >
+          Pin Location
+        </Button>
+      </Stack>
     )}
 
 
@@ -542,38 +591,59 @@ function HotspotEditor({
 
           {locationHotspot !== null && (
             <HotspotLocationPicker
-              image={previewData.src.path}
+              image={JSON.parse(sessionStorage.getItem("parentHotspot") || "{}").data.src.path || previewData.src.path}
               hotspot={locationHotspot}
-              onSave={(updatedHotspot) => {
+              onSave={(updatedHotspot) => {  // Can definitely be optimized
                 if (
-                  previewData?.tag === "Image" &&
                   updatedHotspot != null && 
                   'id' in updatedHotspot &&
                   previewData != null &&
-                  'hotspots' in previewData
+                  'hotspots' in previewData &&
+                  previewData?.tag === "Image"
                 ) {
                   
                   if (updatedHotspot.id in previewData.hotspots) {
-                    previewData.hotspots[updatedHotspot.id].x = updatedHotspot.x
-                    previewData.hotspots[updatedHotspot.id].y = updatedHotspot.y
+                    previewData.hotspots[updatedHotspot.id].x = updatedHotspot.x;
+                    previewData.hotspots[updatedHotspot.id].y = updatedHotspot.y;
                   }
                   else {
                     previewData.hotspots = { ...previewData.hotspots, [updatedHotspot.id]: updatedHotspot }
                   }
-
+                  
                   sessionStorage.setItem("lastEditedHotspotFlag", "1");  // Set to return to hotspot menu after page refresh
                   setEdited(false);  // Reset edited state after saving
-                  
-                  updateHotspot(
-                    previewTooltip,
-                    previewData,
-                    previewIcon ?? undefined,
-                    previewColor
-                  );
+
+                  // This block is for the "Pin Location" button
+                  if (hotspotPath != null &&
+                      previewData.hotspots[hotspotPath[hotspotPath.length - 1]] != null &&
+                      hotspotPath[hotspotPath.length - 1] == previewData.hotspots[hotspotPath[hotspotPath.length - 1]].id
+                  ) {
+                    
+                    previewData.src = JSON.parse(sessionStorage.getItem("parentHotspot") || "{}").data.src;
+                    previewData.hotspots = JSON.parse(sessionStorage.getItem("parentHotspot") || "{}").data.hotspots;
+                    previewData.hotspots[updatedHotspot.id].x = updatedHotspot.x;
+                    previewData.hotspots[updatedHotspot.id].y = updatedHotspot.y;
+                    
+                    updatePrevHotspot(
+                      JSON.parse(sessionStorage.getItem("parentHotspot") || "{}").tooltip || previewTooltip,
+                      previewData,
+                      undefined,
+                      undefined
+                    );
+                  }
+                  else {  // This is the standard Move button on the parent hotspot
+                    updateHotspot(
+                      previewTooltip,
+                      previewData,
+                      previewIcon ?? undefined,
+                      previewColor
+                    );
+                  }
                 }
               }}
               onClose={() => {
                 setLocationHotspot(null);
+                sessionStorage.removeItem("parentHotspot");
               }}
             />
           )}
