@@ -89,8 +89,10 @@ export default function PhotosphereTutorialDemo() {
           type === EVENTS.STEP_AFTER ||
           type === EVENTS.TARGET_NOT_FOUND
         ) {
-          if (action === ACTIONS.NEXT) setStepIndex(index + 1);
-          else if (action === ACTIONS.PREV) setStepIndex(index - 1);
+          if (action === ACTIONS.NEXT) 
+            setStepIndex(index + 1);
+          else if (action === ACTIONS.PREV) 
+            setStepIndex(index - 1);
         }
       }}
     />
