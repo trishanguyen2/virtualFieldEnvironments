@@ -86,5 +86,6 @@ This project is licensed under the **GNU Affero General Public License v3.0** --
 ## Acknowledgements
 - Portland State University Capstone Winter/Spring 2025
 - Richard Hugo (Project Sponsor)
+- Bruce Irvin (Capstone Instructor)
 
 
