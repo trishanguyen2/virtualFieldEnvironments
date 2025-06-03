@@ -266,7 +266,9 @@ function PhotosphereViewer({
             <Box sx={{ padding: "0 5px" }}>
               <PhotosphereSelector
                 size="small"
-                options={Object.keys(vfe.photospheres)}
+                options={Object.keys(vfe.photospheres).filter(
+                  (ps) => !vfe.photospheres[ps].parentPS,
+                )}
                 value={
                   primaryPhotosphere.parentPS
                     ? primaryPhotosphere.parentPS
