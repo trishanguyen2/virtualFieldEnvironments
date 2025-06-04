@@ -58,7 +58,6 @@ export default function PhotosphereTutorial({
       stepIndex={stepIndex}
       continuous
       showSkipButton
-      showProgress
       disableOverlayClose
       styles={{ 
         options: { 
@@ -74,6 +73,7 @@ export default function PhotosphereTutorial({
         }
        }}
        locale={{
+        next: "Next",
         last: "Done",
        }}
       callback={(data: CallBackProps) => {

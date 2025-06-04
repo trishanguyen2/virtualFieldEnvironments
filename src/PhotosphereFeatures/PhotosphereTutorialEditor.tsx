@@ -49,7 +49,7 @@ export default function PhotosphereTutorialEditor({
     },
     {
       target: ".gamify-button",
-      content: "Save the created VFE to your computer",
+      content: "Enable or disable the gamified experience",
       placement: "right",
       disableBeacon: true,
     },
@@ -105,7 +105,6 @@ export default function PhotosphereTutorialEditor({
       stepIndex={stepIndex}
       continuous
       showSkipButton
-      showProgress
       disableOverlayClose={true}
       styles={{ 
         options: { 
@@ -121,6 +120,7 @@ export default function PhotosphereTutorialEditor({
         }
       }}
       locale={{
+        next: "Next",
         last: "Done",
       }}
       callback={(data: CallBackProps) => {

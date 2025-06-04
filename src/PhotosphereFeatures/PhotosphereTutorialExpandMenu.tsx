@@ -61,14 +61,16 @@ export default function PhotosphereTutorialExpandMenu({ run, onFinish }: ExpandM
       continuous
       debug
       showSkipButton
-      showProgress
       disableOverlayClose
       styles={{
         options: { zIndex: 10000, primaryColor: "#1976d2" },
         tooltip: { fontFamily: "Roboto, sans-serif", fontSize: "16px" },
         buttonClose: { display: "none" },
       }}
-      locale={{ last: "Done" }}
+      locale={{ 
+        next: "Next",
+        last: "Done" 
+      }}
       callback={handleJoyrideCallback}
     />
   );

@@ -59,14 +59,16 @@ export default function PhotosphereTutorialSubmenuEdit({
       stepIndex={submenuEditStepIndex}
       continuous
       showSkipButton
-      showProgress
       disableOverlayClose={true}
       styles={{
         options: { zIndex: 10000, primaryColor: "#1976d2" },
         tooltip: { fontFamily: "Roboto, sans-serif", fontSize: "16px" },
         buttonClose: { display: "none" },
       }}
-      locale={{ last: "Done" }}
+      locale={{ 
+        next: "Next",
+        last: "Done",
+      }}
       callback={(data: CallBackProps) => {
         const { status, action, index, type } = data;
 
