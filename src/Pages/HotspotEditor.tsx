@@ -517,7 +517,7 @@ function HotspotEditor({
           InputLabelProps={{ shrink: true }}
           fullWidth
         />
-
+      {(hotspotPath || []).length > 1 && (
         <Button
           variant="outlined"
           color="inherit"
@@ -538,6 +538,7 @@ function HotspotEditor({
                 hotspotItem = hotspotItem.data.hotspots[hotspotList[i]];
               }
             }
+            
             if (hotspotPrev && hotspotPrev.data.tag == "Image") {
               sessionStorage.setItem("parentHotspot", JSON.stringify(hotspotPrev));
             }
@@ -548,6 +549,7 @@ function HotspotEditor({
         >
           Pin Location
         </Button>
+        )}
       </Stack>
     )}
 
@@ -573,7 +575,7 @@ function HotspotEditor({
     )}
 
 
-      {previewData?.tag === "Image" && (
+      { (previewData?.tag === "Image" || sessionStorage.getItem("parentHotspot") != null) && (
         <>
           {colorHotspot !== null && colorAnchor !== null && (
             <HotspotColorPicker
@@ -588,50 +590,37 @@ function HotspotEditor({
               }}
             />
           )}
-
+          
           {locationHotspot !== null && (
             <HotspotLocationPicker
-              image={JSON.parse(sessionStorage.getItem("parentHotspot") || "{}").data.src.path || previewData.src.path}
+              image={(JSON.parse(sessionStorage.getItem("parentHotspot") || "{}").data || previewData).src.path}
               hotspot={locationHotspot}
-              onSave={(updatedHotspot) => {  // Can definitely be optimized
-                if (
-                  updatedHotspot != null && 
-                  'id' in updatedHotspot &&
-                  previewData != null &&
-                  'hotspots' in previewData &&
-                  previewData?.tag === "Image"
-                ) {
-                  
-                  if (updatedHotspot.id in previewData.hotspots) {
-                    previewData.hotspots[updatedHotspot.id].x = updatedHotspot.x;
-                    previewData.hotspots[updatedHotspot.id].y = updatedHotspot.y;
-                  }
-                  else {
-                    previewData.hotspots = { ...previewData.hotspots, [updatedHotspot.id]: updatedHotspot }
-                  }
-                  
+              onSave={(updatedHotspot) => {
+                if (previewData != null) {
                   sessionStorage.setItem("lastEditedHotspotFlag", "1");  // Set to return to hotspot menu after page refresh
-                  setEdited(false);  // Reset edited state after saving
 
-                  // This block is for the "Pin Location" button
-                  if (hotspotPath != null &&
-                      previewData.hotspots[hotspotPath[hotspotPath.length - 1]] != null &&
-                      hotspotPath[hotspotPath.length - 1] == previewData.hotspots[hotspotPath[hotspotPath.length - 1]].id
-                  ) {
-                    
-                    previewData.src = JSON.parse(sessionStorage.getItem("parentHotspot") || "{}").data.src;
-                    previewData.hotspots = JSON.parse(sessionStorage.getItem("parentHotspot") || "{}").data.hotspots;
-                    previewData.hotspots[updatedHotspot.id].x = updatedHotspot.x;
-                    previewData.hotspots[updatedHotspot.id].y = updatedHotspot.y;
+                  if (JSON.parse(sessionStorage.getItem("parentHotspot") || "{}").data) {  // This block is for the "Pin Location" button
+                    const parentHotspotData = JSON.parse(sessionStorage.getItem("parentHotspot") || "{}").data;
+
+                    parentHotspotData.hotspots[updatedHotspot.id].x = updatedHotspot.x;
+                    parentHotspotData.hotspots[updatedHotspot.id].y = updatedHotspot.y;
                     
                     updatePrevHotspot(
                       JSON.parse(sessionStorage.getItem("parentHotspot") || "{}").tooltip || previewTooltip,
-                      previewData,
+                      parentHotspotData,
                       undefined,
                       undefined
                     );
                   }
-                  else {  // This is the standard Move button on the parent hotspot
+                  else if ('hotspots' in previewData) {  // This is the standard Move button/Create nested hotspot on the parent hotspot
+                    if (updatedHotspot.id in previewData.hotspots) {
+                      previewData.hotspots[updatedHotspot.id].x = updatedHotspot.x;
+                      previewData.hotspots[updatedHotspot.id].y = updatedHotspot.y;
+                    }
+                    else {
+                      previewData.hotspots = { ...previewData.hotspots, [updatedHotspot.id]: updatedHotspot }
+                    }
+
                     updateHotspot(
                       previewTooltip,
                       previewData,
