@@ -72,9 +72,12 @@ function PhotosphereHotspotSideBar({
     currentPS === photosphere ? null : setValue(photosphere);
   }
 
-  function handleHSListClick(hotspot: Hotspot3D, photosphereId: string) {
+  function handleHSListClick(
+    hotspot: (Hotspot3D | Hotspot2D)[],
+    photosphereId: string,
+  ) {
     if (currentPS !== photosphereId) setValue(photosphereId);
-    setHotspotArray([hotspot]);
+    setHotspotArray(hotspot);
     centerHotspot(hotspotArray);
   }
 
@@ -245,9 +248,7 @@ function PhotosphereHotspotSideBar({
         >
           <ListItemButton
             onClick={() => {
-              handleHSListClick(hotspot, photosphere.id);
-              setHotspotArray([...path, hotspot]);
-              centerHotspot([...path, hotspot]);
+              handleHSListClick([...path, hotspot], photosphere.id);
             }}
             sx={{ backgroundColor: getBackgroundColor(depth) }}
           >
@@ -329,9 +330,7 @@ function PhotosphereHotspotSideBar({
         >
           <ListItemButton
             onClick={() => {
-              handleHSListClick(hotspot, photosphere.id);
-              setHotspotArray([...path, hotspot]);
-              centerHotspot([...path, hotspot]);
+              handleHSListClick([...path, hotspot], photosphere.id);
             }}
             sx={{ backgroundColor: getBackgroundColor(depth) }}
           >
@@ -424,8 +423,7 @@ function PhotosphereHotspotSideBar({
         >
           <ListItemButton
             onClick={() => {
-              setHotspotArray([...path, hotspot]);
-              centerHotspot([...path, hotspot]);
+              handleHSListClick([...path, hotspot], photosphere.id);
             }}
             sx={{ backgroundColor: getBackgroundColor(depth) }}
           >
@@ -507,8 +505,7 @@ function PhotosphereHotspotSideBar({
         >
           <ListItemButton
             onClick={() => {
-              setHotspotArray([...path, hotspot]);
-              centerHotspot([...path, hotspot]);
+              handleHSListClick([...path, hotspot], photosphere.id);
             }}
             sx={{ backgroundColor: getBackgroundColor(depth) }}
           >
