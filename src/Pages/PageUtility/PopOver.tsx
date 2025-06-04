@@ -284,6 +284,10 @@ function PopOver({
     onUpdateHotspot?.(hotspotPath, { tooltip, data, icon, color});
   }
 
+  function updatePrevHotspot(tooltip: string, data: HotspotData, icon?: Asset, color?: string) {
+      onUpdateHotspot?.(hotspotPath.slice(0, -1), { tooltip, data, icon, color});
+  }
+
   function openNestedHotspot(hotspot2D: Hotspot2D) {
     if (edited) {
       setSnackbarMessage(
@@ -376,6 +380,7 @@ function PopOver({
               <HotspotEditor
                 edited={edited}
                 setEdited={setEdited}
+                hotspotPath={hotspotPath}
                 previewTooltip={previewTooltip}
                 setPreviewTooltip={setPreviewTooltip}
                 previewData={previewData}
@@ -385,6 +390,7 @@ function PopOver({
                 resetHotspot={resetHotspot}
                 deleteHotspot={deleteHotspot}
                 updateHotspot={updateHotspot}
+                updatePrevHotspot={updatePrevHotspot}
                 openNestedHotspot={openNestedHotspot}
                 photosphereOptions={availablePhotosphereOptions} // Pass down the new props
                 previewColor={previewColor}

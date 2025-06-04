@@ -375,10 +375,9 @@ function PhotospherePlaceholder({
         setHotspotArray([]);
       }
 
-      // Clear these items so they don't affect the hotspot auto-loader
+      // Clear these items so they don't affect the hotspot editing menu
       sessionStorage.setItem("listEditedHotspot", "[]"); 
       sessionStorage.removeItem("lastEditedHotspotFlag");
-      sessionStorage.removeItem("EditedHotspotPhotoSphere");
     });
     if (isPrimary) {
       const map = instance.getPlugin<MapPlugin>(MapPlugin);
