@@ -678,6 +678,8 @@ function HotspotEditor({
 
             {!hotspotsCollapsed &&
               nestedHotspotLength > 0 &&
+              previewData &&
+              'hotspots' in previewData && 
               Object.values(previewData.hotspots).map((hotspot2D) => (
                 <HotspotCard
                   key={hotspot2D.id}
